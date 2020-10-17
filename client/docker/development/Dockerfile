@@ -1,11 +1,14 @@
 FROM node:alpine
 
-WORKDIR /app
+RUN mkdir -p /usr/src/server
 
-COPY client/package.json /app
+WORKDIR /usr/src/server
+
+COPY client/package*.json ./
 
 RUN npm install
 
-EXPOSE 80
+COPY client/ .
 
-CMD ["npm", "run", "start"]
+EXPOSE 3000
+CMD [ "npm", "start" ]
