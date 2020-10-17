@@ -1,0 +1,29 @@
+version: "3.3"
+services:
+  server:
+    build:
+      context: ./
+      dockerfile: ${PWD}/server/docker/development/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+        - ./server:/app
+    depends_on:
+      - db
+    container_name: mafia-server
+  client:
+    build:
+      context: ./
+      dockerfile: ${PWD}/client/docker/development/Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./client:/app
+    depends_on:
+      - server
+    container_name: mafia-client
+  db:
+    image: mongo
+    ports:
+      - "27018:27017"
+    container_name: mafia-db
