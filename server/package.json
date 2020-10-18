@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "Mafia server",
   "author": "Taras Kuk <kukulyak.taras@gmail.com>",
-  "main": "server.js",
+  "main": "src/config/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/config/server.js"
   },
   "dependencies": {
-    "express": "^4.16.1"
+    "dotenv": "^8.2.0",
+    "express": "^4.16.1",
+    "install": "^0.13.0",
+    "@babel/core": "^7.9.0"
   }
 }
