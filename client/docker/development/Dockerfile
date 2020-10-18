@@ -1,7 +1,5 @@
 FROM node:alpine
 
-RUN mkdir -p /usr/src/server
-
 WORKDIR /usr/src/server
 
 COPY client/package*.json ./
@@ -11,4 +9,5 @@ RUN npm install
 COPY client/ .
 
 EXPOSE 3000
+
 CMD [ "npm", "start" ]
