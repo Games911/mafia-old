@@ -1,35 +1,32 @@
 version: "3.3"
 services:
-  server:
-    build:
-      context: ./
-      dockerfile: ${PWD}/server/docker/development/Dockerfile
-    ports:
-      - "9999:8080"
-    volumes:
-        - ./server:/usr/src/app
-    depends_on:
-      - db
-    container_name: mafia-server
-  client:
-    build:
-      context: ./
-      dockerfile: ${PWD}/client/docker/development/Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/usr/src/app
-    depends_on:
-      - server
-    container_name: mafia-client
-    tty: true
-  db:
-    image: mongo
-    ports:
-      - "27018:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 123
-    volumes:
-      - ./data:/data/db
-    container_name: mafia-db
+    server:
+        build:
+            context: ./
+            dockerfile: ${PWD}/server/docker/development/Dockerfile
+        ports:
+            - "9999:8080"
+        volumes:
+            - ./server:/usr/src/app
+        external_links:
+            - mongo
+        container_name: mafia-server
+    client:
+        build:
+            context: ./
+            dockerfile: ${PWD}/client/docker/development/Dockerfile
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./client:/usr/src/app
+        depends_on:
+            - server
+        container_name: mafia-client
+        tty: true
+    mongo:
+        image: mongo
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./data:/data/db
+        container_name: mafia-mongo
