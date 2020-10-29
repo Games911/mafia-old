@@ -29,6 +29,8 @@ const userSchema = mongoose.Schema({
         required: true,
         default: Date.now
     },
+}, {
+    versionKey: false
 });
 
 userSchema.path('email').validate(function (email) {
