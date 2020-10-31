@@ -5,7 +5,8 @@
   "author": "Taras Kuk <kukulyak.taras@gmail.com>",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "jest --config src/jest.config.json"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
@@ -15,5 +16,8 @@
     "install": "^0.13.0",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.9"
+  },
+  "devDependencies": {
+    "jest": "^26.6.1"
   }
 }
