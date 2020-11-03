@@ -1,53 +1,49 @@
-const { User } = require('../../models/User');
-const { mongoUrl } = require('../../config/config');
-const userData = { email: 'user@gmail.com', nikname: 'Nikolo', password: '123' };
+const mockingoose = require('mockingoose').default;
+const model = require('../../models/User');
 
-describe('User Model Test', () => {
-
-    // It's just so easy to connect to the MongoDB Memory Server
-    // By using mongoose.connect
-    beforeAll(async () => {
-        await mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true }, (err) => {
-            if (err) {
-                console.error(err);
-                process.exit(1);
-            }
+describe('test mongoose User model', () => {
+    it('should return the doc with findById', () => {
+        const _doc = {
+            _id: '507f191e810c19729de860ea',
+            email: 'name@email.com',
+            nikname: 'name-nik',
+            password: '123'
+        };
+        mockingoose(model).toReturn(_doc, 'findOne');
+        return model.findById({ _id: '507f191e810c19729de860ea' }).then(doc => {
+            expect(JSON.parse(JSON.stringify(doc))).toMatchObject(_doc);
         });
     });
 
-    it('create & save user successfully', async () => {
-        const validUser = new User(userData);
-        const savedUser = await validUser.save();
-        // Object Id should be defined when successfully saved to MongoDB.
-        expect(savedUser._id).toBeDefined();
-        expect(savedUser.email).toBe(userData.email);
-        expect(savedUser.nikname).toBe(userData.nikname);
-        expect(savedUser.password).toBe(userData.password);
-    });
 
-    // Test Schema is working!!!
-    // You shouldn't be able to add in any field that isn't defined in the schema
-    it('insert user successfully, but the field does not defined in schema should be undefined', async () => {
-        const userWithInvalidField = new User({ email: 'user@gmail.com', nikname: 'Male', password: '123' });
-        const savedUserWithInvalidField = await userWithInvalidField.save();
-        expect(savedUserWithInvalidField._id).toBeDefined();
-        expect(savedUserWithInvalidField.nikname).toBeUndefined();
-    });
-
-    // Test Validation is working!!!
-    // It should us told us the errors in on nikname field.
-    it('create user without required field should failed', async () => {
-        const userWithoutRequiredField = new User({ email: 'user@gmail.com', password: '123' });
-        let err;
-        try {
-            const savedUserWithoutRequiredField = await userWithoutRequiredField.save();
-            const error = savedUserWithoutRequiredField;
-        } catch (error) {
-            err = error
-        }
-        expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
-        expect(err.errors.nikname).toBeDefined();
+    it('should return the doc with update', () => {
+        const _doc = {
+            _id: '507f191e810c19729de860ea',
+            email: 'name@email.com',
+            nikname: 'name-nik',
+            password: '123'
+        };
+        mockingoose(model).toReturn(_doc, 'update');
+        return model
+            .update({ name: 'changed' })
+            .where({ _id: '507f191e810c19729de860ea' })
+            .then(doc => {
+                expect(JSON.parse(JSON.stringify(doc))).toMatchObject(_doc);
+            });
     });
 
 
-})
+    it('should return the doc incorrect name', () => {
+        const _doc = {
+            _id: '507f191e810c19729de860ea',
+            email: 'name@email.com',
+            nikname: 'name-nik',
+            password: '123'
+        };
+        mockingoose(model).toReturn(_doc, 'findOne');
+        return model.findById({ _id: '507f191e810c19729de860ea' }).then(doc => {
+            doc.nikname = "Another";
+            expect(doc.nikname).not.toBe(_doc.nikname);
+        });
+    });
+});

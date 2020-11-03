@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const userSchema = mongoose.Schema({
+const schema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
     email: {
         type: String,
@@ -33,10 +34,10 @@ const userSchema = mongoose.Schema({
     versionKey: false
 });
 
-userSchema.path('email').validate(function (email) {
+schema.path('email').validate(function (email) {
     console.log(email);
     var emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     return emailRegex.test(email);
 }, 'Incorrect email value.')
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', schema);
