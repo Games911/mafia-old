@@ -6,7 +6,8 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "jest --config src/jest.config.json"
+    "test": "jest --config src/jest.config.json",
+    "seed": "node src/database/seeds/seeder.js"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",

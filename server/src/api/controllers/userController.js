@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../../models/User');
+const User = require('../../database/models/User');
 
 module.exports = {
     createUser: async (email, nikname, password) => {
