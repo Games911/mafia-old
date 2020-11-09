@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const createToken = require('../services/user/jwtService');
 const User = require('../../database/models/User');
 
 module.exports = {
@@ -10,7 +11,8 @@ module.exports = {
             password: password,
         });
         try {
-            return await user.save();
+            await user.save();
+            return await createToken(user);
         } catch (error) {
             throw error
         }
