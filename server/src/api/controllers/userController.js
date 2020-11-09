@@ -1,16 +1,18 @@
 const mongoose = require('mongoose');
-const User = require('../../models/User');
+const createToken = require('../services/user/jwtService');
+const User = require('../../database/models/User');
 
 module.exports = {
-    createUser: async (email, name, password) => {
+    createUser: async (email, nikname, password) => {
         const user = new User({
             _id: new mongoose.Types.ObjectId(),
             email: email,
-            name: name,
+            nikname: nikname,
             password: password,
         });
         try {
-            return await user.save();
+            await user.save();
+            return await createToken(user);
         } catch (error) {
             throw error
         }
