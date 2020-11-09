@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const loginController = require('./api/controllers/loginController');
 const authRoutes = require('./api/routes/auth');
 const userRoutes = require('./api/routes/user');
+const seedRoutes = require('./api/routes/seed');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -17,5 +18,6 @@ app.get('/', async(req, res, next) => {
 
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+app.use('/seed', seedRoutes);
 
 module.exports = app;

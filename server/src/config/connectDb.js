@@ -1,4 +1,4 @@
-const { mongoUrl } = require('./config');
+const { mongoUrl } = require('./settings');
 const mongoose = require('mongoose');
 
 const options = {

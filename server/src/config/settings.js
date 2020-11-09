@@ -8,4 +8,5 @@ module.exports = {
     port: process.env.PORT,
     host: process.env.HOST,
     mongoUrl: process.env.MONGO_URL,
+    secret: process.env.SECRET,
 };
