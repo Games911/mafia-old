@@ -9,4 +9,5 @@ module.exports = {
     host: process.env.HOST,
     mongoUrl: process.env.MONGO_URL,
     secret: process.env.SECRET,
+    saltRound: process.env.SALT_ROUND,
 };

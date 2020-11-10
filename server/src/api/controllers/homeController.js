@@ -1,8 +1,7 @@
-
 module.exports = {
-    login: async (name) => {
+    index: async (name) => {
         try {
-            return 'Login';
+            return 'Home page';
         } catch (error) {
             throw error
         }

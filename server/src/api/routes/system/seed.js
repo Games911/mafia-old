@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const seed = require('../../database/seeds/seeder');
+const seed = require('../../../database/seeds/seeder');
 
 
-router.post("/seed", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
     try {
         if (req.body.token === "9999") {
             await seed();
