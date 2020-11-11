@@ -15,3 +15,7 @@ docker-build:
 	docker-compose build
 docker-pull:
 	docker-compose pull
+
+
+### npm test
+### npx jest --coverage
