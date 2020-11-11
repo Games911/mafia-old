@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const hashPassword = require('../../api/services/auth/passwordService');
-const User = require('../models/User');
+const User = require('../models/auth/User');
 
 const seedUser = async () => {
 

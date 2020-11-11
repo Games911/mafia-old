@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const createToken = require('../../services/auth/jwtService');
 const hashPassword = require('../../services/auth/passwordService');
-const User = require('../../../database/models/User');
+const User = require('../../../database/models/auth/User');
 
 module.exports = {
     createUser: async (email, nikname, password) => {
