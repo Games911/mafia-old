@@ -19,6 +19,7 @@ docker-pull:
 
 ### npm test
 ### npx jest --coverage
+### npm run lint
 
 ### sudo systemctl stop docker
 ### sudo systemctl start docker

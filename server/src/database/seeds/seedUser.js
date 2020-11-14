@@ -4,7 +4,7 @@ const User = require('../models/auth/User');
 
 const seedUser = async () => {
 
-    User.remove({}, function(err,removed) {
+    User.remove({}, function() {
 
     });
 
@@ -33,11 +33,7 @@ const seedUser = async () => {
 
     const documents = [user1, user2, user3];
 
-    try {
-        return await User.create(documents);
-    } catch (error) {
-        throw error;
-    }
+    return await User.create(documents);
 };
 
 module.exports = seedUser;

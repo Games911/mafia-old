@@ -12,15 +12,11 @@ module.exports = {
             nikname: nikname,
             password: passwordHash,
         });
-        try {
-            await user.save();
-            return await createToken(user);
-        } catch (error) {
-            throw error
-        }
+        await user.save();
+        return await createToken(user);
     },
 
-    getUser: async (id) => {
+    getUser: async () => {
         // ..
     },
 

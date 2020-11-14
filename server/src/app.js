@@ -8,7 +8,7 @@ const seedRoutes = require('./api/routes/system/seed');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/', async(req, res, next) => {
+app.get('/', async(req, res) => {
     const result = await homeController.index(req.body.name);
     res.status(200).json({
         message: result
