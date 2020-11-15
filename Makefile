@@ -15,3 +15,11 @@ docker-build:
 	docker-compose build
 docker-pull:
 	docker-compose pull
+
+
+### npm test
+### npx jest --coverage
+### npm run lint
+
+### sudo systemctl stop docker
+### sudo systemctl start docker
