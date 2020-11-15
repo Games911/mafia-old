@@ -1,8 +1,8 @@
-var express = require('express');
-var router = express.Router();
-const userController = require('../controllers/userController');
+const express = require('express');
+const router = express.Router();
+const userController = require('../../controllers/auth/authController');
 
-router.post("/create", async (req, res, next) => {
+router.post("/signup", async (req, res) => {
     try {
         const token = await userController.createUser(req.body.email, req.body.nikname, req.body.password);
         res.status(201).json({
