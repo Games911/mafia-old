@@ -1,13 +1,13 @@
 const http = require('http');
 const app = require('./app');
 const { port } = require('./config/settings');
-const connectDb = require('./config/connectDb');
+const databaseHelper = require('./config/connectDb');
 
 const server = http.createServer(app);
 
 server.listen(port, function() {
     console.log(`Listening on ${port}`);
-    connectDb()
+    databaseHelper.connect()
         .then(() => {
             console.log("MongoDb connected");
         })

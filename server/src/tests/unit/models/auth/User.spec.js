@@ -1,5 +1,5 @@
 const mockingoose = require('mockingoose').default;
-const model = require('../../../database/models/auth/User');
+const model = require('../../../../database/models/auth/User');
 
 describe('test mongoose User model', () => {
     it('should return the doc with findById', () => {

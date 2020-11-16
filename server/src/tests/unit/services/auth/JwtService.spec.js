@@ -1,4 +1,4 @@
-const createToken = require('../../../api/services/auth/jwtService');
+const createToken = require('../../../../api/services/auth/jwtService');
 
 
 describe('test jwt service', () => {
