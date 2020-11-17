@@ -1,8 +1,9 @@
 const mockingoose = require('mockingoose').default;
 const model = require('../../../../database/models/auth/User');
 
-describe('test mongoose User model', () => {
-    it('should return the doc with findById', () => {
+describe('Test mongoose User model', () => {
+
+    it('Find by Id user', async () => {
         const _doc = {
             _id: '507f191e810c19729de860ea',
             email: 'name@email.com',
@@ -15,8 +16,7 @@ describe('test mongoose User model', () => {
         });
     });
 
-
-    it('should return the doc with update', () => {
+    it('Update user', async () => {
         const _doc = {
             _id: '507f191e810c19729de860ea',
             email: 'name@email.com',
@@ -32,8 +32,7 @@ describe('test mongoose User model', () => {
             });
     });
 
-
-    it('should return the doc incorrect name', () => {
+    it('Incorrect name', async () => {
         const _doc = {
             _id: '507f191e810c19729de860ea',
             email: 'name@email.com',
@@ -46,4 +45,5 @@ describe('test mongoose User model', () => {
             expect(doc.nikname).not.toBe(_doc.nikname);
         });
     });
+
 });

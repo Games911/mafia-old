@@ -1,14 +1,12 @@
 const hashPassword = require('../../../../api/services/auth/passwordService');
 
 
-describe('test password service', () => {
+describe('Test password service', () => {
 
-    it('should return password hash', () => {
+    it('Hash password', async () => {
         const password = "123456";
-        const passwordPromise = hashPassword(password);
-        passwordPromise.then((passwordHash) => {
-            expect(typeof passwordHash).toBe('string');
-        });
+        const passwordValue = await hashPassword(password);
+        expect(typeof passwordValue).toBe('string');
     });
 
 });
