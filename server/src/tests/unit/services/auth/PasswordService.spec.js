@@ -1,4 +1,4 @@
-const hashPassword = require('../../../../api/services/auth/passwordService');
+const {hashPassword} = require('../../../../api/services/auth/passwordService');
 
 
 describe('Test password service', () => {

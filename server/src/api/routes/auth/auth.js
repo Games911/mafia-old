@@ -17,4 +17,19 @@ router.post("/signup", async (req, res) => {
     }
 });
 
+router.post("/signin", async (req, res) => {
+    try {
+        const token = await authController.loginUser(req.body.nikname, req.body.password);
+        res.status(200).json({
+            message: "Logined successfully",
+            token: token
+        });
+    } catch(error) {
+        res.status(400).json({
+            message: error.message,
+            errors: error.errors
+        });
+    }
+});
+
 module.exports = router;

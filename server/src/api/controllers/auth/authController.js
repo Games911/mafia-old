@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const createToken = require('../../services/auth/jwtService');
-const hashPassword = require('../../services/auth/passwordService');
+const {hashPassword, comparePassword} = require('../../services/auth/passwordService');
 const User = require('../../../database/models/auth/User');
 
 module.exports = {
@@ -16,11 +16,11 @@ module.exports = {
         return await createToken(user);
     },
 
-    getUser: async () => {
-        // ..
+    loginUser: async (nikname, password) => {
+        const user = (await User.find({ nikname: nikname }).limit(1))[0];
+        if (user && await comparePassword(password, user.password)) {
+            return await createToken(user);
+        }
+        throw new Error('Wrong nikname or password');
     },
-
-    getAllUsers: async() => {
-        // ...
-    }
 }
