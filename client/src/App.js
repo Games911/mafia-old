@@ -1,15 +1,37 @@
 import React from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Header from "./components/layout/Header";
+import Signin from "./components/auth/signin/Signin";
+import Signup from "./components/auth/signup/Signup";
+import Home from "./components/home/Home";
+import { Container, Row, Col } from 'bootstrap-4-react';
 
 function App() {
-
-    const dispatch = useDispatch();
-    const {email} = useSelector(state => state.auth);
-
   return (
+      <BrowserRouter>
       <div className="App">
-        <h1>React !!! {email}</h1>
+        <Header />
+        <main>
+            <Container>
+                <Row>
+                    <Col>
+                        <Switch>
+                            <Route path="/signin">
+                                <Signin />
+                            </Route>
+                            <Route path="/signup">
+                                <Signup />
+                            </Route>
+                            <Route path="/">
+                                <Home />
+                            </Route>
+                        </Switch>
+                    </Col>
+                </Row>
+            </Container>
+        </main>
       </div>
+      </BrowserRouter>
   );
 }
 
