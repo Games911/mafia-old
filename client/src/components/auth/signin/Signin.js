@@ -4,7 +4,7 @@ import { Form, Button } from 'bootstrap-4-react';
 import {Link} from "react-router-dom";
 import './Signin.css';
 import * as types from "../../../redux/types/authType";
-import {signin, signinValidate} from "../../../redux/actions/authAction";
+import {signin, signinValidate, signupValidate} from "../../../redux/actions/authAction";
 
 const Signin = () => {
 
@@ -14,8 +14,8 @@ const Signin = () => {
     const onSubmit = (event) => {
         event.preventDefault();
         let validationErrors = dispatch(signinValidate(nikname, password));
-        validationErrors.then((count) => {
-            if (count === 0) {
+        validationErrors.then((valid) => {
+            if (valid) {
                 dispatch(signin(nikname, password));
                 dispatch({
                     type: types.AUTH_RESET_FORM
@@ -26,14 +26,22 @@ const Signin = () => {
 
     const onChangeNikname = (event) => {
         dispatch({type: types.AUTH_CHANGE_NIKNAME, nikname: event.target.value});
+        dispatch(signinValidate(event.target.value, password));
     };
     const onChangePassword = (event) => {
         dispatch({type: types.AUTH_CHANGE_PASSWORD, password: event.target.value});
+        dispatch(signinValidate(nikname, event.target.value));
     };
 
     return (
         <div>
             <h1>Signin</h1>
+
+            {message ? (
+                <div className="alert alert-success" role="alert">
+                    <p>{message}</p>
+                </div>
+            ): null}
 
             {errors.length > 0 ? (
                 <div className="alert alert-danger" role="alert">
@@ -42,12 +50,6 @@ const Signin = () => {
                     ))}
                 </div>
             ) : null}
-
-            {message ? (
-                <div className="alert alert-success" role="alert">
-                    <p>{message}</p>
-                </div>
-            ): null}
 
             <Form type="POST" onSubmit={onSubmit} action="#">
                 <Form.Group>
@@ -59,7 +61,15 @@ const Signin = () => {
                         placeholder="Enter nikname"
                         value={nikname}
                         onChange={onChangeNikname}
+                        className={errors.nikname && errors.nikname.length > 0 ? 'input-error' : ''}
                     />
+                    {errors.nikname && errors.nikname.length > 0 ? (
+                        <div>
+                            {errors.nikname.map(item => (
+                                <Form.Text className="error-message" key={item}>{item}</Form.Text>
+                            ))}
+                        </div>
+                    ) : null}
                 </Form.Group>
                 <Form.Group>
                     <label htmlFor="signinPassword">Password</label>
@@ -70,7 +80,15 @@ const Signin = () => {
                         placeholder="Password"
                         value={password}
                         onChange={onChangePassword}
+                        className={errors.password && errors.password.length > 0 ? 'input-error' : ''}
                     />
+                    {errors.password && errors.password.length > 0 ? (
+                        <div>
+                            {errors.password.map(item => (
+                                <Form.Text className="error-message" key={item}>{item}</Form.Text>
+                            ))}
+                        </div>
+                    ) : null}
                 </Form.Group>
                 <Button primary type="submit">Submit</Button>
                 <div className="refer-signup">

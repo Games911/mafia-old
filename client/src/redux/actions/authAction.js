@@ -22,7 +22,7 @@ export const signupValidate = (email, nikname, password) =>async dispatch=>{
         errors: validation.errors,
     });
 
-    return validation.errors.length;
+    return validation.errors['valid'];
 }
 
 export const signup = (email, nikname, password) =>async dispatch=>{
@@ -70,7 +70,7 @@ export const signinValidate = (nikname, password) =>async dispatch=>{
         errors: validation.errors,
     });
 
-    return validation.errors.length;
+    return validation.errors['valid'];
 }
 
 export const signin = (nikname, password) =>async dispatch=>{

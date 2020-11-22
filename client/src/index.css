@@ -15,3 +15,13 @@ code {
 main {
   margin-top: 40px;
 }
+
+
+/* Validation */
+.error-message {
+  color: red;
+}
+.input-error {
+  border-color: red !important;
+}
+/* Validation */
