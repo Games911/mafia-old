@@ -33,6 +33,7 @@ export const authReducer = (state = initialState, action) => {
         case types.AUTH_MESSAGE:
             return {
                 ...state,
+                errors: [],
                 message: action.message
             };
         case types.AUTH_RESET_FORM:

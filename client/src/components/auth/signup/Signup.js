@@ -55,7 +55,7 @@ const Signup = () => {
                     <label htmlFor="signinEmail">Email address</label>
                     <Form.Input
                         name="email"
-                        type="email"
+                        type="text"
                         id="signinEmail"
                         placeholder="Enter email"
                         value={email}
