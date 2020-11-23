@@ -1,6 +1,8 @@
-import * as types from "../types/authType";
+import * as types from "../../types/auth/authType";
 import axios from "axios";
-import Base from "../helpers/Validation";
+import Base from "../../helpers/Validation";
+import {setToken} from "./tokenAction";
+import {setUserInfo} from "./userInfoAction";
 
 
 // Signup
@@ -38,6 +40,8 @@ export const signup = (email, nikname, password) =>async dispatch=>{
     }).then((response) => {
         console.log(response);
         if (response.status === 201) {
+            dispatch(setToken(response.data.token));
+            dispatch(setUserInfo(response.data.token));
             dispatch({
                 type: types.AUTH_MESSAGE,
                 message: response.data.message,
@@ -85,6 +89,8 @@ export const signin = (nikname, password) =>async dispatch=>{
     }).then((response) => {
         console.log(response);
         if (response.status === 200) {
+            dispatch(setToken(response.data.token));
+            dispatch(setUserInfo(response.data.token));
             dispatch({
                 type: types.AUTH_MESSAGE,
                 message: response.data.message,

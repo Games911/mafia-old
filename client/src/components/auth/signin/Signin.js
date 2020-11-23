@@ -3,8 +3,8 @@ import {useDispatch, useSelector} from "react-redux";
 import { Form, Button } from 'bootstrap-4-react';
 import {Link} from "react-router-dom";
 import './Signin.css';
-import * as types from "../../../redux/types/authType";
-import {signin, signinValidate, signupValidate} from "../../../redux/actions/authAction";
+import * as types from "../../../redux/types/auth/authType";
+import {signin, signinValidate, signupValidate} from "../../../redux/actions/auth/authAction";
 
 const Signin = () => {
 
@@ -60,6 +60,7 @@ const Signin = () => {
                         id="signinNikname"
                         placeholder="Enter nikname"
                         value={nikname}
+                        onFocus={onChangeNikname}
                         onChange={onChangeNikname}
                         className={errors.nikname && errors.nikname.length > 0 ? 'input-error' : ''}
                     />
@@ -79,6 +80,7 @@ const Signin = () => {
                         id="signinPassword"
                         placeholder="Password"
                         value={password}
+                        onFocus={onChangePassword}
                         onChange={onChangePassword}
                         className={errors.password && errors.password.length > 0 ? 'input-error' : ''}
                     />

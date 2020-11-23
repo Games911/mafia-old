@@ -1,8 +1,8 @@
 import React from 'react';
 import {Button, Form} from "bootstrap-4-react";
-import * as types from "../../../redux/types/authType";
+import * as types from "../../../redux/types/auth/authType";
 import {useDispatch, useSelector} from "react-redux";
-import {signup, signupValidate} from "../../../redux/actions/authAction";
+import {signup, signupValidate} from "../../../redux/actions/auth/authAction";
 
 const Signup = () => {
 

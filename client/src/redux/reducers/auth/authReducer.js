@@ -1,4 +1,4 @@
-import * as types from "../types/authType";
+import * as types from "../../types/auth/authType";
 
 const initialState = {
     email: '',
