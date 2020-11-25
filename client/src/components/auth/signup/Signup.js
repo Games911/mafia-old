@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Button, Form} from "bootstrap-4-react";
 import * as types from "../../../redux/types/auth/authType";
 import {useDispatch, useSelector} from "react-redux";
 import {signup, signupValidate} from "../../../redux/actions/auth/authAction";
 
 const Signup = () => {
+
+    useEffect(() => {
+        dispatch({
+            type: types.AUTH_MESSAGE,
+            message: '',
+        });
+    }, []);
 
     const dispatch = useDispatch();
     const {email, nikname, password, errors, message} = useSelector(state => state.auth);

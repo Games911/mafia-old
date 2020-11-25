@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import { Form, Button } from 'bootstrap-4-react';
 import {Link} from "react-router-dom";
 import './Signin.css';
 import * as types from "../../../redux/types/auth/authType";
-import {signin, signinValidate, signupValidate} from "../../../redux/actions/auth/authAction";
+import {signin, signinValidate} from "../../../redux/actions/auth/authAction";
 
 const Signin = () => {
+
+    useEffect(() => {
+        dispatch({
+            type: types.AUTH_MESSAGE,
+            message: '',
+        });
+    }, []);
 
     const dispatch = useDispatch();
     const {nikname, password, errors, message} = useSelector(state => state.auth);
@@ -94,7 +101,7 @@ const Signin = () => {
                 </Form.Group>
                 <Button primary type="submit">Submit</Button>
                 <div className="refer-signup">
-                    <Form.Text text="muted">If you haven't registered, please do it.  <Link to="/signup">Signup</Link></Form.Text>
+                    <Form.Text text="muted">If you haven`&apos;`t registered, please do it.&nbsp;<Link to="/signup">Signup</Link></Form.Text>
                 </div>
             </Form>
         </div>

@@ -38,7 +38,6 @@ export const signup = (email, nikname, password) =>async dispatch=>{
         url: 'http://localhost:9999/auth/signup',
         data: params
     }).then((response) => {
-        console.log(response);
         if (response.status === 201) {
             dispatch(setToken(response.data.token));
             dispatch(setUserInfo(response.data.token));
@@ -48,7 +47,6 @@ export const signup = (email, nikname, password) =>async dispatch=>{
             });
         }
     }).catch((error) => {
-        console.log(error.response.data.message);
         dispatch({
             type: types.AUTH_SET_ERROR,
             errors: [error.response.data.message],
@@ -87,7 +85,6 @@ export const signin = (nikname, password) =>async dispatch=>{
         url: 'http://localhost:9999/auth/signin',
         data: params
     }).then((response) => {
-        console.log(response);
         if (response.status === 200) {
             dispatch(setToken(response.data.token));
             dispatch(setUserInfo(response.data.token));
@@ -97,7 +94,6 @@ export const signin = (nikname, password) =>async dispatch=>{
             });
         }
     }).catch((error) => {
-        console.log(error.response.data.message);
         dispatch({
             type: types.AUTH_SET_ERROR,
             errors: [error.response.data.message],
