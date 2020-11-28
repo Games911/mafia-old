@@ -4,8 +4,14 @@ const initialState = {
     email: '',
     nikname: '',
     password: '',
-    errors: [],
-    message: '',
+    apiSuccessMessage: '',
+    apiErrorMessage: '',
+    errorsEmail: [],
+    errorsNikname: [],
+    errorsPassword: [],
+    changedNikname: false,
+    changedPassword: false,
+    changedEmail: false,
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -25,16 +31,45 @@ export const authReducer = (state = initialState, action) => {
                 ...state,
                 password: action.password
             };
-        case types.AUTH_SET_ERROR:
+        case types.AUTH_SET_EMAIL_ERROR:
             return {
                 ...state,
-                errors: action.errors
+                errorsEmail: action.errors
             };
-        case types.AUTH_MESSAGE:
+        case types.AUTH_SET_NIKNAME_ERROR:
             return {
                 ...state,
-                errors: [],
-                message: action.message
+                errorsNikname: action.errors
+            };
+        case types.AUTH_SET_PASSWORD_ERROR:
+            return {
+                ...state,
+                errorsPassword: action.errors
+            };
+        case types.AUTH_CHANGED_EMAIL_STATE:
+            return {
+                ...state,
+                changedEmail: action.changed
+            };
+        case types.AUTH_CHANGED_NIKNAME_STATE:
+            return {
+                ...state,
+                changedNikname: action.changed
+            };
+        case types.AUTH_CHANGED_PASSWORD_STATE:
+            return {
+                ...state,
+                changedPassword: action.changed
+            };
+        case types.AUTH_API_SUCCESS:
+            return {
+                ...state,
+                apiSuccessMessage: action.message
+            };
+        case types.AUTH_API_ERROR:
+            return {
+                ...state,
+                apiErrorMessage: action.message
             };
         case types.AUTH_RESET_FORM:
             return {
@@ -42,8 +77,14 @@ export const authReducer = (state = initialState, action) => {
                 email: '',
                 nikname: '',
                 password: '',
-                message: '',
-                errors: []
+                errorsEmail: [],
+                errorsNikname: [],
+                errorsPassword: [],
+                changedEmail: false,
+                changedNikname: false,
+                changedPassword: false,
+                apiSuccessMessage: '',
+                apiErrorMessage: '',
             };
         default:
             return state;

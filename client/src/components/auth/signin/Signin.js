@@ -4,59 +4,73 @@ import { Form, Button } from 'bootstrap-4-react';
 import {Link} from "react-router-dom";
 import './Signin.css';
 import * as types from "../../../redux/types/auth/authType";
-import {signin, signinValidate} from "../../../redux/actions/auth/authAction";
+import {
+    niknameValidate,
+    passwordValidate,
+    signin
+} from "../../../redux/actions/auth/authAction";
 
 const Signin = () => {
 
+    const dispatch = useDispatch();
+    const {
+        nikname,
+        password,
+        errorsNikname,
+        errorsPassword,
+        changedNikname,
+        changedPassword,
+        apiSuccessMessage,
+        apiErrorMessage
+    } = useSelector(state => state.auth);
+
     useEffect(() => {
         dispatch({
-            type: types.AUTH_MESSAGE,
+            type: types.AUTH_RESET_FORM,
             message: '',
         });
     }, []);
 
-    const dispatch = useDispatch();
-    const {nikname, password, errors, message} = useSelector(state => state.auth);
+    const isValid = () => {
+        if (changedNikname && changedPassword && errorsNikname.length === 0 && errorsPassword.length === 0) {
+            return true;
+        }
+        return false;
+    }
 
     const onSubmit = (event) => {
         event.preventDefault();
-        let validationErrors = dispatch(signinValidate(nikname, password));
-        validationErrors.then((valid) => {
-            if (valid) {
-                dispatch(signin(nikname, password));
-                dispatch({
-                    type: types.AUTH_RESET_FORM
-                });
-            }
+
+        dispatch(signin(nikname, password));
+        dispatch({
+            type: types.AUTH_RESET_FORM
         });
     };
 
     const onChangeNikname = (event) => {
         dispatch({type: types.AUTH_CHANGE_NIKNAME, nikname: event.target.value});
-        dispatch(signinValidate(event.target.value, password));
+        dispatch(niknameValidate(event.target.value));
     };
     const onChangePassword = (event) => {
         dispatch({type: types.AUTH_CHANGE_PASSWORD, password: event.target.value});
-        dispatch(signinValidate(nikname, event.target.value));
+        dispatch(passwordValidate(event.target.value));
     };
 
     return (
         <div>
             <h1>Signin</h1>
 
-            {message ? (
+            {apiSuccessMessage ? (
                 <div className="alert alert-success" role="alert">
-                    <p>{message}</p>
+                    <p>{apiSuccessMessage}</p>
                 </div>
             ): null}
 
-            {errors.length > 0 ? (
+            {apiErrorMessage ? (
                 <div className="alert alert-danger" role="alert">
-                    {errors && errors.map(item => (
-                        <p key={item}>{item}</p>
-                    ))}
+                    <p>{apiErrorMessage}</p>
                 </div>
-            ) : null}
+            ): null}
 
             <Form type="POST" onSubmit={onSubmit} action="#">
                 <Form.Group>
@@ -69,11 +83,11 @@ const Signin = () => {
                         value={nikname}
                         onFocus={onChangeNikname}
                         onChange={onChangeNikname}
-                        className={errors.nikname && errors.nikname.length > 0 ? 'input-error' : ''}
+                        className={errorsNikname && errorsNikname.length > 0 ? 'input-error' : ''}
                     />
-                    {errors.nikname && errors.nikname.length > 0 ? (
+                    {errorsNikname && errorsNikname.length > 0 ? (
                         <div>
-                            {errors.nikname.map(item => (
+                            {errorsNikname.map(item => (
                                 <Form.Text className="error-message" key={item}>{item}</Form.Text>
                             ))}
                         </div>
@@ -89,17 +103,17 @@ const Signin = () => {
                         value={password}
                         onFocus={onChangePassword}
                         onChange={onChangePassword}
-                        className={errors.password && errors.password.length > 0 ? 'input-error' : ''}
+                        className={errorsPassword && errorsPassword.length > 0 ? 'input-error' : ''}
                     />
-                    {errors.password && errors.password.length > 0 ? (
+                    {errorsPassword && errorsPassword.length > 0 ? (
                         <div>
-                            {errors.password.map(item => (
+                            {errorsPassword.map(item => (
                                 <Form.Text className="error-message" key={item}>{item}</Form.Text>
                             ))}
                         </div>
                     ) : null}
                 </Form.Group>
-                <Button primary type="submit">Submit</Button>
+                <Button primary type="submit" disabled={!isValid()}>Submit</Button>
                 <div className="refer-signup">
                     <Form.Text text="muted">If you haven`&apos;`t registered, please do it.&nbsp;<Link to="/signup">Signup</Link></Form.Text>
                 </div>

@@ -1,31 +1,79 @@
 import * as types from "../../types/auth/authType";
 import axios from "axios";
-import Base from "../../helpers/Validation";
 import {setToken} from "./tokenAction";
 import {setUserInfo} from "./userInfoAction";
 
 
-// Signup
-export const signupValidate = (email, nikname, password) =>async dispatch=>{
-    let validation = new Base();
-    validation.isRequire('email', email);
-    validation.email('email', email);
+export const emailValidate = (value) =>async dispatch=>{
+    const field = 'email';
+    const errorsEmail = [];
 
-    validation.isRequire('nikname', nikname);
-    validation.minString('nikname', nikname, 2);
-    validation.maxString('nikname', nikname, 20);
+    if (value === "" || !value) {
+        errorsEmail.push(`The field ${field} shouldn't be empty.`);
+    }
 
-    validation.isRequire('password', password);
-    validation.minString('password', password, 2);
-    validation.maxString('password', password, 20);
+    const regex = /\S+@\S+\.\S+/;
+    if (!regex.test(value)) {
+        errorsEmail.push(`The field ${field} isn't valid email address.`);
+    }
 
     dispatch({
-        type: types.AUTH_SET_ERROR,
-        errors: validation.errors,
+        type: types.AUTH_SET_EMAIL_ERROR,
+        errors: errorsEmail,
     });
+    dispatch({
+        type: types.AUTH_CHANGED_EMAIL_STATE,
+        changed: true,
+    });
+};
 
-    return validation.errors['valid'];
-}
+export const niknameValidate = (value) =>async dispatch=>{
+    const field = 'nikname';
+    const errorsNikname = [];
+
+    if (value === "" || !value) {
+        errorsNikname.push(`The field ${field} shouldn't be empty.`);
+    }
+    if (value.length < 2) {
+        errorsNikname.push(`The field ${field} shouldn't consist less then ${2} characters.`);
+    }
+    if (value.length > 20) {
+        errorsNikname.push(`The field ${field} shouldn't consist more then ${20} characters.`);
+    }
+
+    dispatch({
+        type: types.AUTH_SET_NIKNAME_ERROR,
+        errors: errorsNikname,
+    });
+    dispatch({
+        type: types.AUTH_CHANGED_NIKNAME_STATE,
+        changed: true,
+    });
+};
+
+export const passwordValidate = (value) =>async dispatch=>{
+    const field = 'password';
+    const errorsPassword = [];
+
+    if (value === "" || !value) {
+        errorsPassword.push(`The field ${field} shouldn't be empty.`);
+    }
+    if (value.length < 2) {
+        errorsPassword.push(`The field ${field} shouldn't consist less then ${2} characters.`);
+    }
+    if (value.length > 20) {
+        errorsPassword.push(`The field ${field} shouldn't consist more then ${20} characters.`);
+    }
+
+    dispatch({
+        type: types.AUTH_SET_PASSWORD_ERROR,
+        errors: errorsPassword,
+    });
+    dispatch({
+        type: types.AUTH_CHANGED_PASSWORD_STATE,
+        changed: true,
+    });
+};
 
 export const signup = (email, nikname, password) =>async dispatch=>{
     const params = new URLSearchParams();
@@ -42,37 +90,16 @@ export const signup = (email, nikname, password) =>async dispatch=>{
             dispatch(setToken(response.data.token));
             dispatch(setUserInfo(response.data.token));
             dispatch({
-                type: types.AUTH_MESSAGE,
+                type: types.AUTH_API_SUCCESS,
                 message: response.data.message,
             });
         }
     }).catch((error) => {
         dispatch({
-            type: types.AUTH_SET_ERROR,
-            errors: [error.response.data.message],
+            type: types.AUTH_API_ERROR,
+            errors: error.response.data.message,
         });
     });
-}
-
-
-// Signin
-export const signinValidate = (nikname, password) =>async dispatch=>{
-    let validation = new Base();
-
-    validation.isRequire('nikname', nikname);
-    validation.minString('nikname', nikname, 2);
-    validation.maxString('nikname', nikname, 20);
-
-    validation.isRequire('password', password);
-    validation.minString('password', password, 2);
-    validation.maxString('password', password, 20);
-
-    dispatch({
-        type: types.AUTH_SET_ERROR,
-        errors: validation.errors,
-    });
-
-    return validation.errors['valid'];
 }
 
 export const signin = (nikname, password) =>async dispatch=>{
@@ -89,14 +116,14 @@ export const signin = (nikname, password) =>async dispatch=>{
             dispatch(setToken(response.data.token));
             dispatch(setUserInfo(response.data.token));
             dispatch({
-                type: types.AUTH_MESSAGE,
+                type: types.AUTH_API_SUCCESS,
                 message: response.data.message,
             });
         }
     }).catch((error) => {
         dispatch({
-            type: types.AUTH_SET_ERROR,
-            errors: [error.response.data.message],
+            type: types.AUTH_API_ERROR,
+            message: error.response.data.message,
         });
     });
 }

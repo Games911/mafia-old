@@ -24,4 +24,8 @@ main {
 .input-error {
   border-color: red !important;
 }
+.disabled {
+  cursor: not-allowed;
+  pointer-events: none
+}
 /* Validation */
