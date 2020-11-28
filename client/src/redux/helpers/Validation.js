@@ -1,51 +1,30 @@
-export default class Validation {
+export const errorsResult = [];
 
-    errors = [];
+export const startValidation = (field) => {
+    errorsResult[field] = [];
+}
 
-    constructor() {
-        this.errors['valid'] = true;
+export const isEmail = (value, field) => {
+    const regex = /\S+@\S+\.\S+/;
+    if (!regex.test(value)) {
+        errorsResult[field].push(`The field ${field} isn't valid email address.`);
     }
+}
 
-    isRequire(field, value) {
-        if (value === "" || !value) {
-            if (!this.errors[field]) {
-                this.errors[field] = [];
-            }
-            this.errors[field].push(`The field ${field} shouldn't be empty.`);
-            this.errors['valid'] = false;
-        }
+export const isRequire = (value, field) => {
+    if (value === "" || !value) {
+        errorsResult[field].push(`The field ${field} shouldn't be empty.`);
     }
+}
 
-    email(field, value) {
-        //const regex = /\S+@\S+\.\S+/;
-        const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!regex.test(value)) {
-            if (!this.errors[field]) {
-                this.errors[field] = [];
-            }
-            this.errors[field].push(`The field ${field} isn't valid email address.`);
-            this.errors['valid'] = false;
-        }
+export const minLength = (value, field, count) => {
+    if (value.length < count) {
+        errorsResult[field].push(`The field ${field} shouldn't consist less then ${count} characters.`);
     }
+}
 
-    maxString(field, value, count) {
-        if (value.length > count) {
-            if (!this.errors[field]) {
-                this.errors[field] = [];
-            }
-            this.errors[field].push(`The field ${field} shouldn't consist more then ${count} characters.`);
-            this.errors['valid'] = false;
-        }
+export const maxLength = (value, field, count) => {
+    if (value.length > count) {
+        errorsResult[field].push(`The field ${field} shouldn't consist more then ${count} characters.`);
     }
-
-    minString(field, value, count) {
-        if (value.length < count) {
-            if (!this.errors[field]) {
-                this.errors[field] = [];
-            }
-            this.errors[field].push(`The field ${field} shouldn't consist less then ${count} characters.`);
-            this.errors['valid'] = false;
-        }
-    }
-
 }

@@ -2,24 +2,19 @@ import * as types from "../../types/auth/authType";
 import axios from "axios";
 import {setToken} from "./tokenAction";
 import {setUserInfo} from "./userInfoAction";
+import {errorsResult, isEmail, isRequire, maxLength, minLength, startValidation} from "../../helpers/Validation";
 
 
 export const emailValidate = (value) =>async dispatch=>{
     const field = 'email';
-    const errorsEmail = [];
 
-    if (value === "" || !value) {
-        errorsEmail.push(`The field ${field} shouldn't be empty.`);
-    }
-
-    const regex = /\S+@\S+\.\S+/;
-    if (!regex.test(value)) {
-        errorsEmail.push(`The field ${field} isn't valid email address.`);
-    }
+    startValidation(field);
+    isRequire(value, field);
+    isEmail(value, field);
 
     dispatch({
         type: types.AUTH_SET_EMAIL_ERROR,
-        errors: errorsEmail,
+        errors: errorsResult[field],
     });
     dispatch({
         type: types.AUTH_CHANGED_EMAIL_STATE,
@@ -29,21 +24,15 @@ export const emailValidate = (value) =>async dispatch=>{
 
 export const niknameValidate = (value) =>async dispatch=>{
     const field = 'nikname';
-    const errorsNikname = [];
 
-    if (value === "" || !value) {
-        errorsNikname.push(`The field ${field} shouldn't be empty.`);
-    }
-    if (value.length < 2) {
-        errorsNikname.push(`The field ${field} shouldn't consist less then ${2} characters.`);
-    }
-    if (value.length > 20) {
-        errorsNikname.push(`The field ${field} shouldn't consist more then ${20} characters.`);
-    }
+    startValidation(field);
+    isRequire(value, field);
+    minLength(value, field, 2);
+    maxLength(value, field, 20);
 
     dispatch({
         type: types.AUTH_SET_NIKNAME_ERROR,
-        errors: errorsNikname,
+        errors: errorsResult[field],
     });
     dispatch({
         type: types.AUTH_CHANGED_NIKNAME_STATE,
@@ -53,21 +42,15 @@ export const niknameValidate = (value) =>async dispatch=>{
 
 export const passwordValidate = (value) =>async dispatch=>{
     const field = 'password';
-    const errorsPassword = [];
 
-    if (value === "" || !value) {
-        errorsPassword.push(`The field ${field} shouldn't be empty.`);
-    }
-    if (value.length < 2) {
-        errorsPassword.push(`The field ${field} shouldn't consist less then ${2} characters.`);
-    }
-    if (value.length > 20) {
-        errorsPassword.push(`The field ${field} shouldn't consist more then ${20} characters.`);
-    }
+    startValidation(field);
+    isRequire(value, field);
+    minLength(value, field, 2);
+    maxLength(value, field, 20);
 
     dispatch({
         type: types.AUTH_SET_PASSWORD_ERROR,
-        errors: errorsPassword,
+        errors: errorsResult[field],
     });
     dispatch({
         type: types.AUTH_CHANGED_PASSWORD_STATE,
