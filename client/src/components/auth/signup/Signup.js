@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Button, Form} from "bootstrap-4-react";
 import * as types from "../../../redux/types/auth/authType";
 import {useDispatch, useSelector} from "react-redux";
-import {emailValidate, niknameValidate, passwordValidate, signin, signup} from "../../../redux/actions/auth/authAction";
+import {emailValidate, niknameValidate, passwordValidate, signup} from "../../../redux/actions/auth/authAction";
 
 const Signup = () => {
 
