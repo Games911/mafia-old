@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const homeController = require('./api/controllers/homeController');
 const authRoutes = require('./api/routes/auth/auth');
 const seedRoutes = require('./api/routes/system/seed');
+const roomRoutes = require('./api/routes/room/room');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -23,5 +24,6 @@ app.get('/', async(req, res) => {
 
 app.use('/auth', authRoutes);
 app.use('/seed', seedRoutes);
+app.use('/room', roomRoutes);
 
 module.exports = app;
