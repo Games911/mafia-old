@@ -9,9 +9,10 @@ import {
     passwordValidate,
     signin
 } from "../../../redux/actions/auth/authAction";
+import { useHistory } from "react-router-dom";
 
 const Signin = () => {
-
+    let history = useHistory();
     const dispatch = useDispatch();
     const {
         nikname,
@@ -45,6 +46,10 @@ const Signin = () => {
         dispatch({
             type: types.AUTH_RESET_FORM
         });
+        setTimeout(() =>{
+            history.push('/cabinet');
+        }, 300);
+
     };
 
     const onChangeNikname = (event) => {

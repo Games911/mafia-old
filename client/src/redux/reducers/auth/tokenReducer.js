@@ -1,7 +1,7 @@
 import * as types from "../../types/auth/tokenType";
 
 const initialState = {
-    token: '',
+    token: null,
 };
 
 export const tokenReducer = (state = initialState, action) => {
