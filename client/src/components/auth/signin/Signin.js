@@ -24,13 +24,17 @@ const Signin = () => {
         apiSuccessMessage,
         apiErrorMessage
     } = useSelector(state => state.auth);
+    const { token } = useSelector(state => state.token);
 
     useEffect(() => {
         dispatch({
             type: types.AUTH_RESET_FORM,
             message: '',
         });
-    }, []);
+        if (token) {
+            history.push('/cabinet');
+        }
+    }, [token]);
 
     const isValid = () => {
         if (changedNikname && changedPassword && errorsNikname.length === 0 && errorsPassword.length === 0) {
@@ -41,15 +45,10 @@ const Signin = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-
         dispatch(signin(nikname, password));
         dispatch({
             type: types.AUTH_RESET_FORM
         });
-        setTimeout(() =>{
-            history.push('/cabinet');
-        }, 300);
-
     };
 
     const onChangeNikname = (event) => {

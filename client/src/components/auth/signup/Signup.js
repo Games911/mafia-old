@@ -3,16 +3,10 @@ import {Button, Form} from "bootstrap-4-react";
 import * as types from "../../../redux/types/auth/authType";
 import {useDispatch, useSelector} from "react-redux";
 import {emailValidate, niknameValidate, passwordValidate, signup} from "../../../redux/actions/auth/authAction";
+import { useHistory } from "react-router-dom";
 
 const Signup = () => {
-
-    useEffect(() => {
-        dispatch({
-            type: types.AUTH_RESET_FORM,
-            message: '',
-        });
-    }, []);
-
+    let history = useHistory();
     const dispatch = useDispatch();
     const {
         email,
@@ -27,10 +21,20 @@ const Signup = () => {
         apiSuccessMessage,
         apiErrorMessage
     } = useSelector(state => state.auth);
+    const { token } = useSelector(state => state.token);
+
+    useEffect(() => {
+        dispatch({
+            type: types.AUTH_RESET_FORM,
+            message: '',
+        });
+        if (token) {
+            history.push('/cabinet');
+        }
+    }, [token]);
 
     const onSubmit = (event) => {
         event.preventDefault();
-
         dispatch(signup(email, nikname, password));
         dispatch({
             type: types.AUTH_RESET_FORM
