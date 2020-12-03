@@ -1,0 +1,18 @@
+header {
+    background-color: #6d4f9b;
+}
+.navbar {
+    padding: 8px 0 !important;
+}
+.navbar a {
+    color: white;
+}
+.navbar a:hover {
+    color: #c1b5c4 !important;
+}
+.navbar-expand-lg .navbar-collapse {
+    justify-content: right;
+}
+.navbar-nav {
+    cursor: pointer;
+}

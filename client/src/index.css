@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+main {
+  margin-top: 40px;
+}
+
+
+/* Validation */
+.error-message {
+  color: red;
+}
+.input-error {
+  border-color: red !important;
+}
+.disabled {
+  cursor: not-allowed;
+  pointer-events: none
+}
+/* Validation */
