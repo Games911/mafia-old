@@ -1,7 +1,9 @@
 const seedUser = require('./seedUser');
+const seedRoom = require('./seedRoom');
 
 const seed = async () => {
-    return seedUser();
+    await seedUser();
+    await seedRoom();
 };
 
 module.exports = seed;

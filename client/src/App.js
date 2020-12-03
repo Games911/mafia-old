@@ -1,26 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useContext, useEffect} from 'react';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import Header from "./components/layout/Header";
+import Signin from "./components/auth/signin/Signin";
+import Signup from "./components/auth/signup/Signup";
+import Home from "./components/home/Home";
+import HomeCabinet from './components/cabinet/home/HomeCabinet';
+import { Container, Row, Col } from 'bootstrap-4-react';
+import {useDispatch, useSelector} from "react-redux";
+import GuardedRoute from "./guards/GuardedRoute";
+import {getToken} from "./redux/actions/auth/tokenAction";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const dispatch = useDispatch();
+    const { token } = useSelector(state => state.token);
+    useEffect(() => {
+        dispatch(getToken());
+    }, [token]);
+
+    return (
+      <BrowserRouter>
+      <div className="App">
+        <Header />
+        <main>
+            <Container>
+                <Row>
+                    <Col>
+                        <Switch>
+                            <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} />
+                            <Route path="/signin">
+                                <Signin />
+                            </Route>
+                            <Route path="/signup">
+                                <Signup />
+                            </Route>
+                            <Route path="/">
+                                <Home />
+                            </Route>
+                        </Switch>
+                    </Col>
+                </Row>
+            </Container>
+        </main>
+      </div>
+      </BrowserRouter>
+    );
 }
 
 export default App;

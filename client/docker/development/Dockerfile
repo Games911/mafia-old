@@ -1,6 +1,6 @@
 FROM node:alpine
 
-WORKDIR /usr/src/server
+WORKDIR /usr/src/app
 
 COPY client/package*.json ./
 
@@ -10,4 +10,4 @@ COPY client/ .
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "start" ]

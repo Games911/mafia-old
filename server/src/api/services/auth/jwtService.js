@@ -5,7 +5,8 @@ const { secret } = require('../../../config/settings');
 
 const createToken = async (user) => {
     const payload = {
-        "user": user._id,
+        "id": user._id,
+        "email": user.email,
         "nikname": user.nikname,
     };
     return jwt.encode(secret, payload, function (err, token) {
