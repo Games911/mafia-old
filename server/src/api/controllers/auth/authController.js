@@ -1,23 +1,17 @@
-const mongoose = require('mongoose');
 const createToken = require('../../services/auth/jwtService');
 const {hashPassword, comparePassword} = require('../../services/auth/passwordService');
-const User = require('../../../database/models/auth/User');
+const {createUser, findByNikname} = require('../../repositories/auth/userRepository');
+
 
 module.exports = {
     createUser: async (email, nikname, password) => {
         const passwordHash = await hashPassword(password);
-        const user = new User({
-            _id: new mongoose.Types.ObjectId(),
-            email: email,
-            nikname: nikname,
-            password: passwordHash,
-        });
-        await user.save();
+        const user = await createUser(email, nikname, passwordHash);
         return await createToken(user);
     },
 
     loginUser: async (nikname, password) => {
-        const user = (await User.find({ nikname: nikname }).limit(1))[0];
+        const user = await findByNikname(nikname);
         if (user && await comparePassword(password, user.password)) {
             return await createToken(user);
         }
