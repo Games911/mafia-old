@@ -7,7 +7,8 @@ module.exports = {
     createUser: async (email, nikname, password) => {
         const passwordHash = await hashPassword(password);
         const user = await createUser(email, nikname, passwordHash);
-        return await createToken(user);
+        const token = await createToken(user);
+        return {token: token, userId: user._id};
     },
 
     loginUser: async (nikname, password) => {
