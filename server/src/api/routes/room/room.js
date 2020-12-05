@@ -30,5 +30,19 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.post("/:roomId/add-user", async (req, res) => {
+    try {
+        const room = await roomController.addUser(req.params.roomId, req.body.userId);
+        res.status(200).json({
+            message: "User added successfully",
+            room: room
+        });
+    } catch(error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+});
+
 
 module.exports = router;

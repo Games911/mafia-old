@@ -31,4 +31,23 @@ describe('Test room controllers', () => {
         expect(response.status).toBe(200);
     });
 
+    it('Add user to rooms', async () => {
+        const responseUser = await request.post('/auth/signup').send({
+            email: email,
+            nikname: nikname,
+            password: password,
+        });
+
+        const responseRoom = await request.post('/room').send({
+            name: nameRoom,
+            userId: responseUser.body.userId,
+        });
+
+        const response = await request.post('/room/' + responseRoom.body.room._id + '/add-user').send({
+            userId: responseUser.body.userId,
+        });
+
+        expect(response.status).toBe(200);
+    });
+
 });

@@ -15,7 +15,7 @@ module.exports = {
     findByNikname: async (nikname) => {
         return (await User.find({ nikname: nikname }).limit(1))[0];
     },
-    findById: async (id) => {
+    userFindById: async (id) => {
         return (await User.find({ _id: id }).limit(1))[0];
     },
 }

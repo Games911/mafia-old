@@ -13,7 +13,18 @@ module.exports = {
         await room.save();
         return room;
     },
+    addUser: async (room, user) => {
+        const checkUser = room.players.filter(element => String(element._id) === String(user._id));
+        if (checkUser.length === 0) {
+            room.players.push(user);
+            await room.updateOne(room);
+        }
+        return room;
+    },
     findAll: async () => {
         return Room.find({}).populate('players').populate('createdBy');
+    },
+    roomFindById: async (id) => {
+        return (await Room.find({ _id: id }).populate('players').populate('createdBy').limit(1))[0];
     },
 }
