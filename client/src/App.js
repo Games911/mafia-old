@@ -21,7 +21,7 @@ function App() {
     return (
       <BrowserRouter>
       <div className="App">
-        <Header />
+        <Header token={token}/>
         <main>
             <Container>
                 <Row>

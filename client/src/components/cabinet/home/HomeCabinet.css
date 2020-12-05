@@ -1,0 +1,13 @@
+.rooms-list a:hover{
+    text-decoration: none;
+}
+.rooms-list h1 {
+    margin-bottom: 50px;
+}
+.rooms-list h5 {
+    color: #333;
+}
+.rooms-list .card {
+    margin-bottom: 40px;
+    border: 2px solid #6d4f9b;
+}
