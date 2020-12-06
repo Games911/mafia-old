@@ -6,7 +6,6 @@ const GuardedRoute = ({ component: Component, auth }) => {
 
     return (
         <Route render={() => (
-            console.log(auth),
             auth !== null
                 ? <Component/>
                 : <Redirect to='/'/>

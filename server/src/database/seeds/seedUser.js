@@ -8,7 +8,7 @@ const seedUser = async () => {
 
     });
 
-    const passwordHash = await hashPassword("123456");
+    const passwordHash = await hashPassword("123");
 
     const user1 = new User({
         _id: new mongoose.Types.ObjectId(),
@@ -26,8 +26,8 @@ const seedUser = async () => {
 
     const user3 = new User({
         _id: new mongoose.Types.ObjectId(),
-        email: "user3@gmail.com",
-        nikname: "user3",
+        email: "taras@gmail.com",
+        nikname: "tt",
         password: passwordHash,
     });
 
