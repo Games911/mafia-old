@@ -4,6 +4,8 @@ const initialState = {
     rooms: [],
     actualRooms: [],
     step: 0,
+    apiErrorMessage: '',
+    success: false,
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -22,6 +24,21 @@ export const roomReducer = (state = initialState, action) => {
             return {
                 ...state,
                 step: action.step,
+            };
+        case types.ROOM_SET_MESSAGE:
+            return {
+                ...state,
+                apiErrorMessage: action.message,
+            };
+        case types.ROOM_RESET_MESSAGE:
+            return {
+                ...state,
+                apiErrorMessage: '',
+            };
+        case types.ROOM_SUCCESS:
+            return {
+                ...state,
+                success: action.success,
             };
         default:
             return state;

@@ -2,21 +2,28 @@ import React, {useEffect} from 'react';
 import './HomeCabinet.css';
 import {Card} from 'bootstrap-4-react';
 import {useDispatch, useSelector} from "react-redux";
-import {getRooms} from "../../../redux/actions/room/roomAction";
+import {addUser, getRooms} from "../../../redux/actions/room/roomAction";
 import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
+import {useHistory} from "react-router-dom";
 
 const HomeCabinet = () => {
     const dispatch = useDispatch();
+    let history = useHistory();
     const roomsOnPage = 20;
-
-    const {
-        rooms, actualRooms, step
-    } = useSelector(state => state.roomReducer);
+    const {rooms, actualRooms, step, apiErrorMessage, success} = useSelector(state => state.roomReducer);
+    const {userId} = useSelector(state => state.userInfoReducer);
 
     useEffect(() => {
+        if (success) {
+            history.push('/cabinet/room');
+        }
+        dispatch({
+            type: types.ROOM_RESET_MESSAGE,
+            message: '',
+        });
         dispatch(getRooms(roomsOnPage));
-    },[]);
+    },[success]);
 
     const moreRooms = () => {
         dispatch({
@@ -29,13 +36,24 @@ const HomeCabinet = () => {
         });
     };
 
+    const addUserToRoom = (roomId) => {
+        dispatch(addUser(roomId, userId));
+    };
+
     return (
         <div className="rooms-list">
             <h1>Home Cabinet</h1>
+
+            {apiErrorMessage ? (
+                <div className="alert alert-danger" role="alert">
+                    <p>{apiErrorMessage}</p>
+                </div>
+            ): null}
+
             {actualRooms && actualRooms.length > 0 ? (
                 <div>
                     {actualRooms.map(item => (
-                        <a href="#" key={item._id}>
+                        <a className={(item.status === 'free') ? 'room-link-active' : 'room-link-none'} onClick={() => addUserToRoom(item._id)} key={item._id}>
                             <Card text="center">
                                 <Card.Header>{item.status}</Card.Header>
                                 <Card.Body>

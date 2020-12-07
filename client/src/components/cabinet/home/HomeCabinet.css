@@ -11,3 +11,9 @@
     margin-bottom: 40px;
     border: 2px solid #6d4f9b;
 }
+.rooms-list .room-link-active {
+    cursor: pointer;
+}
+.rooms-list .room-link-none {
+
+}

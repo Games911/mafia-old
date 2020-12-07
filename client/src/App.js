@@ -9,6 +9,7 @@ import { Container, Row, Col } from 'bootstrap-4-react';
 import {useDispatch, useSelector} from "react-redux";
 import GuardedRoute from "./guards/GuardedRoute";
 import {getToken} from "./redux/actions/auth/tokenAction";
+import RoomCabinet from "./components/cabinet/room/RoomCabinet";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
                 <Row>
                     <Col>
                         <Switch>
+                            <GuardedRoute path='/cabinet/room' component={RoomCabinet} auth={token} />
                             <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} />
                             <Route path="/signin">
                                 <Signin />

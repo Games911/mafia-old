@@ -13,9 +13,17 @@ module.exports = {
         return user;
     },
     findByNikname: async (nikname) => {
-        return (await User.find({ nikname: nikname }).limit(1))[0];
+        try {
+            return (await User.find({ nikname: nikname }).limit(1))[0];
+        } catch (error) {
+            throw new Error('User doesn\'t exist');
+        }
     },
     userFindById: async (id) => {
-        return (await User.find({ _id: id }).limit(1))[0];
+        try {
+            return (await User.find({ _id: id }).limit(1))[0];
+        } catch (error) {
+            throw new Error('User doesn\'t exist');
+        }
     },
 }

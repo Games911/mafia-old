@@ -23,7 +23,30 @@ export const getRooms = (roomsOnPage) =>async dispatch=>{
             });
         }
     }).catch((error) => {
-        console.log(error.response.data.message)
+        console.log(error.response.data.message);
     });
 }
 
+export const addUser = (roomId, userId) =>async dispatch=>{
+    const params = new URLSearchParams();
+    params.append('userId', userId);
+
+    axios({
+        method: 'post',
+        url: 'http://localhost:9999/room/' + roomId + '/add-user',
+        data: params
+    }).then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+            dispatch({
+                type: types.ROOM_SUCCESS,
+                success: true,
+            });
+        }
+    }).catch((error) => {
+        dispatch({
+            type: types.ROOM_SET_MESSAGE,
+            message: error.response.data.message,
+        });
+    });
+};
