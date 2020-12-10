@@ -1,0 +1,119 @@
+.rooms-list {
+    padding: 20px;
+    background: #f2edf4;
+    min-height: 860px;
+}
+
+
+.btn-link {
+    color: #6d4f9b;
+}
+    .btn-link:hover {
+        text-decoration: none;
+    }
+    .btn-link:focus {
+        text-decoration: none;
+    }
+
+
+.work-block {
+    display: flex;
+    height: 550px;
+    border: 2px solid #6d4f9b;
+    border-radius: 4px;
+    padding: 20px;
+    background: white;
+}
+    .first-player {
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        width: 80px;
+        height: 80px;
+        margin-top: 180px;
+    }
+        .first-player div {
+            font-size: 50px;
+            text-align: center;
+        }
+
+    .fourth-player {
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        width: 80px;
+        height: 80px;
+        margin-top: 180px;
+    }
+        .fourth-player div {
+            font-size: 50px;
+            text-align: center;
+        }
+
+    .center-area {
+        margin: 0 30px;
+        width: 80%;
+    }
+        .center-area-top {
+            height: 100px;
+            display: flex;
+            justify-content: space-around;
+        }
+            .center-area-top-left {
+                border: 2px solid #ccc;
+                border-radius: 10px;
+                width: 80px;
+                height: 80px;
+            }
+                .center-area-top-left div {
+                    font-size: 50px;
+                    text-align: center;
+                }
+            .center-area-top-right {
+                border: 2px solid #ccc;
+                border-radius: 10px;
+                width: 80px;
+                height: 80px;
+            }
+                .center-area-top-right div {
+                    font-size: 50px;
+                    text-align: center;
+                }
+
+        .center-area-center {
+            border: 1px solid #6d4f9b;
+            border-radius: 30px;
+            height: 300px;
+        }
+
+    .center-area-bottom {
+        height: 100px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+    }
+        .center-area-bottom-left {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+        }
+            .center-area-bottom-left div {
+                font-size: 50px;
+                text-align: center;
+            }
+        .center-area-bottom-right {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+        }
+            .center-area-bottom-right div {
+                font-size: 50px;
+                text-align: center;
+            }
+
+    .input-block {
+        padding-top: 20px;
+    }
+        .input-block input{
+            height: 50px;
+        }
