@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import GuardedRoute from "./guards/GuardedRoute";
 import {getToken} from "./redux/actions/auth/tokenAction";
 import RoomCabinet from "./components/cabinet/room/RoomCabinet";
+import CreateRoomCabinet from "./components/cabinet/create-room/CreateRoomCabinet";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
                     <Col>
                         <Switch>
                             <GuardedRoute path='/cabinet/room' component={RoomCabinet} auth={token} />
+                            <GuardedRoute path='/cabinet/create-room' component={CreateRoomCabinet} auth={token} />
                             <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} />
                             <Route path="/signin">
                                 <Signin />

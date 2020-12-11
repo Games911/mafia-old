@@ -14,6 +14,19 @@
 .rooms-list .room-link-active {
     cursor: pointer;
 }
-.rooms-list .room-link-none {
 
+.rooms-list-block {
+    margin-top: 20px;
 }
+
+.link-create-room {
+    padding: 10px 20px;
+    border: 2px solid #6d4f9b;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: #6d4f9b;
+}
+    .link-create-room:hover {
+        background: #6d4f9b;
+        color: #fff;
+    }

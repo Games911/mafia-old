@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {addUser, getRooms} from "../../../redux/actions/room/roomAction";
 import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 const HomeCabinet = () => {
     const dispatch = useDispatch();
@@ -44,6 +44,8 @@ const HomeCabinet = () => {
         <div className="rooms-list">
             <h1>Home Cabinet</h1>
 
+            <Link to="/cabinet/create-room" className="link-create-room">Create room</Link>
+
             {apiErrorMessage ? (
                 <div className="alert alert-danger" role="alert">
                     <p>{apiErrorMessage}</p>
@@ -51,7 +53,7 @@ const HomeCabinet = () => {
             ): null}
 
             {actualRooms && actualRooms.length > 0 ? (
-                <div>
+                <div className="rooms-list-block">
                     {actualRooms.map(item => (
                         <a className={(item.status === 'free') ? 'room-link-active' : 'room-link-none'} onClick={() => addUserToRoom(item._id)} key={item._id}>
                             <Card text="center">
