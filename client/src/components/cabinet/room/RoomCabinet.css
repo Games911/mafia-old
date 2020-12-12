@@ -1,4 +1,4 @@
-.rooms-list {
+.rooms-cabinet {
     padding: 20px;
     background: #f2edf4;
     min-height: 860px;
@@ -23,6 +23,7 @@
     border-radius: 4px;
     padding: 20px;
     background: white;
+    margin-top: 20px;
 }
     .first-player {
         border: 2px solid #ccc;

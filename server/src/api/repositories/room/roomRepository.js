@@ -14,6 +14,7 @@ module.exports = {
         await room.save();
         return room;
     },
+
     addUser: async (room, user) => {
         if (room.status === 'busy') {
             throw new Error('Room is already busy');
@@ -25,14 +26,21 @@ module.exports = {
                 room.status = 'busy';
             }
             await room.updateOne(room);
-        } else {
-            throw new Error('User already exist in current room');
         }
         return room;
     },
+
+    outUser: async (room, user) => {
+        const newPlayers = room.players.filter(element => String(element._id) !== String(user._id));
+        room.players = newPlayers;
+        await room.updateOne(room);
+        return room;
+    },
+
     findAll: async () => {
         return Room.find({}).populate('players').populate('createdBy');
     },
+
     roomFindById: async (id) => {
         try {
             return (await Room.find({ _id: id }).populate('players').populate('createdBy').limit(1))[0];

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from "react-router-dom";
+import NotAllowed from "../components/home/NotAllowed";
 
 
 const GuardedRoute = ({ component: Component, auth }) => {
@@ -8,7 +9,7 @@ const GuardedRoute = ({ component: Component, auth }) => {
         <Route render={() => (
             auth !== null
                 ? <Component/>
-                : <Redirect to='/'/>
+                : <NotAllowed />
                 )
         }/>
     );

@@ -15,6 +15,10 @@ const HomeCabinet = () => {
     const {userId} = useSelector(state => state.userInfoReducer);
 
     useEffect(() => {
+        dispatch({
+            type: types.ROOM_SUCCESS,
+            success: false,
+        });
         if (success) {
             history.push('/cabinet/room');
         }
@@ -42,15 +46,16 @@ const HomeCabinet = () => {
 
     return (
         <div className="rooms-list">
-            <h1>Home Cabinet</h1>
 
-            <Link to="/cabinet/create-room" className="link-create-room">Create room</Link>
+            <h1>Home Cabinet</h1>
 
             {apiErrorMessage ? (
                 <div className="alert alert-danger" role="alert">
                     <p>{apiErrorMessage}</p>
                 </div>
             ): null}
+
+            <Link to="/cabinet/create-room" className="link-create-room">Create room</Link>
 
             {actualRooms && actualRooms.length > 0 ? (
                 <div className="rooms-list-block">

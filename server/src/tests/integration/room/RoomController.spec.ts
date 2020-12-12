@@ -43,11 +43,38 @@ describe('Test room controllers', () => {
             userId: responseUser.body.userId,
         });
 
+        const responseOutUserRoom = await request.get(
+            '/room/' + responseRoom.body.room._id + '/out/' + responseUser.body.userId
+        ).send();
+
         const response = await request.post('/room/' + responseRoom.body.room._id + '/add-user').send({
             userId: responseUser.body.userId,
         });
 
         expect(response.status).toBe(200);
+    });
+
+    it('Go out user from rooms', async () => {
+        const responseUser = await request.post('/auth/signup').send({
+            email: email,
+            nikname: nikname,
+            password: password,
+        });
+
+        const responseRoom = await request.post('/room').send({
+            name: nameRoom,
+            userId: responseUser.body.userId,
+        });
+
+        const responseAddUserRoom = await request.post('/room/' + responseRoom.body.room._id + '/add-user').send({
+            userId: responseUser.body.userId,
+        });
+
+        const responseOutUserRoom = await request.get(
+            '/room/' + responseRoom.body.room._id + '/out/' + responseUser.body.userId
+        ).send();
+
+        expect(responseOutUserRoom.status).toBe(200);
     });
 
 });

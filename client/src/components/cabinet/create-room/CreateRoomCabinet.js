@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
 import './CreateRoomCabinet.css';
-import { Form, Button } from 'bootstrap-4-react';
+import { Form, Button, Breadcrumb } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/createRoomType";
 import {createRoom, nameValidate} from "../../../redux/actions/room/createRoomAction";
 import {useDispatch, useSelector} from "react-redux";
 import {getUserData} from "../../../redux/actions/auth/userInfoAction";
+import {Link} from "react-router-dom";
 
 
 const CreateRoomCabinet = () => {
@@ -45,7 +46,12 @@ const CreateRoomCabinet = () => {
 
     return (
         <div>
-            <h1>Create Room</h1>
+            <nav aria-label="breadcrumb">
+                <Breadcrumb>
+                    <Breadcrumb.Item><Link to="/cabinet/">Cabinet</Link></Breadcrumb.Item>
+                    <Breadcrumb.Item active aria-current="page">Create room</Breadcrumb.Item>
+                </Breadcrumb>
+            </nav>
 
             {apiSuccessMessage ? (
                 <div className="alert alert-success" role="alert">

@@ -1,12 +1,19 @@
 import React from 'react';
 import './RoomCabinet.css';
-import { Collapse, Card, Form } from 'bootstrap-4-react';
+import {Collapse, Card, Form, Breadcrumb} from 'bootstrap-4-react';
+import {Link} from "react-router-dom";
 
 const RoomCabinet = () => {
     return (
-        <div className="rooms-list">
+        <div className="rooms-cabinet">
             <div className="serve-info">
-                <h1>Room Cabinet</h1>
+                <nav aria-label="breadcrumb">
+                    <Breadcrumb>
+                        <Breadcrumb.Item><Link to="/cabinet">Cabinet</Link></Breadcrumb.Item>
+                        <Breadcrumb.Item active aria-current="page">Create room</Breadcrumb.Item>
+                    </Breadcrumb>
+                </nav>
+
                 <div id="accordionExample">
                 <Card>
                     <Card.Header mb="0">
