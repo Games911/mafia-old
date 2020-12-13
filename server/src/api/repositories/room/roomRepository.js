@@ -4,6 +4,11 @@ const { userCountRoom } = require('../../../config/settings');
 
 module.exports = {
     createRoom: async (name, user) => {
+        const checkUserGlobal = await globalUserCheck(user);
+        if (checkUserGlobal.length > 0) {
+            throw new Error('You can\'t create new room until go out from your current room');
+        }
+
         const room = new Room({
             _id: new mongoose.Types.ObjectId(),
             name: name,
@@ -16,16 +21,24 @@ module.exports = {
     },
 
     addUser: async (room, user) => {
+        const issetUserRoom = room.players.filter(element => String(element._id) === String(user._id));
+        if (issetUserRoom.length > 0) {
+            return room;
+        }
+
         if (room.status === 'busy') {
             throw new Error('Room is already busy');
         }
-        const checkUser = room.players.filter(element => String(element._id) === String(user._id));
-        if (checkUser.length === 0) {
+
+        const checkUserGlobal = await globalUserCheck(user);
+        if (checkUserGlobal.length === 0) {
             room.players.push(user);
             if (room.players.length === Number(userCountRoom)) {
                 room.status = 'busy';
             }
             await room.updateOne(room);
+        } else {
+            throw new Error('You can\'t enter this room until go out from your current room');
         }
         return room;
     },
@@ -42,10 +55,15 @@ module.exports = {
     },
 
     roomFindById: async (id) => {
-        try {
-            return (await Room.find({ _id: id }).populate('players').populate('createdBy').limit(1))[0];
-        } catch (error) {
-            throw new Error('User doesn\'t exist');
+        const room = (await Room.find({ _id: id }).populate('players').populate('createdBy').limit(1))[0];
+        if (typeof room !== 'undefined') {
+            return room;
         }
+        throw new Error('Room doesn\'t exist');
     },
+}
+
+let globalUserCheck = async (user) => {
+    const rooms = await Room.find({}).populate('players').populate('createdBy');
+    return rooms.filter(room => room.players.filter(player => String(player._id) === String(user._id)).length > 0);
 }
