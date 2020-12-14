@@ -6,6 +6,7 @@ const initialState = {
     step: 0,
     apiErrorMessage: '',
     success: false,
+    currentRoomId: '',
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -39,6 +40,11 @@ export const roomReducer = (state = initialState, action) => {
             return {
                 ...state,
                 success: action.success,
+            };
+        case types.ROOM_SET_UP_CURRENT_ID:
+            return {
+                ...state,
+                currentRoomId: action.id,
             };
         default:
             return state;

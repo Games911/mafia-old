@@ -11,7 +11,7 @@ const HomeCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
     const roomsOnPage = 20;
-    const {rooms, actualRooms, step, apiErrorMessage, success} = useSelector(state => state.roomReducer);
+    const {rooms, actualRooms, step, apiErrorMessage, success, currentRoomId} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
 
     useEffect(() => {
@@ -20,14 +20,14 @@ const HomeCabinet = () => {
             success: false,
         });
         if (success) {
-            history.push('/cabinet/room');
+            history.push('/cabinet/room/' + currentRoomId);
         }
         dispatch({
             type: types.ROOM_RESET_MESSAGE,
             message: '',
         });
         dispatch(getRooms(roomsOnPage));
-    },[success]);
+    },[success, currentRoomId]);
 
     const moreRooms = () => {
         dispatch({

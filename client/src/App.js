@@ -29,7 +29,7 @@ function App() {
                 <Row>
                     <Col>
                         <Switch>
-                            <GuardedRoute path='/cabinet/room' component={RoomCabinet} auth={token} />
+                            <GuardedRoute path='/cabinet/room/:id' component={RoomCabinet} auth={token} />
                             <GuardedRoute path='/cabinet/create-room' component={CreateRoomCabinet} auth={token} />
                             <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} />
                             <Route path="/signin">

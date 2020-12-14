@@ -31,12 +31,16 @@ export const addUser = (roomId, userId) =>async dispatch=>{
     const params = new URLSearchParams();
     params.append('userId', userId);
 
+    dispatch({
+        type: types.ROOM_SET_UP_CURRENT_ID,
+        id: roomId,
+    });
+
     axios({
         method: 'post',
         url: 'http://localhost:9999/room/' + roomId + '/add-user',
         data: params
     }).then((response) => {
-        console.log(response);
         if (response.status === 200) {
             dispatch({
                 type: types.ROOM_SUCCESS,
@@ -50,3 +54,15 @@ export const addUser = (roomId, userId) =>async dispatch=>{
         });
     });
 };
+
+export const outUser = (roomId, userId) =>async dispatch=>{
+    axios({
+        method: 'get',
+        url: 'http://localhost:9999/room/' + roomId + '/out/' + userId
+    }).then((response) => {
+
+    }).catch((error) => {
+        console.log(error.response);
+    });
+};
+
