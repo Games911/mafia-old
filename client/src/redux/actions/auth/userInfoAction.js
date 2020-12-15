@@ -17,8 +17,8 @@ export const setUserInfo = (token) =>async dispatch=>{
 }
 
 export const getUserData = () =>async dispatch=>{
-    let id =localStorage.getItem('userInfoId');
-    let email =localStorage.getItem('userInfoEmail');
+    let id = localStorage.getItem('userInfoId');
+    let email = localStorage.getItem('userInfoEmail');
     let nikname = localStorage.getItem('userInfoNikname');
     dispatch({
         type: typesUserInfo.USER_INFO_SET,

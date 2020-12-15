@@ -1,4 +1,4 @@
-const {createRoom, findAll, roomFindById, addUser, outUser} = require('../../repositories/room/roomRepository');
+const {createRoom, findAll, roomFindById, addUser, outUser, isBusyUser} = require('../../repositories/room/roomRepository');
 const {userFindById} = require('../../repositories/auth/userRepository');
 
 module.exports = {
@@ -26,4 +26,9 @@ module.exports = {
         const room = await roomFindById(roomId);
         return await outUser(room, user);
     },
+
+    isUserBusy: async (userId) => {
+        const user = await userFindById(userId);
+        return await isBusyUser(user);
+    }
 }

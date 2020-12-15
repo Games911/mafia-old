@@ -7,6 +7,7 @@ const initialState = {
     apiErrorMessage: '',
     success: false,
     currentRoomId: '',
+    isUserBusy: false,
 };
 
 export const roomReducer = (state = initialState, action) => {
@@ -45,6 +46,11 @@ export const roomReducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentRoomId: action.id,
+            };
+        case types.ROOM_SET_USER_BUSY:
+            return {
+                ...state,
+                isUserBusy: action.isBusy,
             };
         default:
             return state;

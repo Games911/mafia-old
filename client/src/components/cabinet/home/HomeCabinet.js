@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import './HomeCabinet.css';
 import {Card} from 'bootstrap-4-react';
 import {useDispatch, useSelector} from "react-redux";
-import {addUser, getRooms} from "../../../redux/actions/room/roomAction";
+import {addUser, getRooms, isBusyUser} from "../../../redux/actions/room/roomAction";
 import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
 import {Link, useHistory} from "react-router-dom";
@@ -11,7 +11,15 @@ const HomeCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
     const roomsOnPage = 20;
-    const {rooms, actualRooms, step, apiErrorMessage, success, currentRoomId} = useSelector(state => state.roomReducer);
+    const {
+        rooms,
+        actualRooms,
+        step,
+        apiErrorMessage,
+        success,
+        currentRoomId,
+        isUserBusy
+    } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
 
     useEffect(() => {
@@ -20,6 +28,7 @@ const HomeCabinet = () => {
             success: false,
         });
         if (success) {
+            console.log(currentRoomId);
             history.push('/cabinet/room/' + currentRoomId);
         }
         dispatch({
@@ -27,7 +36,8 @@ const HomeCabinet = () => {
             message: '',
         });
         dispatch(getRooms(roomsOnPage));
-    },[success, currentRoomId]);
+        dispatch(isBusyUser(userId));
+    },[success, currentRoomId, isUserBusy]);
 
     const moreRooms = () => {
         dispatch({
@@ -44,6 +54,7 @@ const HomeCabinet = () => {
         dispatch(addUser(roomId, userId));
     };
 
+
     return (
         <div className="rooms-list">
 
@@ -55,7 +66,7 @@ const HomeCabinet = () => {
                 </div>
             ): null}
 
-            <Link to="/cabinet/create-room" className="link-create-room">Create room</Link>
+            {!isUserBusy ? (<Link to="/cabinet/create-room" className="link-create-room">Create room</Link>) : null}
 
             {actualRooms && actualRooms.length > 0 ? (
                 <div className="rooms-list-block">

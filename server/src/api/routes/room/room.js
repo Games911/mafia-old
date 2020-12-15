@@ -58,5 +58,19 @@ router.get("/:roomId/out/:userId", async (req, res) => {
     }
 });
 
+router.get("/is-user-busy/:userId", async (req, res) => {
+    try {
+        const isBusy = await roomController.isUserBusy(req.params.userId);
+        res.status(200).json({
+            message: "Result if user busy",
+            isBusy: isBusy
+        });
+    } catch(error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+});
+
 
 module.exports = router;

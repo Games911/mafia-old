@@ -77,4 +77,18 @@ describe('Test room controllers', () => {
         expect(responseOutUserRoom.status).toBe(200);
     });
 
+    it('Is user busy', async () => {
+        const responseUser = await request.post('/auth/signup').send({
+            email: email,
+            nikname: nikname,
+            password: password,
+        });
+
+        const responseIsBusyUser = await request.get(
+            '/room/is-user-busy/' + responseUser.body.userId
+        ).send();
+
+        expect(responseIsBusyUser.status).toBe(200);
+    });
+
 });

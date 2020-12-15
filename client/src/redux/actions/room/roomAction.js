@@ -8,14 +8,18 @@ export const getRooms = (roomsOnPage) =>async dispatch=>{
         url: 'http://localhost:9999/room'
     }).then((response) => {
         const rooms = response.data.rooms;
+
+        const currentRoomId = localStorage.getItem('currentRoomId');
+        const roomsFormated = formatRooms(rooms, currentRoomId);
+
         if (response.status === 200) {
             dispatch({
                 type: types.ROOM_SET,
-                rooms: rooms,
+                rooms: roomsFormated,
             });
             dispatch({
                 type: types.ROOM_SET_ACTUAL,
-                actualRooms: rooms.slice(0, roomsOnPage),
+                actualRooms: roomsFormated.slice(0, roomsOnPage),
             });
             dispatch({
                 type: types.ROOM_SET_STEP,
@@ -46,6 +50,9 @@ export const addUser = (roomId, userId) =>async dispatch=>{
                 type: types.ROOM_SUCCESS,
                 success: true,
             });
+
+            const roomId = response.data.room._id;
+            localStorage.setItem('currentRoomId', roomId);
         }
     }).catch((error) => {
         dispatch({
@@ -66,3 +73,31 @@ export const outUser = (roomId, userId) =>async dispatch=>{
     });
 };
 
+export const isBusyUser = (userId) =>async dispatch=>{
+    axios({
+        method: 'get',
+        url: 'http://localhost:9999/room/is-user-busy/' + userId
+    }).then((response) => {
+        dispatch({
+            type: types.ROOM_SET_USER_BUSY,
+            isBusy: response.data.isBusy,
+        });
+    }).catch((error) => {
+        console.log(error.response);
+    });
+};
+
+
+const formatRooms = (rooms, currentRoomId) => {
+    const roomsFormated = [];
+
+    for (let i = 0; i <= rooms.length - 1; i++) {
+        const current = rooms[i];
+        if (current._id === currentRoomId) {
+            roomsFormated.push(current);
+            rooms.splice(i, 1);
+        }
+    }
+    roomsFormated.push(...rooms);
+    return roomsFormated;
+};

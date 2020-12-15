@@ -61,6 +61,11 @@ module.exports = {
         }
         throw new Error('Room doesn\'t exist');
     },
+
+    isBusyUser: async (user) => {
+        const globalCheck = await globalUserCheck(user);
+        return (globalCheck.length > 0);
+    },
 }
 
 let globalUserCheck = async (user) => {
