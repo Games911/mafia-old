@@ -1,13 +1,14 @@
 import React, {useEffect} from 'react';
 import './Headers.css';
 import { Navbar, Collapse, Container, Row, Col } from 'bootstrap-4-react';
-import { Link } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {removeToken} from "../../redux/actions/auth/tokenAction";
 import {getUserData, clearUserData} from "../../redux/actions/auth/userInfoAction";
 
 const Header = (props) => {
     const dispatch = useDispatch();
+    let history = useHistory();
     const {
         userNikname
     } = useSelector(state => state.userInfoReducer);
@@ -19,6 +20,7 @@ const Header = (props) => {
     const logout = () => {
         dispatch(clearUserData());
         dispatch(removeToken());
+        history.push('/');
     };
 
     const userInfo = () => {

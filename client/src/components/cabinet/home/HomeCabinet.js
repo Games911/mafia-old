@@ -28,7 +28,6 @@ const HomeCabinet = () => {
             success: false,
         });
         if (success) {
-            console.log(currentRoomId);
             history.push('/cabinet/room/' + currentRoomId);
         }
         dispatch({
@@ -54,6 +53,13 @@ const HomeCabinet = () => {
         dispatch(addUser(roomId, userId));
     };
 
+    const getRoomClassess = (item) => {
+        const roomLonkClass = (item.status === 'free') ? 'room-link-active' : 'room-link-none';
+        const isActiveRoom = item.players.filter((player) => player._id === userId);
+        const roomUserClass = (isActiveRoom.length > 0) ? ' room-user-active' : '';
+        return roomLonkClass + roomUserClass;
+    }
+
 
     return (
         <div className="rooms-list">
@@ -71,7 +77,7 @@ const HomeCabinet = () => {
             {actualRooms && actualRooms.length > 0 ? (
                 <div className="rooms-list-block">
                     {actualRooms.map(item => (
-                        <a className={(item.status === 'free') ? 'room-link-active' : 'room-link-none'} onClick={() => addUserToRoom(item._id)} key={item._id}>
+                        <a className={getRoomClassess(item)} onClick={() => addUserToRoom(item._id)} key={item._id}>
                             <Card text="center">
                                 <Card.Header>{item.status}</Card.Header>
                                 <Card.Body>

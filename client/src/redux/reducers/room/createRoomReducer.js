@@ -4,7 +4,6 @@ const initialState = {
     name: '',
     errorsName: [],
     changedName: false,
-    apiSuccessMessage: '',
     apiErrorMessage: '',
 };
 
@@ -25,11 +24,6 @@ export const createRoomReducer = (state = initialState, action) => {
                 ...state,
                 changedName: action.changed
             };
-        case types.CREATE_ROOM_API_SUCCESS:
-            return {
-                ...state,
-                apiSuccessMessage: action.message
-            };
         case types.CREATE_ROOM_API_ERROR:
             return {
                 ...state,
@@ -41,7 +35,6 @@ export const createRoomReducer = (state = initialState, action) => {
                 name: '',
                 errorsName: [],
                 changedName: false,
-                apiSuccessMessage: '',
                 apiErrorMessage: '',
             };
         default:

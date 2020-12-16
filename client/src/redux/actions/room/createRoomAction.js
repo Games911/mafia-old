@@ -1,8 +1,6 @@
 import {errorsResult, isRequire, maxLength, minLength, startValidation} from "../../helpers/Validation";
 import * as types from "../../types/room/createRoomType";
 import axios from "axios";
-import {setToken} from "../auth/tokenAction";
-import {setUserInfo} from "../auth/userInfoAction";
 
 
 export const nameValidate = (value) =>async dispatch=>{
@@ -34,13 +32,12 @@ export const createRoom = (name, userId) =>async dispatch=>{
         data: params
     }).then((response) => {
         if (response.status === 201) {
-            dispatch({
-                type: types.CREATE_ROOM_API_SUCCESS,
-                message: response.data.message,
-            });
+            const roomId = response.data.room._id;
+            localStorage.setItem('currentRoomId', roomId);
+            window.location.href = '/cabinet/room/' + roomId;
         }
     }).catch((error) => {
-        console.log(error);
+        console.log(error.response);
         dispatch({
             type: types.CREATE_ROOM_API_ERROR,
             message: error.response.data.message,

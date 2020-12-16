@@ -9,13 +9,11 @@ import {Link} from "react-router-dom";
 
 
 const CreateRoomCabinet = () => {
-
     const dispatch = useDispatch();
     const {
         name,
         errorsName,
         changedName,
-        apiSuccessMessage,
         apiErrorMessage
     } = useSelector(state => state.createRoomReducer);
     const { userId } = useSelector(state => state.userInfoReducer);
@@ -52,12 +50,6 @@ const CreateRoomCabinet = () => {
                     <Breadcrumb.Item active aria-current="page">Create room</Breadcrumb.Item>
                 </Breadcrumb>
             </nav>
-
-            {apiSuccessMessage ? (
-                <div className="alert alert-success" role="alert">
-                    <p>{apiSuccessMessage}</p>
-                </div>
-            ): null}
 
             {apiErrorMessage ? (
                 <div className="alert alert-danger" role="alert">

@@ -30,7 +30,7 @@ const RoomCabinet = () => {
                 <nav aria-label="breadcrumb">
                     <Breadcrumb>
                         <Breadcrumb.Item><Link to="/cabinet">Cabinet</Link></Breadcrumb.Item>
-                        <Breadcrumb.Item active aria-current="page">Create room</Breadcrumb.Item>
+                        <Breadcrumb.Item active aria-current="page">Room</Breadcrumb.Item>
                     </Breadcrumb>
                 </nav>
 
