@@ -9,6 +9,8 @@ import { Container, Row, Col } from 'bootstrap-4-react';
 import {useDispatch, useSelector} from "react-redux";
 import GuardedRoute from "./guards/GuardedRoute";
 import {getToken} from "./redux/actions/auth/tokenAction";
+import RoomCabinet from "./components/cabinet/room/RoomCabinet";
+import CreateRoomCabinet from "./components/cabinet/create-room/CreateRoomCabinet";
 
 function App() {
 
@@ -21,12 +23,14 @@ function App() {
     return (
       <BrowserRouter>
       <div className="App">
-        <Header />
+        <Header token={token}/>
         <main>
             <Container>
                 <Row>
                     <Col>
                         <Switch>
+                            <GuardedRoute path='/cabinet/room/:id' component={RoomCabinet} auth={token} />
+                            <GuardedRoute path='/cabinet/create-room' component={CreateRoomCabinet} auth={token} />
                             <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} />
                             <Route path="/signin">
                                 <Signin />

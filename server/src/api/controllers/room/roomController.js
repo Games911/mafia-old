@@ -1,26 +1,34 @@
-const mongoose = require('mongoose');
-const Room = require('../../../database/models/room/Room');
-const User = require('../../../database/models/auth/User');
+const {createRoom, findAll, roomFindById, addUser, outUser, isBusyUser} = require('../../repositories/room/roomRepository');
+const {userFindById} = require('../../repositories/auth/userRepository');
 
 module.exports = {
     createRoom: async (name, userId) => {
-        const user = (await User.find({ _id: userId }).limit(1))[0];
+        const user = await userFindById(userId);
         if (user) {
-            const room = new Room({
-                _id: new mongoose.Types.ObjectId(),
-                name: name,
-                status: 'free',
-                players: [user],
-                createdBy: [user],
-            });
-            await room.save();
-            return room;
+            return await createRoom(name, user);
         } else {
             throw new Error('User doesn\'t exist');
         }
     },
 
     getRooms: async () => {
-        return Room.find({}).populate('players').populate('createdBy');
+        return findAll();
     },
+
+    addUser: async (roomId, userId) => {
+        const user = await userFindById(userId);
+        const room = await roomFindById(roomId);
+        return await addUser(room, user);
+    },
+
+    outRoom: async (roomId, userId) => {
+        const user = await userFindById(userId);
+        const room = await roomFindById(roomId);
+        return await outUser(room, user);
+    },
+
+    isUserBusy: async (userId) => {
+        const user = await userFindById(userId);
+        return await isBusyUser(user);
+    }
 }
