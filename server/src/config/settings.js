@@ -10,4 +10,5 @@ module.exports = {
     mongoUrl: process.env.MONGO_URL,
     secret: process.env.SECRET,
     saltRound: process.env.SALT_ROUND,
+    userCountRoom: process.env.USER_COUNT_ROOM,
 };
