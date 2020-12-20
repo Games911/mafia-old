@@ -2,10 +2,13 @@ import axios from "axios";
 import * as types from "../../types/room/roomType";
 
 
-export const getRooms = (roomsOnPage) =>async dispatch=>{
+export const getRooms = (roomsOnPage, token) =>async dispatch=>{
     axios({
         method: 'get',
-        url: 'http://localhost:9999/room'
+        url: 'http://localhost:9999/room',
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
         const rooms = response.data.rooms;
 
@@ -31,7 +34,7 @@ export const getRooms = (roomsOnPage) =>async dispatch=>{
     });
 }
 
-export const addUser = (roomId, userId) =>async dispatch=>{
+export const addUser = (roomId, userId, token) =>async dispatch=>{
     const params = new URLSearchParams();
     params.append('userId', userId);
 
@@ -43,7 +46,10 @@ export const addUser = (roomId, userId) =>async dispatch=>{
     axios({
         method: 'post',
         url: 'http://localhost:9999/room/' + roomId + '/add-user',
-        data: params
+        data: params,
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
         if (response.status === 200) {
             dispatch({
@@ -62,10 +68,13 @@ export const addUser = (roomId, userId) =>async dispatch=>{
     });
 };
 
-export const outUser = (roomId, userId) =>async dispatch=>{
+export const outUser = (roomId, userId, token) =>async dispatch=>{
     axios({
         method: 'get',
-        url: 'http://localhost:9999/room/' + roomId + '/out/' + userId
+        url: 'http://localhost:9999/room/' + roomId + '/out/' + userId,
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
 
     }).catch((error) => {
@@ -73,10 +82,13 @@ export const outUser = (roomId, userId) =>async dispatch=>{
     });
 };
 
-export const isBusyUser = (userId) =>async dispatch=>{
+export const isBusyUser = (userId, token) =>async dispatch=>{
     axios({
         method: 'get',
-        url: 'http://localhost:9999/room/is-user-busy/' + userId
+        url: 'http://localhost:9999/room/is-user-busy/' + userId,
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
         dispatch({
             type: types.ROOM_SET_USER_BUSY,
@@ -86,6 +98,14 @@ export const isBusyUser = (userId) =>async dispatch=>{
         console.log(error.response);
     });
 };
+
+export const clearRoomData = () =>async dispatch=>{
+    localStorage.removeItem('currentRoomId');
+    dispatch({
+        type: types.ROOM_SET_UP_CURRENT_ID,
+        id: '',
+    });
+}
 
 
 const formatRooms = (rooms, currentRoomId) => {

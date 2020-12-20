@@ -17,6 +17,7 @@ const CreateRoomCabinet = () => {
         apiErrorMessage
     } = useSelector(state => state.createRoomReducer);
     const { userId } = useSelector(state => state.userInfoReducer);
+    const {token} = useSelector(state => state.token);
 
     useEffect(() => {
         dispatch(getUserData());
@@ -31,7 +32,7 @@ const CreateRoomCabinet = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        dispatch(createRoom(name, userId));
+        dispatch(createRoom(name, userId, token));
         dispatch({
             type: types.CREATE_ROOM_RESET_FORM
         });

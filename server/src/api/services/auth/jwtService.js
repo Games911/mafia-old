@@ -1,4 +1,4 @@
-var jwt = require('json-web-token');
+const jwt = require('json-web-token');
 const { secret } = require('../../../config/settings');
 
 
@@ -8,8 +8,9 @@ const createToken = async (user) => {
         "id": user._id,
         "email": user.email,
         "nikname": user.nikname,
+        "iat": Date.now(),
     };
-    return jwt.encode(secret, payload, function (err, token) {
+    return jwt.encode(secret, payload, (err, token) => {
         if (err) {
             console.error(err.name, err.message);
         } else {
@@ -18,4 +19,17 @@ const createToken = async (user) => {
     });
 };
 
-module.exports = createToken;
+const decodeToken = async (token) => {
+    return jwt.decode(secret, token, (err, decodedPayload, decodedHeader) => {
+        if (err) {
+            return false;
+        } else {
+            return decodedPayload;
+        }
+    });
+}
+
+module.exports = {
+    createToken,
+    decodeToken
+};

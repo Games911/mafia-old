@@ -23,7 +23,8 @@
     "mongodb": "^3.6.2",
     "mongodb-memory-server": "^6.9.2",
     "mongoose": "^5.10.9",
-    "supertest": "^6.0.1"
+    "supertest": "^6.0.1",
+    "ws": "^7.4.1"
   },
   "devDependencies": {
     "eslint": "^7.13.0",

@@ -7,6 +7,7 @@ import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
 import {Link, useHistory} from "react-router-dom";
 
+
 const HomeCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
@@ -21,6 +22,7 @@ const HomeCabinet = () => {
         isUserBusy
     } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
+    const {token} = useSelector(state => state.token);
 
     useEffect(() => {
         dispatch({
@@ -34,8 +36,8 @@ const HomeCabinet = () => {
             type: types.ROOM_RESET_MESSAGE,
             message: '',
         });
-        dispatch(getRooms(roomsOnPage));
-        dispatch(isBusyUser(userId));
+        dispatch(getRooms(roomsOnPage, token));
+        dispatch(isBusyUser(userId, token));
     },[success, currentRoomId, isUserBusy]);
 
     const moreRooms = () => {
@@ -50,7 +52,7 @@ const HomeCabinet = () => {
     };
 
     const addUserToRoom = (roomId) => {
-        dispatch(addUser(roomId, userId));
+        dispatch(addUser(roomId, userId, token));
     };
 
     const getRoomClassess = (item) => {
@@ -63,7 +65,6 @@ const HomeCabinet = () => {
 
     return (
         <div className="rooms-list">
-
             <h1>Home Cabinet</h1>
 
             {apiErrorMessage ? (

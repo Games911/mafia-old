@@ -5,6 +5,7 @@ import {Link, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {removeToken} from "../../redux/actions/auth/tokenAction";
 import {getUserData, clearUserData} from "../../redux/actions/auth/userInfoAction";
+import {clearRoomData} from "../../redux/actions/room/roomAction";
 
 const Header = (props) => {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const Header = (props) => {
     const logout = () => {
         dispatch(clearUserData());
         dispatch(removeToken());
+        dispatch(clearRoomData())
         history.push('/');
     };
 

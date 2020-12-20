@@ -20,6 +20,10 @@ const schema = Schema({
         required: true,
         max: 100
     },
+    token: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Token"
+    },
     created: {
         type: Date,
         required: true,

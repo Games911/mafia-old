@@ -11,10 +11,11 @@ const RoomCabinet = () => {
     let history = useHistory();
 
     const {userId} = useSelector(state => state.userInfoReducer);
+    const {token} = useSelector(state => state.token);
 
     const exit = () => {
         const roomId = getRoomParam();
-        dispatch(outUser(roomId, userId));
+        dispatch(outUser(roomId, userId, token));
         history.push('/cabinet');
     };
 
