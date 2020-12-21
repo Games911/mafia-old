@@ -62,7 +62,6 @@ const HomeCabinet = () => {
         return roomLonkClass + roomUserClass;
     }
 
-
     return (
         <div className="rooms-list">
             <h1>Home Cabinet</h1>
