@@ -6,6 +6,7 @@ import {addUser, getRooms, isBusyUser} from "../../../redux/actions/room/roomAct
 import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
 import {Link, useHistory} from "react-router-dom";
+import {formatRooms} from "../../../redux/helpers/FormatRooms";
 
 
 const HomeCabinet = () => {
@@ -23,6 +24,7 @@ const HomeCabinet = () => {
     } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
+    const ws = new WebSocket('ws://localhost:9999');
 
     useEffect(() => {
         dispatch({
@@ -36,8 +38,30 @@ const HomeCabinet = () => {
             type: types.ROOM_RESET_MESSAGE,
             message: '',
         });
-        dispatch(getRooms(roomsOnPage, token));
+        dispatch(getRooms(token, roomsOnPage));
         dispatch(isBusyUser(userId, token));
+
+        ws.onmessage = res => {
+            const data = JSON.parse(res.data);
+            if (data.route === 'rooms') {
+                const rooms = data.rooms;
+                const currentRoomId = localStorage.getItem('currentRoomId');
+                const roomsFormated = formatRooms(rooms, currentRoomId);
+                dispatch({
+                    type: types.ROOM_SET,
+                    rooms: roomsFormated,
+                });
+                dispatch({
+                    type: types.ROOM_SET_ACTUAL,
+                    actualRooms: roomsFormated.slice(0, roomsOnPage),
+                });
+                dispatch({
+                    type: types.ROOM_SET_STEP,
+                    step: roomsOnPage,
+                });
+            }
+        }
+
     },[success, currentRoomId, isUserBusy]);
 
     const moreRooms = () => {

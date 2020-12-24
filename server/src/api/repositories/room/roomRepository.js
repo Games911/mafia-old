@@ -46,6 +46,9 @@ module.exports = {
     outUser: async (room, user) => {
         const newPlayers = room.players.filter(element => String(element._id) !== String(user._id));
         room.players = newPlayers;
+        if (newPlayers.length < 6) {
+            room.status = 'free';
+        }
         await room.updateOne(room);
         return room;
     },

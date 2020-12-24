@@ -7,7 +7,7 @@ const Home = () => {
     const ws = new WebSocket('ws://localhost:9999');
 
     const onEvent = () => {
-        ws.send(JSON.stringify({route: 'check', type: "login"}));
+        ws.send(JSON.stringify({route: 'test', type: "login"}));
         ws.onopen = () => {
             console.log('Connected')
         };

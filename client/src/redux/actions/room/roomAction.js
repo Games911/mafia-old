@@ -1,8 +1,10 @@
 import axios from "axios";
 import * as types from "../../types/room/roomType";
+import {formatRooms} from "../../helpers/FormatRooms";
+const ws = new WebSocket('ws://localhost:9999');
 
 
-export const getRooms = (roomsOnPage, token) =>async dispatch=>{
+export const getRooms = (token, roomsOnPage) =>async dispatch=>{
     axios({
         method: 'get',
         url: 'http://localhost:9999/room',
@@ -52,6 +54,7 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
         }
     }).then((response) => {
         if (response.status === 200) {
+            ws.send(JSON.stringify({route: 'refresh-rooms'}));
             dispatch({
                 type: types.ROOM_SUCCESS,
                 success: true,
@@ -76,7 +79,7 @@ export const outUser = (roomId, userId, token) =>async dispatch=>{
             'Authorization' : `Bearer ${token}`
         }
     }).then((response) => {
-
+        ws.send(JSON.stringify({route: 'refresh-rooms'}));
     }).catch((error) => {
         console.log(error.response);
     });
@@ -106,18 +109,3 @@ export const clearRoomData = () =>async dispatch=>{
         id: '',
     });
 }
-
-
-const formatRooms = (rooms, currentRoomId) => {
-    const roomsFormated = [];
-
-    for (let i = 0; i <= rooms.length - 1; i++) {
-        const current = rooms[i];
-        if (current._id === currentRoomId) {
-            roomsFormated.push(current);
-            rooms.splice(i, 1);
-        }
-    }
-    roomsFormated.push(...rooms);
-    return roomsFormated;
-};
