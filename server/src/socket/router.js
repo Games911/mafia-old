@@ -13,7 +13,9 @@ const socketRouter = async (server) => {
                     returnData = JSON.stringify({route: 'rooms', rooms: rooms});
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
-                case 'login':
+                case 'start-process':
+                    returnData = JSON.stringify({route: 'start-process-check', roomId: data.roomId});
+                    webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
             }
         });

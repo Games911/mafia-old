@@ -56,6 +56,10 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
         if (response.status === 200) {
             ws.send(JSON.stringify({route: 'refresh-rooms'}));
             dispatch({
+                type: types.ROOM_SET_CURRENT_ROOM,
+                room: response.data.room,
+            });
+            dispatch({
                 type: types.ROOM_SUCCESS,
                 success: true,
             });

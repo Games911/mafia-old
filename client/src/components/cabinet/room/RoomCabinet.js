@@ -1,17 +1,41 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './RoomCabinet.css';
 import {Collapse, Card, Form, Breadcrumb, Button, Container, Row, Col} from 'bootstrap-4-react';
 import {Link, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {outUser} from "../../../redux/actions/room/roomAction";
+import * as types from "../../../redux/types/room/roomType";
 
 
 const RoomCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
+    const ws = new WebSocket('ws://localhost:9999');
 
+    const {checkPartIn, currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
+
+    useEffect(() => {
+        if (currentRoom !== null && currentRoom.status === 'busy') {
+            setTimeout(() => {
+                ws.send(JSON.stringify({route: 'start-process', roomId: currentRoom._id}));
+            }, 500);
+        }
+        ws.onmessage = res => {
+                const data = JSON.parse(res.data);
+                if (data.route === 'start-process-check') {
+                    const currentRoomId = localStorage.getItem('currentRoomId');
+                    if (currentRoomId === data.roomId && existUserInRoom(userId, currentRoom)) {
+                        dispatch({
+                            type: types.ROOM_CHECK_PART_IN,
+                            check: true,
+                        });
+                    }
+                }
+        }
+
+    },[currentRoom]);
 
     const exit = () => {
         const roomId = getRoomParam();
@@ -25,8 +49,18 @@ const RoomCabinet = () => {
         return locationArr.slice(-1)[0];
     };
 
+    const checkPartInFunc = () => {
+        return (checkPartIn) ? (<h1>Amazing</h1>) : '';
+    }
+
+    const existUserInRoom = (userId, currentRoom) => {
+        const players = currentRoom.players.filter(element => String(element._id) === String(userId));
+        return players.length > 0;
+    }
+
     return (
         <div className="rooms-cabinet">
+            <div>{checkPartInFunc()}</div>
             <div className="serve-info">
                 <nav aria-label="breadcrumb">
                     <Breadcrumb>
