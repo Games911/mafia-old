@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const roomController = require('./controllers/room/roomController');
+const gameController = require('./controllers/game/gameController');
 
 const socketRouter = async (server) => {
     const webSocketServer = new WebSocket.Server({ server });
@@ -10,11 +11,12 @@ const socketRouter = async (server) => {
             switch(data.route) {
                 case 'refresh-rooms':
                     const rooms = await roomController.getRooms();
-                    returnData = JSON.stringify({route: 'rooms', rooms: rooms});
+                    returnData = JSON.stringify({route: 'rooms-event', rooms: rooms});
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
-                case 'start-process':
-                    returnData = JSON.stringify({route: 'start-process-check', roomId: data.roomId});
+                case 'start-game':
+                    const game = await gameController.startGame();
+                    returnData = JSON.stringify({route: 'start-game-event', roomId: data.roomId, game: game});
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
             }

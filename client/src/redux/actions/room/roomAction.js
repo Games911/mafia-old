@@ -66,6 +66,7 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
 
             const roomId = response.data.room._id;
             localStorage.setItem('currentRoomId', roomId);
+            localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
         }
     }).catch((error) => {
         dispatch({
@@ -108,6 +109,7 @@ export const isBusyUser = (userId, token) =>async dispatch=>{
 
 export const clearRoomData = () =>async dispatch=>{
     localStorage.removeItem('currentRoomId');
+    localStorage.removeItem('currentRoom');
     dispatch({
         type: types.ROOM_SET_UP_CURRENT_ID,
         id: '',

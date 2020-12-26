@@ -8,7 +8,7 @@ const initialState = {
     success: false,
     currentRoomId: '',
     isUserBusy: false,
-    checkPartIn: false,
+    start: false,
     currentRoom: null,
 };
 
@@ -54,10 +54,10 @@ export const roomReducer = (state = initialState, action) => {
                 ...state,
                 isUserBusy: action.isBusy,
             };
-        case types.ROOM_CHECK_PART_IN:
+        case types.ROOM_START:
             return {
                 ...state,
-                checkPartIn: action.check,
+                start: action.start,
             };
         case types.ROOM_SET_CURRENT_ROOM:
             return {

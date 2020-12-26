@@ -43,7 +43,7 @@ const HomeCabinet = () => {
 
         ws.onmessage = res => {
             const data = JSON.parse(res.data);
-            if (data.route === 'rooms') {
+            if (data.route === 'rooms-event') {
                 const rooms = data.rooms;
                 const currentRoomId = localStorage.getItem('currentRoomId');
                 const roomsFormated = formatRooms(rooms, currentRoomId);

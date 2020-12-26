@@ -12,29 +12,32 @@ const RoomCabinet = () => {
     let history = useHistory();
     const ws = new WebSocket('ws://localhost:9999');
 
-    const {checkPartIn, currentRoom} = useSelector(state => state.roomReducer);
+    const {start, currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
 
     useEffect(() => {
+        const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+        guardGame(currentRoom, userId)
+
         if (currentRoom !== null && currentRoom.status === 'busy') {
             setTimeout(() => {
-                ws.send(JSON.stringify({route: 'start-process', roomId: currentRoom._id}));
-            }, 500);
-        }
-        ws.onmessage = res => {
-                const data = JSON.parse(res.data);
-                if (data.route === 'start-process-check') {
-                    const currentRoomId = localStorage.getItem('currentRoomId');
-                    if (currentRoomId === data.roomId && existUserInRoom(userId, currentRoom)) {
-                        dispatch({
-                            type: types.ROOM_CHECK_PART_IN,
-                            check: true,
-                        });
-                    }
-                }
+                ws.send(JSON.stringify({route: 'start-game', roomId: currentRoom._id}));
+            }, 1000);
         }
 
+        ws.onmessage = res => {
+            const data = JSON.parse(res.data);
+            if (data.route === 'start-game-event') {
+                const currentRoomId = localStorage.getItem('currentRoomId');
+                if (currentRoomId === data.roomId) {
+                    dispatch({
+                        type: types.ROOM_START,
+                        start: true,
+                    });
+                }
+            }
+        }
     },[currentRoom]);
 
     const exit = () => {
@@ -49,18 +52,24 @@ const RoomCabinet = () => {
         return locationArr.slice(-1)[0];
     };
 
-    const checkPartInFunc = () => {
-        return (checkPartIn) ? (<h1>Amazing</h1>) : '';
+    const checkStart = () => {
+        return (start) ? (<h1>Amazing</h1>) : '';
     }
-
-    const existUserInRoom = (userId, currentRoom) => {
-        const players = currentRoom.players.filter(element => String(element._id) === String(userId));
-        return players.length > 0;
-    }
+    
+    const guardGame = (currentRoom, userId) => {
+        if (currentRoom !== null) {
+            const players = currentRoom.players.filter(element => String(element._id) === String(userId));
+            if (players.length < 1) {
+                history.push('/cabinet/');
+            }
+        } else {
+            history.push('/cabinet/');
+        }
+    };
 
     return (
         <div className="rooms-cabinet">
-            <div>{checkPartInFunc()}</div>
+            <div>{checkStart()}</div>
             <div className="serve-info">
                 <nav aria-label="breadcrumb">
                     <Breadcrumb>
