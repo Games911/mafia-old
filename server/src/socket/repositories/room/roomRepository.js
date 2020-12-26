@@ -3,6 +3,6 @@ const Room = require('../../../database/models/room/Room');
 
 module.exports = {
     findAll: async () => {
-        return Room.find({}).populate('players').populate('createdBy');
+        return Room.find({}).populate('users').populate('createdBy');
     },
 };

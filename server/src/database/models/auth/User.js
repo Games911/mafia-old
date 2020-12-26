@@ -39,7 +39,6 @@ const schema = Schema({
 });
 
 schema.path('email').validate(function (email) {
-    console.log(email);
     var emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     return emailRegex.test(email);
 }, 'Incorrect email value.')

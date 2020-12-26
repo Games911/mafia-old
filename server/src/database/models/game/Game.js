@@ -12,7 +12,8 @@ const schema = Schema({
         required: true,
         max: 20
     },
-    players:[{ type: Schema.Types.ObjectId, ref: 'User' }],
+    players:[{ type: Schema.Types.ObjectId, ref: 'Player' }],
+    messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
     created: {
         type: Date,
         required: true,

@@ -3,19 +3,15 @@ const { Schema } = mongoose;
 
 const schema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    name: {
+    text: {
         type: String,
         required: true,
-        unique: true,
-        max: 50
+        max: 250
     },
-    status: {
-        type: String,
-        required: true,
-        max: 20
+    player: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Player"
     },
-    users:[{ type: Schema.Types.ObjectId, ref: 'User' }],
-    createdBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     created: {
         type: Date,
         required: true,
@@ -30,4 +26,4 @@ const schema = Schema({
     versionKey: false
 });
 
-module.exports = mongoose.model('Room', schema);
+module.exports = mongoose.model('Message', schema);

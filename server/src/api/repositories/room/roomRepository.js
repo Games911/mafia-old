@@ -13,7 +13,7 @@ module.exports = {
             _id: new mongoose.Types.ObjectId(),
             name: name,
             status: 'free',
-            players: [user],
+            users: [user],
             createdBy: [user],
         });
         await room.save();
@@ -21,7 +21,7 @@ module.exports = {
     },
 
     addUser: async (room, user) => {
-        const issetUserRoom = room.players.filter(element => String(element._id) === String(user._id));
+        const issetUserRoom = room.users.filter(element => String(element._id) === String(user._id));
         if (issetUserRoom.length > 0) {
             return room;
         }
@@ -32,8 +32,8 @@ module.exports = {
 
         const checkUserGlobal = await globalUserCheck(user);
         if (checkUserGlobal.length === 0) {
-            room.players.push(user);
-            if (room.players.length === Number(userCountRoom)) {
+            room.users.push(user);
+            if (room.users.length === Number(userCountRoom)) {
                 room.status = 'busy';
             }
             await room.updateOne(room);
@@ -44,9 +44,9 @@ module.exports = {
     },
 
     outUser: async (room, user) => {
-        const newPlayers = room.players.filter(element => String(element._id) !== String(user._id));
-        room.players = newPlayers;
-        if (newPlayers.length < Number(userCountRoom)) {
+        const newUsers = room.users.filter(element => String(element._id) !== String(user._id));
+        room.users = newUsers;
+        if (newUsers.length < Number(userCountRoom)) {
             room.status = 'free';
         }
         await room.updateOne(room);
@@ -54,11 +54,11 @@ module.exports = {
     },
 
     findAll: async () => {
-        return Room.find({}).populate('players').populate('createdBy');
+        return Room.find({}).populate('users').populate('createdBy');
     },
 
     roomFindById: async (id) => {
-        const room = (await Room.find({ _id: id }).populate('players').populate('createdBy').limit(1))[0];
+        const room = (await Room.find({ _id: id }).populate('users').populate('createdBy').limit(1))[0];
         if (typeof room !== 'undefined') {
             return room;
         }
@@ -72,6 +72,6 @@ module.exports = {
 }
 
 let globalUserCheck = async (user) => {
-    const rooms = await Room.find({}).populate('players').populate('createdBy');
-    return rooms.filter(room => room.players.filter(player => String(player._id) === String(user._id)).length > 0);
+    const rooms = await Room.find({}).populate('users').populate('createdBy');
+    return rooms.filter(room => room.users.filter(element => String(element._id) === String(user._id)).length > 0);
 }

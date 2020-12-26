@@ -81,7 +81,7 @@ const HomeCabinet = () => {
 
     const getRoomClassess = (item) => {
         const roomLonkClass = (item.status === 'free') ? 'room-link-active' : 'room-link-none';
-        const isActiveRoom = item.players.filter((player) => player._id === userId);
+        const isActiveRoom = item.users.filter((player) => player._id === userId);
         const roomUserClass = (isActiveRoom.length > 0) ? ' room-user-active' : '';
         return roomLonkClass + roomUserClass;
     }
@@ -107,7 +107,7 @@ const HomeCabinet = () => {
                                 <Card.Body>
                                     <Card.Title>{item.name}</Card.Title>
                                 </Card.Body>
-                                <Card.Footer text="muted">{item.players.length} users</Card.Footer>
+                                <Card.Footer text="muted">{item.users.length} users</Card.Footer>
                             </Card>
                         </a>
                     ))}

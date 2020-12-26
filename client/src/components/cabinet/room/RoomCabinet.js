@@ -58,8 +58,8 @@ const RoomCabinet = () => {
     
     const guardGame = (currentRoom, userId) => {
         if (currentRoom !== null) {
-            const players = currentRoom.players.filter(element => String(element._id) === String(userId));
-            if (players.length < 1) {
+            const users = currentRoom.users.filter(element => String(element._id) === String(userId));
+            if (users.length < 1) {
                 history.push('/cabinet/');
             }
         } else {
