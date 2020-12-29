@@ -1,7 +1,7 @@
-
+const {createGame} = require('../../repositories/game/gameRepository');
 
 module.exports = {
-    startGame: async () => {
-
+    startGame: async (room) => {
+        return await createGame(room);
     },
 }

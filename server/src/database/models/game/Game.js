@@ -10,10 +10,15 @@ const schema = Schema({
     status: {
         type: String,
         required: true,
-        max: 20
+        max: 20,
+        default: 'alive'
+    },
+    result: {
+        type: String,
+        max: 100
     },
     players:[{ type: Schema.Types.ObjectId, ref: 'Player' }],
-    messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
+    rounds:[{ type: Schema.Types.ObjectId, ref: 'Round' }],
     created: {
         type: Date,
         required: true,

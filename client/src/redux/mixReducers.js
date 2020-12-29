@@ -4,6 +4,7 @@ import {tokenReducer} from "./reducers/auth/tokenReducer";
 import {userInfoReducer} from "./reducers/auth/userInfoReducer";
 import {roomReducer} from "./reducers/room/roomReducer";
 import {createRoomReducer} from "./reducers/room/createRoomReducer";
+import {gameReducer} from "./reducers/game/gameReducer";
 
 export default combineReducers({
     auth: authReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
     userInfoReducer: userInfoReducer,
     roomReducer: roomReducer,
     createRoomReducer: createRoomReducer,
+    gameReducer: gameReducer,
 });

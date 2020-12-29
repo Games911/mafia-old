@@ -3,25 +3,24 @@ const { Schema } = mongoose;
 
 const schema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    },
     number: {
         type: Number,
         required: true,
-    },
-    role: {
-        type: String,
-        max: 50,
-        required: true,
+        default: 1
     },
     status: {
         type: String,
         required: true,
         max: 50,
-        default: 'alive',
+        default: 'alive'
     },
+    speaker: {
+        type: Number,
+        required: true,
+        default: 1
+    },
+    messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
+    out: [{ type: Schema.Types.ObjectId, ref: 'Player' }],
     created: {
         type: Date,
         required: true,
@@ -36,4 +35,4 @@ const schema = Schema({
     versionKey: false
 });
 
-module.exports = mongoose.model('Player', schema);
+module.exports = mongoose.model('Round', schema);

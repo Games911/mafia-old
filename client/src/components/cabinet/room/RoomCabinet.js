@@ -5,6 +5,7 @@ import {Link, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {outUser} from "../../../redux/actions/room/roomAction";
 import * as types from "../../../redux/types/room/roomType";
+import * as typesGame from "../../../redux/types/game/gameType";
 
 
 const RoomCabinet = () => {
@@ -15,25 +16,31 @@ const RoomCabinet = () => {
     const {start, currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
+    const {player} = useSelector(state => state.gameReducer);
 
     useEffect(() => {
         const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
         guardGame(currentRoom, userId)
-
         if (currentRoom !== null && currentRoom.status === 'busy') {
             setTimeout(() => {
-                ws.send(JSON.stringify({route: 'start-game', roomId: currentRoom._id}));
+                ws.send(JSON.stringify({route: 'start-game', roomId: currentRoom._id, room: currentRoom}));
             }, 1000);
         }
 
         ws.onmessage = res => {
             const data = JSON.parse(res.data);
+            console.log(data);
             if (data.route === 'start-game-event') {
                 const currentRoomId = localStorage.getItem('currentRoomId');
                 if (currentRoomId === data.roomId) {
                     dispatch({
                         type: types.ROOM_START,
                         start: true,
+                    });
+                    const player = getCurrentPlayer(data.game.players, userId);
+                    dispatch({
+                        type: typesGame.GAME_SET_PLAYER,
+                        player: player,
                     });
                 }
             }
@@ -43,6 +50,7 @@ const RoomCabinet = () => {
     const exit = () => {
         const roomId = getRoomParam();
         dispatch(outUser(roomId, userId, token));
+        console.log(player);
         history.push('/cabinet');
     };
 
@@ -66,6 +74,14 @@ const RoomCabinet = () => {
             history.push('/cabinet/');
         }
     };
+
+    const getCurrentPlayer = (players, userId) => {
+        for(const element of players) {
+            if (element.user === userId) {
+                return element;
+            }
+        }
+    }
 
     return (
         <div className="rooms-cabinet">
