@@ -8,6 +8,11 @@ let Roles = ['Mafia', 'Peacefull'];
 
 module.exports = {
     createGame: async (room) => {
+        const gameExist = (await Game.find({ room: room._id }).limit(1))[0];
+        if (gameExist) {
+            throw new Error('Room already exist');
+        }
+
         let players = [];
 
         for (const element of room.users) {

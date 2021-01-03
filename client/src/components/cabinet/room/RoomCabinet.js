@@ -6,12 +6,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {outUser} from "../../../redux/actions/room/roomAction";
 import * as types from "../../../redux/types/room/roomType";
 import * as typesGame from "../../../redux/types/game/gameType";
+import {setPlayer} from "../../../redux/actions/game/gameAction";
 
 
 const RoomCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
     const ws = new WebSocket('ws://localhost:9999');
+    let currentNumber = 1;
 
     const {start, currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
@@ -20,8 +22,9 @@ const RoomCabinet = () => {
 
     useEffect(() => {
         const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+
         guardGame(currentRoom, userId)
-        if (currentRoom !== null && currentRoom.status === 'busy') {
+        if (currentRoom !== null && currentRoom.status === 'busy' && player.length === 0) {
             setTimeout(() => {
                 ws.send(JSON.stringify({route: 'start-game', roomId: currentRoom._id, room: currentRoom}));
             }, 1000);
@@ -31,26 +34,24 @@ const RoomCabinet = () => {
             const data = JSON.parse(res.data);
             console.log(data);
             if (data.route === 'start-game-event') {
-                const currentRoomId = localStorage.getItem('currentRoomId');
-                if (currentRoomId === data.roomId) {
-                    dispatch({
-                        type: types.ROOM_START,
-                        start: true,
-                    });
-                    const player = getCurrentPlayer(data.game.players, userId);
-                    dispatch({
-                        type: typesGame.GAME_SET_PLAYER,
-                        player: player,
-                    });
+                if (data.game !== null) {
+                    const currentRoomId = localStorage.getItem('currentRoomId');
+                    if (currentRoomId === data.roomId) {
+                        dispatch({
+                            type: types.ROOM_START,
+                            start: true,
+                        });
+                        dispatch(setPlayer(data.game.players, userId));
+                        gameProcess(data.game);
+                    }
                 }
             }
         }
-    },[currentRoom]);
+    },[currentRoom, player]);
 
     const exit = () => {
         const roomId = getRoomParam();
         dispatch(outUser(roomId, userId, token));
-        console.log(player);
         history.push('/cabinet');
     };
 
@@ -75,12 +76,24 @@ const RoomCabinet = () => {
         }
     };
 
-    const getCurrentPlayer = (players, userId) => {
-        for(const element of players) {
-            if (element.user === userId) {
-                return element;
-            }
-        }
+    const isYourNumber = (number) => {
+        const player = JSON.parse(localStorage.getItem('currentPlayer'));
+        return (player.number === number) ? (<div className="you-text">You</div>) : null;
+    }
+
+    const animate = (number) => {
+        console.log(number);
+        console.log(currentNumber);
+        return (currentNumber === number) ? (<div className="you-text">Animate</div>) : null;
+    }
+
+    const gameProcess = (game) => {
+        setInterval(callInterval, 5000);
+    }
+
+    const callInterval = () => {
+        currentNumber = currentNumber + 1;
+        console.log(currentNumber);
     }
 
     return (
@@ -121,6 +134,8 @@ const RoomCabinet = () => {
             </div>
             <div className="work-block">
                 <div className="first-player">
+                    {isYourNumber(1)}
+                    {animate(1)}
                     <div>
                         1
                     </div>
@@ -128,11 +143,14 @@ const RoomCabinet = () => {
                 <div className="center-area">
                     <div className="center-area-top">
                         <div className="center-area-top-left">
+                            {isYourNumber(2)}
+                            {animate(2)}
                             <div>
                                 2
                             </div>
                         </div>
                         <div className="center-area-top-right">
+                            {isYourNumber(3)}
                             <div>
                                 3
                             </div>
@@ -145,11 +163,13 @@ const RoomCabinet = () => {
                     </div>
                     <div className="center-area-bottom">
                         <div className="center-area-bottom-left">
+                            {isYourNumber(6)}
                             <div>
                                 6
                             </div>
                         </div>
                         <div className="center-area-bottom-right">
+                            {isYourNumber(5)}
                             <div>
                                 5
                             </div>
@@ -157,6 +177,7 @@ const RoomCabinet = () => {
                     </div>
                 </div>
                 <div className="fourth-player">
+                    {isYourNumber(4)}
                     <div>
                         4
                     </div>

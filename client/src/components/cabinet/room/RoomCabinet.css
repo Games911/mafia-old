@@ -31,6 +31,7 @@
         width: 80px;
         height: 80px;
         margin-top: 180px;
+        position: relative;
     }
         .first-player div {
             font-size: 50px;
@@ -43,6 +44,7 @@
         width: 80px;
         height: 80px;
         margin-top: 180px;
+        position: relative;
     }
         .fourth-player div {
             font-size: 50px;
@@ -63,6 +65,7 @@
                 border-radius: 10px;
                 width: 80px;
                 height: 80px;
+                position: relative;
             }
                 .center-area-top-left div {
                     font-size: 50px;
@@ -73,6 +76,7 @@
                 border-radius: 10px;
                 width: 80px;
                 height: 80px;
+                position: relative;
             }
                 .center-area-top-right div {
                     font-size: 50px;
@@ -96,6 +100,7 @@
             border-radius: 10px;
             width: 80px;
             height: 80px;
+            position: relative;
         }
             .center-area-bottom-left div {
                 font-size: 50px;
@@ -106,6 +111,7 @@
             border-radius: 10px;
             width: 80px;
             height: 80px;
+            position: relative;
         }
             .center-area-bottom-right div {
                 font-size: 50px;
@@ -117,4 +123,16 @@
     }
         .input-block input{
             height: 50px;
+        }
+
+        .you-text {
+            position: absolute;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px !important;
+            font-weight: bold;
+            color: #6d4f9b;
         }

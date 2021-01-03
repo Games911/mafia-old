@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Room = require('../../../database/models/room/Room');
+const Game = require('../../../database/models/game/Game');
 const { userCountRoom } = require('../../../config/settings');
 
 module.exports = {
@@ -45,8 +46,10 @@ module.exports = {
 
     outUser: async (room, user) => {
         const newUsers = room.users.filter(element => String(element._id) !== String(user._id));
+        const isGame = (await Game.find({ room: room._id }).limit(1))[0];
+
         room.users = newUsers;
-        if (newUsers.length < Number(userCountRoom)) {
+        if (newUsers.length < Number(userCountRoom) && !isGame) {
             room.status = 'free';
         }
         await room.updateOne(room);

@@ -16,6 +16,7 @@ const socketRouter = async (server) => {
                     break;
                 case 'start-game':
                     const game = await gameController.startGame(data.room);
+                    if (game === null) returnData = null;
                     returnData = JSON.stringify({route: 'start-game-event', roomId: data.roomId, game: game});
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
