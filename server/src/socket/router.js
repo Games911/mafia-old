@@ -16,10 +16,26 @@ const socketRouter = async (server) => {
                     break;
                 case 'start-game':
                     const game = await gameController.startGame(data.room);
+                    console.log(game);
                     if (game === null) returnData = null;
-                    returnData = JSON.stringify({route: 'start-game-event', roomId: data.roomId, game: game});
+                    returnData = JSON.stringify({
+                        route: 'start-game-event',
+                        roomId: data.roomId,
+                        game: game,
+                        processMessage: null
+                    });
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
+                case "game-next":
+                    console.log('Next');
+                    const gameObject = await gameController.gameNext(data.game._id, data.roundId);
+                    returnData = JSON.stringify({
+                        route: 'start-game-event',
+                        roomId: data.roomId,
+                        game: gameObject.game,
+                        processMessage: gameObject.processMessage
+                    });
+                    webSocketServer.clients.forEach(client => client.send(returnData));
             }
         });
         ws.on("error", e => ws.send(e));

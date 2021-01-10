@@ -12,6 +12,10 @@ const schema = Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Player"
     },
+    type: {
+        type: String,
+        default: 'normal'
+    },
     created: {
         type: Date,
         required: true,

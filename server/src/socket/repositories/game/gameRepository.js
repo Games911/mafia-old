@@ -45,6 +45,14 @@ module.exports = {
         await game.save();
         return game;
     },
+
+    getGameById: async (gameId) => {
+        const game = (await Game.find({ _id: gameId }).populate('rounds').populate('players').limit(1))[0];
+        if (typeof game !== 'undefined') {
+            return game;
+        }
+        throw new Error('Game doesn\'t exist');
+    }
 };
 
 const rewriteValues = () => {

@@ -1,20 +1,13 @@
 import * as types from "../../types/game/gameType";
 
-export const setPlayer = (players, userId) =>async dispatch=>{
-    const player = await getCurrentPlayer(players, userId);
-
-    localStorage.setItem('currentPlayer', JSON.stringify(player));
-
-    dispatch({
-        type: types.GAME_SET_PLAYER,
-        player: player,
-    });
+export const setPlayer = (currentPlayer) =>async dispatch=>{
+    localStorage.setItem('currentPlayer', JSON.stringify(currentPlayer));
 }
 
-const getCurrentPlayer = async (players, userId) => {
-    for(const element of players) {
-        if (element.user === userId) {
-            return element;
-        }
-    }
+export const setCurrentRound = (rounds) =>async dispatch=>{
+    const currentRound = rounds.slice(-1)[0];
+    dispatch({
+        type: types.GAME_SET_CURRENT_ROUND,
+        round: currentRound,
+    });
 }

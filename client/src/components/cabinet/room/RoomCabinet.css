@@ -88,6 +88,14 @@
             border-radius: 30px;
             height: 300px;
         }
+            .main-chat {
+                padding: 20px;
+            }
+                .chat-system {
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 20px;
+                }
 
     .center-area-bottom {
         height: 100px;
@@ -135,4 +143,7 @@
             font-size: 14px !important;
             font-weight: bold;
             color: #6d4f9b;
+        }
+        .progress {
+            margin-top: -15px;
         }
