@@ -20,6 +20,10 @@ const schema = Schema({
         required: true,
         max: 100
     },
+    token: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Token"
+    },
     created: {
         type: Date,
         required: true,
@@ -35,7 +39,6 @@ const schema = Schema({
 });
 
 schema.path('email').validate(function (email) {
-    console.log(email);
     var emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     return emailRegex.test(email);
 }, 'Incorrect email value.')

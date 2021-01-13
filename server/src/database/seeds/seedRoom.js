@@ -46,7 +46,7 @@ const seedRoom = async () => {
         _id: new mongoose.Types.ObjectId(),
         name: 'Room1',
         status: 'free',
-        players: [user4, user5],
+        users: [user4, user5],
         createdBy: [user4],
     });
 
@@ -54,7 +54,7 @@ const seedRoom = async () => {
         _id: new mongoose.Types.ObjectId(),
         name: 'Room2',
         status: 'free',
-        players: [user6, user7],
+        users: [user6, user7],
         createdBy: [user6],
     });
 

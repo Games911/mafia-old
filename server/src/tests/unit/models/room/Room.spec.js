@@ -8,7 +8,7 @@ describe('Test mongoose Room model', () => {
             _id: '507f191e810c19729de86044',
             name: 'Room1',
             status: 'free',
-            players: [],
+            users: [],
             createdBy: [],
         };
         mockingoose(model).toReturn(_doc, 'findOne');
@@ -22,7 +22,7 @@ describe('Test mongoose Room model', () => {
             _id: '507f191e810c19729de86044',
             name: 'Room1',
             status: 'free',
-            players: [],
+            users: [],
             createdBy: [],
         };
         mockingoose(model).toReturn(_doc, 'update');
@@ -39,7 +39,7 @@ describe('Test mongoose Room model', () => {
             _id: '507f191e810c19729de86044',
             name: 'Room1',
             status: 'free',
-            players: [],
+            users: [],
             createdBy: [],
         };
         mockingoose(model).toReturn(_doc, 'findOne');

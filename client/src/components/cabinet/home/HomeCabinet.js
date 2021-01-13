@@ -6,6 +6,8 @@ import {addUser, getRooms, isBusyUser} from "../../../redux/actions/room/roomAct
 import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
 import {Link, useHistory} from "react-router-dom";
+import {formatRooms} from "../../../redux/helpers/FormatRooms";
+
 
 const HomeCabinet = () => {
     const dispatch = useDispatch();
@@ -21,6 +23,8 @@ const HomeCabinet = () => {
         isUserBusy
     } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
+    const {token} = useSelector(state => state.token);
+    const ws = new WebSocket('ws://localhost:9999');
 
     useEffect(() => {
         dispatch({
@@ -34,8 +38,30 @@ const HomeCabinet = () => {
             type: types.ROOM_RESET_MESSAGE,
             message: '',
         });
-        dispatch(getRooms(roomsOnPage));
-        dispatch(isBusyUser(userId));
+        dispatch(getRooms(token, roomsOnPage));
+        dispatch(isBusyUser(userId, token));
+
+        ws.onmessage = res => {
+            const data = JSON.parse(res.data);
+            if (data.route === 'rooms-event') {
+                const rooms = data.rooms;
+                const currentRoomId = localStorage.getItem('currentRoomId');
+                const roomsFormated = formatRooms(rooms, currentRoomId);
+                dispatch({
+                    type: types.ROOM_SET,
+                    rooms: roomsFormated,
+                });
+                dispatch({
+                    type: types.ROOM_SET_ACTUAL,
+                    actualRooms: roomsFormated.slice(0, roomsOnPage),
+                });
+                dispatch({
+                    type: types.ROOM_SET_STEP,
+                    step: roomsOnPage,
+                });
+            }
+        }
+
     },[success, currentRoomId, isUserBusy]);
 
     const moreRooms = () => {
@@ -50,20 +76,18 @@ const HomeCabinet = () => {
     };
 
     const addUserToRoom = (roomId) => {
-        dispatch(addUser(roomId, userId));
+        dispatch(addUser(roomId, userId, token));
     };
 
     const getRoomClassess = (item) => {
         const roomLonkClass = (item.status === 'free') ? 'room-link-active' : 'room-link-none';
-        const isActiveRoom = item.players.filter((player) => player._id === userId);
+        const isActiveRoom = item.users.filter((player) => player._id === userId);
         const roomUserClass = (isActiveRoom.length > 0) ? ' room-user-active' : '';
         return roomLonkClass + roomUserClass;
     }
 
-
     return (
         <div className="rooms-list">
-
             <h1>Home Cabinet</h1>
 
             {apiErrorMessage ? (
@@ -83,7 +107,7 @@ const HomeCabinet = () => {
                                 <Card.Body>
                                     <Card.Title>{item.name}</Card.Title>
                                 </Card.Body>
-                                <Card.Footer text="muted">{item.players.length} users</Card.Footer>
+                                <Card.Footer text="muted">{item.users.length} users</Card.Footer>
                             </Card>
                         </a>
                     ))}
