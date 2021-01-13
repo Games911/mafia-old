@@ -3,19 +3,25 @@ const { Schema } = mongoose;
 
 const schema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    name: {
-        type: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    number: {
+        type: Number,
         required: true,
-        unique: true,
-        max: 50
+    },
+    role: {
+        type: String,
+        max: 50,
+        required: true,
     },
     status: {
         type: String,
         required: true,
-        max: 20
+        max: 50,
+        default: 'alive',
     },
-    users:[{ type: Schema.Types.ObjectId, ref: 'User' }],
-    createdBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     created: {
         type: Date,
         required: true,
@@ -30,4 +36,4 @@ const schema = Schema({
     versionKey: false
 });
 
-module.exports = mongoose.model('Room', schema);
+module.exports = mongoose.model('Player', schema);

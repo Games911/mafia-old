@@ -3,19 +3,22 @@ const { Schema } = mongoose;
 
 const schema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    name: {
-        type: String,
-        required: true,
-        unique: true,
-        max: 50
+    room: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Room"
     },
     status: {
         type: String,
         required: true,
-        max: 20
+        max: 20,
+        default: 'alive'
     },
-    users:[{ type: Schema.Types.ObjectId, ref: 'User' }],
-    createdBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    result: {
+        type: String,
+        max: 100
+    },
+    players:[{ type: Schema.Types.ObjectId, ref: 'Player' }],
+    rounds:[{ type: Schema.Types.ObjectId, ref: 'Round' }],
     created: {
         type: Date,
         required: true,
@@ -30,4 +33,4 @@ const schema = Schema({
     versionKey: false
 });
 
-module.exports = mongoose.model('Room', schema);
+module.exports = mongoose.model('Game', schema);

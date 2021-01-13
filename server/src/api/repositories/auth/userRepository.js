@@ -28,4 +28,9 @@ module.exports = {
         }
         throw new Error('User doesn\'t exist');
     },
+
+    updateUserWithToken: async (user, tokenEntry) => {
+        user.token = tokenEntry;
+        await user.updateOne(user);
+    }
 }

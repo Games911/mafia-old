@@ -1,11 +1,16 @@
 import axios from "axios";
 import * as types from "../../types/room/roomType";
+import {formatRooms} from "../../helpers/FormatRooms";
+const ws = new WebSocket('ws://localhost:9999');
 
 
-export const getRooms = (roomsOnPage) =>async dispatch=>{
+export const getRooms = (token, roomsOnPage) =>async dispatch=>{
     axios({
         method: 'get',
-        url: 'http://localhost:9999/room'
+        url: 'http://localhost:9999/room',
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
         const rooms = response.data.rooms;
 
@@ -31,7 +36,7 @@ export const getRooms = (roomsOnPage) =>async dispatch=>{
     });
 }
 
-export const addUser = (roomId, userId) =>async dispatch=>{
+export const addUser = (roomId, userId, token) =>async dispatch=>{
     const params = new URLSearchParams();
     params.append('userId', userId);
 
@@ -43,9 +48,17 @@ export const addUser = (roomId, userId) =>async dispatch=>{
     axios({
         method: 'post',
         url: 'http://localhost:9999/room/' + roomId + '/add-user',
-        data: params
+        data: params,
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
         if (response.status === 200) {
+            ws.send(JSON.stringify({route: 'refresh-rooms'}));
+            dispatch({
+                type: types.ROOM_SET_CURRENT_ROOM,
+                room: response.data.room,
+            });
             dispatch({
                 type: types.ROOM_SUCCESS,
                 success: true,
@@ -53,6 +66,7 @@ export const addUser = (roomId, userId) =>async dispatch=>{
 
             const roomId = response.data.room._id;
             localStorage.setItem('currentRoomId', roomId);
+            localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
         }
     }).catch((error) => {
         dispatch({
@@ -62,21 +76,27 @@ export const addUser = (roomId, userId) =>async dispatch=>{
     });
 };
 
-export const outUser = (roomId, userId) =>async dispatch=>{
+export const outUser = (roomId, userId, token) =>async dispatch=>{
     axios({
         method: 'get',
-        url: 'http://localhost:9999/room/' + roomId + '/out/' + userId
+        url: 'http://localhost:9999/room/' + roomId + '/out/' + userId,
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
-
+        ws.send(JSON.stringify({route: 'refresh-rooms'}));
     }).catch((error) => {
         console.log(error.response);
     });
 };
 
-export const isBusyUser = (userId) =>async dispatch=>{
+export const isBusyUser = (userId, token) =>async dispatch=>{
     axios({
         method: 'get',
-        url: 'http://localhost:9999/room/is-user-busy/' + userId
+        url: 'http://localhost:9999/room/is-user-busy/' + userId,
+        headers: {
+            'Authorization' : `Bearer ${token}`
+        }
     }).then((response) => {
         dispatch({
             type: types.ROOM_SET_USER_BUSY,
@@ -87,17 +107,11 @@ export const isBusyUser = (userId) =>async dispatch=>{
     });
 };
 
-
-const formatRooms = (rooms, currentRoomId) => {
-    const roomsFormated = [];
-
-    for (let i = 0; i <= rooms.length - 1; i++) {
-        const current = rooms[i];
-        if (current._id === currentRoomId) {
-            roomsFormated.push(current);
-            rooms.splice(i, 1);
-        }
-    }
-    roomsFormated.push(...rooms);
-    return roomsFormated;
-};
+export const clearRoomData = () =>async dispatch=>{
+    localStorage.removeItem('currentRoomId');
+    localStorage.removeItem('currentRoom');
+    dispatch({
+        type: types.ROOM_SET_UP_CURRENT_ID,
+        id: '',
+    });
+}
