@@ -29,6 +29,11 @@ export const gameReducer = (state = initialState, action) => {
                 ...state,
                 chat: [...state.chat, action.message]
             };
+        case types.GAME_SET_CHAT_ALL:
+            return {
+                ...state,
+                chat: action.chat
+            };
         default:
             return state;
     }

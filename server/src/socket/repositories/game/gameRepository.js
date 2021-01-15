@@ -6,7 +6,7 @@ const Player = require('../../../database/models/game/Player');
 let Numbers = [1, 2];
 let Roles = ['Mafia', 'Peacefull'];
 
-module.exports = {
+const gameRepository = {
     createGame: async (room) => {
         const gameExist = (await Game.find({ room: room._id }).limit(1))[0];
         if (gameExist) {
@@ -46,14 +46,31 @@ module.exports = {
         return game;
     },
 
+    updateGameRound: async (gameId, round) => {
+        const game = await gameRepository.getGameById(gameId);
+        game.rounds.push(round);
+        await game.updateOne(game);
+    },
+
     getGameById: async (gameId) => {
         const game = (await Game.find({ _id: gameId }).populate('rounds').populate('players').limit(1))[0];
         if (typeof game !== 'undefined') {
             return game;
         }
         throw new Error('Game doesn\'t exist');
-    }
-};
+    },
+
+    rewriteValues: async () => {
+        Numbers = [1, 2];
+        Roles = ['Mafia', 'Peacefull'];
+    },
+
+    shuffle: async(arr) => {
+        return arr.sort(() => Math.round(Math.random() * 100) - 50);
+    },
+}
+
+module.exports = gameRepository;
 
 const rewriteValues = () => {
     Numbers = [1, 2];

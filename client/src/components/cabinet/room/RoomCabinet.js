@@ -5,6 +5,7 @@ import {Link, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {outUser} from "../../../redux/actions/room/roomAction";
 import * as typesGame from "../../../redux/types/game/gameType";
+import * as typesMessage from "../../../redux/types/game/messageType";
 import {setPlayer} from "../../../redux/actions/game/gameAction";
 
 
@@ -17,6 +18,7 @@ const RoomCabinet = () => {
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
     const {player, game, currentRound, chat} = useSelector(state => state.gameReducer);
+    const {messageText} = useSelector(state => state.messageReducer);
 
     useEffect(() => {
         const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
@@ -37,6 +39,12 @@ const RoomCabinet = () => {
             const data = JSON.parse(res.data);
             console.log(data);
             console.log('Start-Game-Event');
+            if (data.route === 'new-message') {
+                dispatch({
+                    type: typesGame.GAME_SET_CHAT_ALL,
+                    chat: data.round.messages,
+                });
+            }
             if (data.route === 'start-game-event') {
                 if (data.game !== null) {
                     const currentRoomId = localStorage.getItem('currentRoomId');
@@ -64,8 +72,9 @@ const RoomCabinet = () => {
                             type: typesGame.GAME_SET_CURRENT_ROUND,
                             round: currentRound,
                         });
-                        if (data.processMessage !== null) {
-                            console.log(data.processMessage);
+                        if (currentRound.status === 'chat') {
+                            chatProcess(data.game, currentPlayer, currentRound);
+                        } else if (currentRound.status === 'mafia') {
                         } else {
                             gameProcess(data.game, currentPlayer, currentRound);
                         }
@@ -130,6 +139,26 @@ const RoomCabinet = () => {
         ) : null;
     }
 
+    const blockSendBtn = () => {
+        return (!(currentRound && (currentRound.speaker === player.number || currentRound.status === 'chat')));
+    }
+
+    const onChangeMessage = (event) => {
+        dispatch({type: typesMessage.MESSAGE_CHANGE_TEXT, text: event.target.value});
+    };
+
+    const sendMessage = () => {
+        ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, messageText: messageText}));
+    }
+
+    const chatProcess = (game, player, currentRound) => {
+        console.log('Chat Process');
+        setTimeout(() => {
+            const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+            ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
+        }, 10000);
+    }
+
     const gameProcess = (game, player, currentRound) => {
         console.log('Process');
         if (currentRound.speaker === player.number) {
@@ -137,7 +166,7 @@ const RoomCabinet = () => {
             setTimeout(() => {
                 const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
                 ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
-            }, 10000);
+            }, 5000);
         }
     }
 
@@ -234,7 +263,11 @@ const RoomCabinet = () => {
                 </div>
             </div>
             <div className="input-block">
-                <Form.Input type="text" id="text" placeholder="Enter text" />
+                <Form.Input type="text" id="text" placeholder="Enter text"
+                            value={messageText}
+                            onChange={onChangeMessage}
+                />
+                <Button primary disabled={blockSendBtn()} onClick={sendMessage}>Send</Button>
             </div>
         </div>
     )
