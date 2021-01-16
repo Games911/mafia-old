@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as types from "../../types/room/roomType";
 import {formatRooms} from "../../helpers/FormatRooms";
-const ws = new WebSocket('ws://localhost:9999');
+const ws = new WebSocket('ws://localhost:8888');
 
 
 export const getRooms = (token, roomsOnPage) =>async dispatch=>{

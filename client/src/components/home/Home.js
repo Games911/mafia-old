@@ -4,7 +4,7 @@ import { Button } from 'bootstrap-4-react';
 
 const Home = () => {
 
-    const ws = new WebSocket('ws://localhost:9999');
+    const ws = new WebSocket('ws://localhost:8888');
 
     const onEvent = () => {
         ws.send(JSON.stringify({route: 'test', type: "login"}));

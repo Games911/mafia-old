@@ -12,7 +12,7 @@ import {setPlayer} from "../../../redux/actions/game/gameAction";
 const RoomCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
-    const ws = new WebSocket('ws://localhost:9999');
+    const ws = new WebSocket('ws://localhost:8888');
 
     const {currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);

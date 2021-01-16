@@ -24,7 +24,7 @@ const HomeCabinet = () => {
     } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
-    const ws = new WebSocket('ws://localhost:9999');
+    const ws = new WebSocket('ws://localhost:8888');
 
     useEffect(() => {
         dispatch({

@@ -1,7 +1,7 @@
 import {errorsResult, isRequire, maxLength, minLength, startValidation} from "../../helpers/Validation";
 import * as types from "../../types/room/createRoomType";
 import axios from "axios";
-const ws = new WebSocket('ws://localhost:9999');
+const ws = new WebSocket('ws://localhost:8888');
 
 
 export const nameValidate = (value) =>async dispatch=>{
