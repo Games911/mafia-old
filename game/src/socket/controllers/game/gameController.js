@@ -16,22 +16,30 @@ const gameController = {
         const round = await getRoundById(roundId);
         let processMessage = null;
 
-        if (Number(round.speaker) === Number(userCountRoom)) {
-            if (Number(round.number) === 1) {
-                console.log(round.status);
-                if (round.status === 'chat') {
+        switch (round.status) {
+            case 'alive':
+                if (Number(round.speaker) === Number(userCountRoom)) {
+                    await setRoundStatus(round, 'chat');
+                } else {
+                    await setNextRound(round);
+                }
+                break;
+            case 'chat':
+                if (Number(round.number) === 1) {
                     const newRound = await createRound(round.number + 1);
                     await updateGameRound(gameId, newRound);
                 } else {
-                    await setRoundStatus(round, 'chat');
+                    await setRoundStatus(round, 'mafia');
                 }
-            } else {
-                await setRoundStatus(round, 'mafia');
-            }
-        } else {
-            await setNextRound(round);
+                break;
+            case 'mafia':
+                const newRound = await createRound(round.number + 1);
+                await updateGameRound(gameId, newRound);
+                break;
         }
+
         const gameResult = await getGameById(gameId);
+        console.log(gameResult);
         return {game: gameResult, processMessage: processMessage};
     },
 

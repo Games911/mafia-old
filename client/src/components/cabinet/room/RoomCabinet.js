@@ -22,23 +22,18 @@ const RoomCabinet = () => {
 
     useEffect(() => {
         const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
-        guardGame(currentRoom, userId)
-        if (currentRoom !== null && currentRoom.status === 'busy' && player.length === 0) {
+        guardGame(currentRoom, userId);
+        if (currentRoom.status === 'busy' && player.length === 0) {
             setTimeout(() => {
-                console.log('Start-Game');
                 ws.send(JSON.stringify({route: 'start-game', roomId: currentRoom._id, room: currentRoom}));
             }, 1000);
         }
     },[currentRoom, player]);
 
     useEffect(() => {
-        ws.onopen = () => {
-            console.log('Connected')
-        };
         ws.onmessage = res => {
             const data = JSON.parse(res.data);
             console.log(data);
-            console.log('Start-Game-Event');
             if (data.route === 'new-message') {
                 dispatch({
                     type: typesGame.GAME_SET_CHAT_ALL,
@@ -72,20 +67,22 @@ const RoomCabinet = () => {
                             type: typesGame.GAME_SET_CURRENT_ROUND,
                             round: currentRound,
                         });
+
                         if (currentRound.status === 'chat') {
+                            console.log('Chat');
                             chatProcess(data.game, currentPlayer, currentRound);
                         } else if (currentRound.status === 'mafia') {
-                        } else {
+                            console.log('Mafia');
+                            mafiaProcess(data.game, currentPlayer, currentRound);
+                        } else if (currentRound.status === 'alive') {
+                            console.log('Alive');
                             gameProcess(data.game, currentPlayer, currentRound);
                         }
                     }
                 }
             }
         }
-        ws.onclose = () => {
-            console.log('Close');
-        };
-    }, [currentRound]);
+    }, []);
 
     const exit = () => {
         const roomId = getRoomParam();
@@ -151,22 +148,31 @@ const RoomCabinet = () => {
         ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, messageText: messageText}));
     }
 
-    const chatProcess = (game, player, currentRound) => {
-        console.log('Chat Process');
-        setTimeout(() => {
-            const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
-            ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
-        }, 10000);
-    }
-
     const gameProcess = (game, player, currentRound) => {
-        console.log('Process');
         if (currentRound.speaker === player.number) {
             console.log('You are playing !!!');
             setTimeout(() => {
                 const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
                 ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
-            }, 5000);
+            }, 25000);
+        }
+    }
+
+    const chatProcess = (game, player, currentRound) => {
+        if (currentRound.speaker === player.number) {
+            setTimeout(() => {
+                const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+                ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
+            }, 15000);
+        }
+    }
+
+    const mafiaProcess = (game, player, currentRound) => {
+        if (currentRound.speaker === player.number) {
+            setTimeout(() => {
+                const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
+                ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
+            }, 15000);
         }
     }
 

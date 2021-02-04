@@ -1,22 +1,29 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const User = require('../auth/User');
 
 const schema = Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    name: {
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        max: 100
+    },
+    nikname: {
         type: String,
         required: true,
         unique: true,
         max: 50
     },
-    status: {
+    password: {
         type: String,
         required: true,
-        max: 20
+        max: 100
     },
-    users:[{ type: Schema.Types.ObjectId, ref: 'User' }],
-    createdBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    token: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Token"
+    },
     created: {
         type: Date,
         required: true,
@@ -31,4 +38,9 @@ const schema = Schema({
     versionKey: false
 });
 
-module.exports = mongoose.model('Room', schema);
+schema.path('email').validate(function (email) {
+    var emailRegex = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+    return emailRegex.test(email);
+}, 'Incorrect email value.')
+
+module.exports = mongoose.model('User', schema);

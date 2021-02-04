@@ -12,7 +12,7 @@ import {formatRooms} from "../../../redux/helpers/FormatRooms";
 const HomeCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
-    const roomsOnPage = 20;
+    const roomsOnPage = 10;
     const {
         rooms,
         actualRooms,
