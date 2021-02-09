@@ -50,6 +50,7 @@ const gameRepository = {
         const game = await gameRepository.getGameById(gameId);
         game.rounds.push(round);
         await game.updateOne(game);
+        return game;
     },
 
     getGameById: async (gameId) => {

@@ -65,6 +65,7 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
             });
 
             const roomId = response.data.room._id;
+            ws.send(JSON.stringify({route: 'add-network', roomId: roomId}));
             localStorage.setItem('currentRoomId', roomId);
             localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
         }

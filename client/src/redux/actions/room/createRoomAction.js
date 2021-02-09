@@ -38,6 +38,7 @@ export const createRoom = (name, userId, token) =>async dispatch=>{
         if (response.status === 201) {
             ws.send(JSON.stringify({route: 'refresh-rooms'}));
             const roomId = response.data.room._id;
+            ws.send(JSON.stringify({route: 'add-network', roomId: roomId}));
             localStorage.setItem('currentRoomId', roomId);
             localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
             window.location.href = '/cabinet/room/' + roomId;

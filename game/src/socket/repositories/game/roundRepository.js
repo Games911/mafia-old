@@ -11,7 +11,7 @@ const roundRepository = {
         throw new Error('Round doesn\'t exist');
     },
 
-    setNextRound: async (round) => {
+    setNextSpeaker: async (round) => {
         round.speaker = round.speaker + 1;
         await round.updateOne(round);
     },

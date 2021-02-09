@@ -4,9 +4,15 @@ import {Collapse, Card, Form, Breadcrumb, Button, Container, Row, Col, Progress}
 import {Link, useHistory} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {outUser} from "../../../redux/actions/room/roomAction";
-import * as typesGame from "../../../redux/types/game/gameType";
 import * as typesMessage from "../../../redux/types/game/messageType";
-import {setPlayer} from "../../../redux/actions/game/gameAction";
+import {
+    setChat,
+    setPlayer,
+    setMessage,
+    setGame,
+    setCurrentRound,
+    clearChat
+} from "../../../redux/actions/game/gameAction";
 
 
 const RoomCabinet = () => {
@@ -34,52 +40,44 @@ const RoomCabinet = () => {
         ws.onmessage = res => {
             const data = JSON.parse(res.data);
             console.log(data);
-            if (data.route === 'new-message') {
-                dispatch({
-                    type: typesGame.GAME_SET_CHAT_ALL,
-                    chat: data.round.messages,
-                });
-            }
-            if (data.route === 'start-game-event') {
-                if (data.game !== null) {
-                    const currentRoomId = localStorage.getItem('currentRoomId');
-                    if (currentRoomId === data.roomId) {
-                        if (data.game.rounds.length === 1 && data.game.rounds[0].speaker === 1) {
-                            greetMessage();
-                        }
-                        dispatch({
-                            type: typesGame.GAME_SET_GAME,
-                            game: data.game,
-                        });
 
+            switch (data.route) {
+                case 'new-message':
+                    dispatch(setChat(data.round));
+                    break;
+                case 'game-event':
+                    if (data.game !== null) {
+                        const currentRoomId = localStorage.getItem('currentRoomId');
                         const currentRound = data.game.rounds.slice(-1)[0];
-                        const currentPlayer = getCurrentPlayer(data.game.players, userId);
 
-                        if (currentRound.number === 1) {
-                            dispatch(setPlayer(currentPlayer));
-                            dispatch({
-                                type: typesGame.GAME_SET_PLAYER,
-                                player: currentPlayer,
-                            });
-                        }
+                        if (currentRoomId === data.roomId) {
+                            if (currentRound.speaker === 1) {
+                                dispatch(clearChat());
+                            }
 
-                        dispatch({
-                            type: typesGame.GAME_SET_CURRENT_ROUND,
-                            round: currentRound,
-                        });
+                            if (currentRound.number !== 1 && currentRound.speaker === 1) {
+                                dispatch(setMessage('round' + currentRound.number, 'Round ' + currentRound.number));
+                            }
 
-                        if (currentRound.status === 'chat') {
-                            console.log('Chat');
-                            chatProcess(data.game, currentPlayer, currentRound);
-                        } else if (currentRound.status === 'mafia') {
-                            console.log('Mafia');
-                            mafiaProcess(data.game, currentPlayer, currentRound);
-                        } else if (currentRound.status === 'alive') {
-                            console.log('Alive');
-                            gameProcess(data.game, currentPlayer, currentRound);
+                            if (data.game.rounds.length === 1 && data.game.rounds[0].speaker === 1) {
+                                dispatch(setMessage('start', 'Congratulation. Game started !!!'));
+                            }
+                            if (currentRound.status === 'chat') {
+                                dispatch(setMessage('chat', 'All Chat !!!'));
+                            }
+
+                            dispatch(setGame(data.game));
+
+                            const currentPlayer = getCurrentPlayer(data.game.players, userId);
+
+                            if (currentRound.number === 1) {
+                                dispatch(setPlayer(currentPlayer));
+                            }
+
+                            dispatch(setCurrentRound(currentRound));
                         }
                     }
-                }
+                    break;
             }
         }
     }, []);
@@ -95,15 +93,6 @@ const RoomCabinet = () => {
         const locationArr = currentLocation.split('/');
         return locationArr.slice(-1)[0];
     };
-
-    const greetMessage = () => {
-        if (chat.length === 0) {
-            dispatch({
-                type: typesGame.GAME_SET_CHAT_MESSAGE,
-                message: {_id: 9999, text: 'Congratulation. Game started !!!', type: 'system'},
-            });
-        }
-    }
 
     const getCurrentPlayer = (players, userId) => {
         for(const element of players) {
@@ -129,7 +118,7 @@ const RoomCabinet = () => {
     }
 
     const animate = (number) => {
-        return (currentRound && currentRound.speaker === number) ? (
+        return (currentRound && currentRound.speaker === number && currentRound.status === 'alive') ? (
             <Progress>
                 <Progress.Bar striped animated min="0" max="100" now="100" />
             </Progress>
@@ -146,34 +135,6 @@ const RoomCabinet = () => {
 
     const sendMessage = () => {
         ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, messageText: messageText}));
-    }
-
-    const gameProcess = (game, player, currentRound) => {
-        if (currentRound.speaker === player.number) {
-            console.log('You are playing !!!');
-            setTimeout(() => {
-                const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
-                ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
-            }, 25000);
-        }
-    }
-
-    const chatProcess = (game, player, currentRound) => {
-        if (currentRound.speaker === player.number) {
-            setTimeout(() => {
-                const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
-                ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
-            }, 15000);
-        }
-    }
-
-    const mafiaProcess = (game, player, currentRound) => {
-        if (currentRound.speaker === player.number) {
-            setTimeout(() => {
-                const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
-                ws.send(JSON.stringify({route: 'game-next', game: game, roundId: currentRound._id, roomId: currentRoom._id}));
-            }, 15000);
-        }
     }
 
     return (
