@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as types from "../../types/room/roomType";
 import {formatRooms} from "../../helpers/FormatRooms";
-const ws = new WebSocket('ws://localhost:9999');
+const ws = new WebSocket('ws://localhost:8888');
 
 
 export const getRooms = (token, roomsOnPage) =>async dispatch=>{
@@ -65,6 +65,7 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
             });
 
             const roomId = response.data.room._id;
+            ws.send(JSON.stringify({route: 'add-network', roomId: roomId}));
             localStorage.setItem('currentRoomId', roomId);
             localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
         }

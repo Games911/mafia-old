@@ -4,6 +4,10 @@
     min-height: 860px;
 }
 
+#text {
+    width: 90%;
+    float: left;
+}
 
 .btn-link {
     color: #6d4f9b;
@@ -129,6 +133,11 @@
     .input-block {
         padding-top: 20px;
     }
+        .input-block .btn {
+            height: 48px;
+            margin-left: 10px;
+        }
+
         .input-block input{
             height: 50px;
         }
