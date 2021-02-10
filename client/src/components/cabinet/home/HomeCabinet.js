@@ -12,7 +12,7 @@ import {formatRooms} from "../../../redux/helpers/FormatRooms";
 const HomeCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
-    const roomsOnPage = 20;
+    const roomsOnPage = 10;
     const {
         rooms,
         actualRooms,
@@ -24,7 +24,7 @@ const HomeCabinet = () => {
     } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
-    const ws = new WebSocket('ws://localhost:9999');
+    const ws = new WebSocket('ws://localhost:8888');
 
     useEffect(() => {
         dispatch({

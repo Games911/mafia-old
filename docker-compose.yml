@@ -11,6 +11,17 @@ services:
         external_links:
             - mongo
         container_name: mafia-server
+    game:
+        build:
+            context: ./
+            dockerfile: ${PWD}/game/docker/development/Dockerfile
+        ports:
+            - "8888:8080"
+        volumes:
+            - ./game:/usr/src/app
+        external_links:
+            - mongo
+        container_name: mafia-game
     client:
         build:
             context: ./
@@ -21,6 +32,7 @@ services:
             - ./client:/usr/src/app
         depends_on:
             - server
+            - game
         container_name: mafia-client
         tty: true
     mongo:
