@@ -93,7 +93,7 @@ const socketRouter = async (server) => {
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
                 case 'send-message':
-                    const roundObject = await roundController.saveMessage(data.roundId, data.playerId, data.messageText);
+                    const roundObject = await roundController.saveMessage(data.roundId, data.playerId, data.textMessage);
                     returnData = JSON.stringify({
                         route: 'new-message',
                         round: roundObject,
