@@ -37,8 +37,19 @@
         margin-top: 180px;
         position: relative;
     }
-        .first-player div {
+        .first-player .internal-block {
             font-size: 50px;
+            text-align: center;
+        }
+        .questionare-count {
+            position: absolute;
+            background: #6d4f9b;
+            height: 25px;
+            width: 25px;
+            border-radius: 50%;
+            top: 0;
+            right: 0;
+            color: #fff;
             text-align: center;
         }
 
@@ -50,7 +61,7 @@
         margin-top: 180px;
         position: relative;
     }
-        .fourth-player div {
+        .fourth-player .internal-block {
             font-size: 50px;
             text-align: center;
         }
@@ -71,7 +82,7 @@
                 height: 80px;
                 position: relative;
             }
-                .center-area-top-left div {
+                .center-area-top-left .internal-block {
                     font-size: 50px;
                     text-align: center;
                 }
@@ -82,7 +93,7 @@
                 height: 80px;
                 position: relative;
             }
-                .center-area-top-right div {
+                .center-area-top-right .internal-block {
                     font-size: 50px;
                     text-align: center;
                 }
@@ -100,6 +111,34 @@
                     font-weight: bold;
                     font-size: 20px;
                 }
+            .questionare-block {
+                height: 170px;
+                padding: 10px;
+                border: 1px solid #6d4f9b;
+                border-radius: 30px;
+            }
+                .questionare-block-internal {
+                    display: flex;
+                    justify-content: space-around;
+                }
+                    .questionare-block-internal .questionare-block-item {
+                        height: 60px;
+                        width: 60px;
+                        background: #6d4f9b;
+                        cursor: pointer;
+                        font-size: 30px;
+                        color: #fff;
+                        text-align: center;
+                        padding-top: 5px;
+                    }
+                    .questionare-block-internal .q-inactive {
+                        cursor: auto;
+                        background: #c1b2d7;
+                    }
+                .questionare-block h4 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
 
     .center-area-bottom {
         height: 100px;
@@ -114,7 +153,7 @@
             height: 80px;
             position: relative;
         }
-            .center-area-bottom-left div {
+            .center-area-bottom-left .internal-block {
                 font-size: 50px;
                 text-align: center;
             }
@@ -125,7 +164,7 @@
             height: 80px;
             position: relative;
         }
-            .center-area-bottom-right div {
+            .center-area-bottom-right .internal-block {
                 font-size: 50px;
                 text-align: center;
             }

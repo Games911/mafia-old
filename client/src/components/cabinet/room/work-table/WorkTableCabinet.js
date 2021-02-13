@@ -37,14 +37,37 @@ const WorkTableCabinet = () => {
         ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, textMessage: textMessage}));
     }
 
+    const generateQuestionareBlock = () => {
+        const elements = [1,2,3,4,5,6];
+        return (
+            <div className="questionare-block-internal">
+                {elements.map((value, index) => {
+                    return <div key={index + 1} className="questionare-block-item">{index + 1}</div>
+                })}
+            </div>
+        )
+    }
+
+    const getQuestionareCount = () => {
+        const show = false;
+        if (show) {
+            return (
+                <div className="questionare-count">
+                    2
+                </div>
+            )
+        }
+    }
+
     return (
         <div>
             <div className="work-block">
                 <div className="first-player">
                     {isYourNumber(1)}
-                    <div>
+                    <div className="internal-block">
                         1
                     </div>
+                    {getQuestionareCount()}
                     {animate(1)}
                 </div>
                 <div className="center-area">
@@ -52,15 +75,17 @@ const WorkTableCabinet = () => {
                         <div className="center-area-top-left">
                             {isYourNumber(2)}
                             {animate(2)}
-                            <div>
+                            <div className="internal-block">
                                 2
                             </div>
+                            {getQuestionareCount()}
                         </div>
                         <div className="center-area-top-right">
                             {isYourNumber(3)}
-                            <div>
+                            <div className="internal-block">
                                 3
                             </div>
+                            {getQuestionareCount()}
                         </div>
                     </div>
                     <div className="center-area-center">
@@ -72,28 +97,35 @@ const WorkTableCabinet = () => {
                                     ))}
                                 </div>
                             ) : null}
+                            {/*<div className="questionare-block">
+                                <h4>Please choose person who should leave game</h4>
+                                {generateQuestionareBlock()}
+                            </div>*/}
                         </div>
                     </div>
                     <div className="center-area-bottom">
                         <div className="center-area-bottom-left">
                             {isYourNumber(6)}
-                            <div>
+                            <div className="internal-block">
                                 6
                             </div>
+                            {getQuestionareCount()}
                         </div>
                         <div className="center-area-bottom-right">
                             {isYourNumber(5)}
-                            <div>
+                            <div className="internal-block">
                                 5
                             </div>
+                            {getQuestionareCount()}
                         </div>
                     </div>
                 </div>
                 <div className="fourth-player">
                     {isYourNumber(4)}
-                    <div>
+                    <div className="internal-block">
                         4
                     </div>
+                    {getQuestionareCount()}
                 </div>
             </div>
             <div className="input-block">
