@@ -39,13 +39,40 @@ const WorkTableCabinet = () => {
 
     const generateQuestionareBlock = () => {
         const elements = [1,2,3,4,5,6];
-        return (
-            <div className="questionare-block-internal">
-                {elements.map((value, index) => {
-                    return <div key={index + 1} className="questionare-block-item">{index + 1}</div>
-                })}
-            </div>
-        )
+        const show = false;
+        if (show) {
+            return (
+                <div className="questionare-block">
+                    <h4>Please choose person who should leave game</h4>
+                    <div className="questionare-block-internal">
+                        {elements.map((value, index) => {
+                            return <div key={index + 1} className="questionare-block-item">{index + 1}</div>
+                        })}
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    const confirmChoise = () => {
+        const elements = [1,2,3,4,5,6];
+        const show = false;
+        if (show) {
+            return (
+                <div className="confirm-block">
+                    <h4>What should we do with?</h4>
+                    <div className="confirm-block-internal">
+                        {elements.map((value, index) => {
+                            return <div key={index + 1} className="confirm-block-item">{index + 1}</div>
+                        })}
+                    </div>
+                    <div className="confirm-block-action">
+                        <Button primary>Alive</Button>
+                        <Button danger>Remove</Button>
+                    </div>
+                </div>
+            )
+        }
     }
 
     const getQuestionareCount = () => {
@@ -97,10 +124,8 @@ const WorkTableCabinet = () => {
                                     ))}
                                 </div>
                             ) : null}
-                            {/*<div className="questionare-block">
-                                <h4>Please choose person who should leave game</h4>
-                                {generateQuestionareBlock()}
-                            </div>*/}
+                            {generateQuestionareBlock()}
+                            {confirmChoise()}
                         </div>
                     </div>
                     <div className="center-area-bottom">
