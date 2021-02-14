@@ -39,7 +39,7 @@ const RoomCabinet = () => {
     useEffect(() => {
         ws.onmessage = res => {
             const data = JSON.parse(res.data);
-            console.log(data);
+            console.log(data.game);
 
             switch (data.route) {
                 case 'new-message':
@@ -63,6 +63,9 @@ const RoomCabinet = () => {
                             }
                             if (currentRound.status === 'chat') {
                                 dispatch(setTableMessage('All Chat !!!'));
+                            }
+                            if (currentRound.status === 'poll') {
+                                dispatch(setTableMessage('Poll time !!!'));
                             }
 
                             dispatch(setGame(data.game));

@@ -1,5 +1,5 @@
 const {createGame, getGameById, updateGameRound} = require('../../repositories/game/gameRepository');
-const {getRoundById, setNextSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
+const {getRoundById, setNextSpeaker, setSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
 const { userCountRoom } = require('../../../config/settings');
 
 
@@ -19,6 +19,11 @@ const gameController = {
     gameNextSpeaker: async (gameId, roundId) => {
         const round = await getRoundById(roundId);
         await setNextSpeaker(round);
+        return await getGameById(gameId);
+    },
+    gameSetSpeaker: async (gameId, roundId, number) => {
+        const round = await getRoundById(roundId);
+        await setSpeaker(round, number);
         return await getGameById(gameId);
     },
 

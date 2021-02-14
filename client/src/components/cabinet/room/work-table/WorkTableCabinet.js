@@ -18,7 +18,10 @@ const WorkTableCabinet = () => {
     }
 
     const animate = (number) => {
-        return (currentRound && currentRound.speaker === number && currentRound.status === 'alive') ? (
+        return (
+            currentRound && currentRound.speaker === number && currentRound.status === 'alive' ||
+            currentRound && currentRound.speaker === number && currentRound.status === 'poll'
+        ) ? (
             <Progress>
                 <Progress.Bar striped animated min="0" max="100" now="100" />
             </Progress>
@@ -37,16 +40,14 @@ const WorkTableCabinet = () => {
         ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, textMessage: textMessage}));
     }
 
-    const generateQuestionareBlock = () => {
-        const elements = [1,2,3,4,5,6];
-        const show = false;
-        if (show) {
+    const generatePollBlock = () => {
+        if (currentRound && currentRound.status === 'poll' && currentRound.speaker === player.number) {
             return (
-                <div className="questionare-block">
+                <div className="poll-block">
                     <h4>Please choose person who should leave game</h4>
-                    <div className="questionare-block-internal">
-                        {elements.map((value, index) => {
-                            return <div key={index + 1} className="questionare-block-item">{index + 1}</div>
+                    <div className="poll-block-internal">
+                        {game.players.map((value, index) => {
+                            return <div key={index} className="poll-block-item">{value.number}</div>
                         })}
                     </div>
                 </div>
@@ -75,11 +76,11 @@ const WorkTableCabinet = () => {
         }
     }
 
-    const getQuestionareCount = () => {
+    const getPollCount = () => {
         const show = false;
         if (show) {
             return (
-                <div className="questionare-count">
+                <div className="poll-count">
                     2
                 </div>
             )
@@ -94,7 +95,7 @@ const WorkTableCabinet = () => {
                     <div className="internal-block">
                         1
                     </div>
-                    {getQuestionareCount()}
+                    {getPollCount()}
                     {animate(1)}
                 </div>
                 <div className="center-area">
@@ -105,14 +106,14 @@ const WorkTableCabinet = () => {
                             <div className="internal-block">
                                 2
                             </div>
-                            {getQuestionareCount()}
+                            {getPollCount()}
                         </div>
                         <div className="center-area-top-right">
                             {isYourNumber(3)}
                             <div className="internal-block">
                                 3
                             </div>
-                            {getQuestionareCount()}
+                            {getPollCount()}
                         </div>
                     </div>
                     <div className="center-area-center">
@@ -124,7 +125,7 @@ const WorkTableCabinet = () => {
                                     ))}
                                 </div>
                             ) : null}
-                            {generateQuestionareBlock()}
+                            {generatePollBlock()}
                             {confirmChoise()}
                         </div>
                     </div>
@@ -134,14 +135,14 @@ const WorkTableCabinet = () => {
                             <div className="internal-block">
                                 6
                             </div>
-                            {getQuestionareCount()}
+                            {getPollCount()}
                         </div>
                         <div className="center-area-bottom-right">
                             {isYourNumber(5)}
                             <div className="internal-block">
                                 5
                             </div>
-                            {getQuestionareCount()}
+                            {getPollCount()}
                         </div>
                     </div>
                 </div>
@@ -150,7 +151,7 @@ const WorkTableCabinet = () => {
                     <div className="internal-block">
                         4
                     </div>
-                    {getQuestionareCount()}
+                    {getPollCount()}
                 </div>
             </div>
             <div className="input-block">

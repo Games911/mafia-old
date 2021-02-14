@@ -57,6 +57,24 @@ const socketRouter = async (server) => {
                             await sleep(15000);
                             /* All Chat */
 
+                            /* Poll */
+                            for (let p = 1; p <= userCountRoom; p++) {
+                                if (p === 1) {
+                                    await gameController.gameSetStatus(game._id, currentRound._id, 'poll');
+                                    game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
+                                } else {
+                                    game = await gameController.gameNextSpeaker(game._id, currentRound._id);
+                                }
+                                returnData = JSON.stringify({
+                                    route: 'game-event',
+                                    roomId: data.roomId,
+                                    game: game,
+                                });
+                                socketSender(returnData);
+                                await sleep(15000);
+                            }
+                            /* Poll */
+
                             /* Mafia Chat */
                             if (i !== 1) {
                                 game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia');

@@ -41,7 +41,7 @@
             font-size: 50px;
             text-align: center;
         }
-        .questionare-count {
+        .poll-count {
             position: absolute;
             background: #6d4f9b;
             height: 25px;
@@ -111,17 +111,17 @@
                     font-weight: bold;
                     font-size: 20px;
                 }
-            .questionare-block {
+            .poll-block {
                 height: 170px;
                 padding: 10px;
                 border: 1px solid #6d4f9b;
                 border-radius: 30px;
             }
-                .questionare-block-internal {
+                .poll-block-internal {
                     display: flex;
                     justify-content: space-around;
                 }
-                    .questionare-block-internal .questionare-block-item {
+                    .poll-block-internal .poll-block-item {
                         height: 60px;
                         width: 60px;
                         background: #6d4f9b;
@@ -131,11 +131,11 @@
                         text-align: center;
                         padding-top: 5px;
                     }
-                    .questionare-block-internal .q-inactive {
+                    .poll-block-internal .p-inactive {
                         cursor: auto;
                         background: #c1b2d7;
                     }
-                .questionare-block h4 {
+                .poll-block h4 {
                     text-align: center;
                     margin-bottom: 20px;
                 }
