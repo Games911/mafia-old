@@ -5,6 +5,7 @@ const initialState = {
     game: null,
     currentRound: null,
     chat: [],
+    showPoll: true,
 };
 
 export const gameReducer = (state = initialState, action) => {
@@ -33,6 +34,11 @@ export const gameReducer = (state = initialState, action) => {
             return {
                 ...state,
                 chat: action.chat
+            };
+        case types.GAME_SET_SHOW_POLL:
+            return {
+                ...state,
+                showPoll: action.showPoll
             };
         default:
             return state;

@@ -50,6 +50,8 @@ const RoomCabinet = () => {
                         const currentRoomId = localStorage.getItem('currentRoomId');
                         const currentRound = data.game.rounds.slice(-1)[0];
 
+                        console.log(currentRoomId);
+                        console.log(data.roomId);
                         if (currentRoomId === data.roomId) {
                             if (currentRound.speaker === 1) {
                                 dispatch(clearChat());

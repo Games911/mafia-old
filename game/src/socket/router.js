@@ -111,11 +111,21 @@ const socketRouter = async (server) => {
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
                 case 'send-message':
-                    const roundObject = await roundController.saveMessage(data.roundId, data.playerId, data.textMessage);
+                    const roundObjectMessage = await roundController.saveMessage(data.roundId, data.playerId, data.textMessage);
                     returnData = JSON.stringify({
                         route: 'new-message',
-                        round: roundObject,
+                        round: roundObjectMessage,
                         game: data.game
+                    });
+                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    break;
+                case 'user-poll':
+                    await roundController.userPoll(data.roundId, data.playerId);
+                    const game = await gameController.getGameById(data.game._id);
+                    returnData = JSON.stringify({
+                        route: 'game-event',
+                        roomId: data.roomId,
+                        game: game
                     });
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
