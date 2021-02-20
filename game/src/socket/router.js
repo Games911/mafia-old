@@ -42,7 +42,7 @@ const socketRouter = async (server) => {
                                         game: game,
                                     });
                                     socketSender(returnData);
-                                    await sleep(10000);
+                                    await sleep(5000);
                             }
                             /* Each user message */
 
@@ -54,7 +54,7 @@ const socketRouter = async (server) => {
                                 game: game,
                             });
                             socketSender(returnData);
-                            await sleep(15000);
+                            await sleep(5000);
                             /* All Chat */
 
                             /* Poll */
@@ -69,9 +69,22 @@ const socketRouter = async (server) => {
                                     route: 'game-event',
                                     roomId: data.roomId,
                                     game: game,
+                                    pollEvent: true
                                 });
                                 socketSender(returnData);
-                                await sleep(15000);
+                                await sleep(7000);
+                            }
+
+                            game = await gameController.getGameById(game._id);
+                            const additionalPoll = await gameController.getAditionalPoll(game.players);
+                            if (additionalPoll.length > 1) {
+                                returnData = JSON.stringify({
+                                    route: 'game-event',
+                                    roomId: data.roomId,
+                                    game: game,
+                                    additionalPoll: additionalPoll
+                                });
+                                socketSender(returnData);
                             }
                             /* Poll */
 
@@ -99,15 +112,6 @@ const socketRouter = async (server) => {
                 case 'refresh-rooms':
                     const rooms = await roomController.getRooms();
                     returnData = JSON.stringify({route: 'rooms-event', rooms: rooms});
-                    webSocketServer.clients.forEach(client => client.send(returnData));
-                    break;
-                case 'game-next':
-                    const gameObject = await gameController.gameNext(data.game._id, data.roundId);
-                    returnData = JSON.stringify({
-                        route: 'start-game-event',
-                        roomId: data.roomId,
-                        game: gameObject.game,
-                    });
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;
                 case 'send-message':

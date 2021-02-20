@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Game = require('../../../database/models/game/Game');
 const Round = require('../../../database/models/game/Round');
 const Player = require('../../../database/models/game/Player');
+const {setPollZero} = require('../../repositories/game/playerRepository');
 
 let Numbers = [1, 2];
 let Roles = ['Mafia', 'Peacefull'];
@@ -51,6 +52,13 @@ const gameRepository = {
         game.rounds.push(round);
         await game.updateOne(game);
         return game;
+    },
+
+    setNullPoll: async (gameId) => {
+        let game = await gameRepository.getGameById(gameId);
+        for (const player of game.players) {
+            await setPollZero(player._id);
+        }
     },
 
     getGameById: async (gameId) => {

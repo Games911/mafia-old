@@ -1,4 +1,4 @@
-const {createGame, getGameById, updateGameRound} = require('../../repositories/game/gameRepository');
+const {createGame, getGameById, updateGameRound, setNullPoll} = require('../../repositories/game/gameRepository');
 const {getRoundById, setNextSpeaker, setSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
 const { userCountRoom } = require('../../../config/settings');
 
@@ -28,6 +28,7 @@ const gameController = {
     },
 
     gameNextRound: async (gameId, roundId) => {
+        await setNullPoll(gameId);
         const round = await getRoundById(roundId);
         const newRound = await createRound(round.number + 1);
         return await updateGameRound(gameId, newRound);
@@ -39,36 +40,29 @@ const gameController = {
         return await getGameById(gameId);
     },
 
-    gameNext: async (gameId, roundId) => {
-        const round = await getRoundById(roundId);
-        let processMessage = null;
-
-        switch (round.status) {
-            case 'alive':
-                if (Number(round.speaker) === Number(userCountRoom)) {
-                    await setRoundStatus(round, 'chat');
-                } else {
-                    await setNextSpeaker(round);
+    getAditionalPoll: async (players) => {
+        let result = [];
+        players.forEach((player) => {
+            if (result.length === 1) {
+                if (result[0].poll < player.poll) {
+                    result = [];
+                    result.push(player);
+                } else if (result[0].poll === player.poll) {
+                    result.push(player);
                 }
-                break;
-            case 'chat':
-                if (Number(round.number) === 1) {
-                    const newRound = await createRound(round.number + 1);
-                    await updateGameRound(gameId, newRound);
-                } else {
-                    await setRoundStatus(round, 'mafia');
+            } else if (result.length > 1) {
+                if (result[0].poll < player.poll) {
+                    result = [];
+                    result.push(player);
+                } else if (result[0].poll === player.poll) {
+                    result.push(player);
                 }
-                break;
-            case 'mafia':
-                const newRound = await createRound(round.number + 1);
-                await updateGameRound(gameId, newRound);
-                break;
-        }
-
-        const gameResult = await getGameById(gameId);
-        console.log(gameResult);
-        return {game: gameResult, processMessage: processMessage};
-    },
+            } else if (result.length === 0) {
+                result.push(player);
+            }
+        });
+        return result;
+    }
 
 }
 

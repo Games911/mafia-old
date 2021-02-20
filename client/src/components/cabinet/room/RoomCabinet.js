@@ -10,7 +10,7 @@ import {
     setTableMessage,
     setGame,
     setCurrentRound,
-    clearChat
+    clearChat, showPoll
 } from "../../../redux/actions/game/gameAction";
 import WorkTableCabinet from "./work-table/WorkTableCabinet";
 
@@ -39,7 +39,7 @@ const RoomCabinet = () => {
     useEffect(() => {
         ws.onmessage = res => {
             const data = JSON.parse(res.data);
-            console.log(data.game);
+            console.log(data);
 
             switch (data.route) {
                 case 'new-message':
@@ -50,8 +50,6 @@ const RoomCabinet = () => {
                         const currentRoomId = localStorage.getItem('currentRoomId');
                         const currentRound = data.game.rounds.slice(-1)[0];
 
-                        console.log(currentRoomId);
-                        console.log(data.roomId);
                         if (currentRoomId === data.roomId) {
                             if (currentRound.speaker === 1) {
                                 dispatch(clearChat());
@@ -67,6 +65,9 @@ const RoomCabinet = () => {
                                 dispatch(setTableMessage('All Chat !!!'));
                             }
                             if (currentRound.status === 'poll') {
+                                if (data.pollEvent) {
+                                    dispatch(showPoll());
+                                }
                                 dispatch(setTableMessage('Poll time !!!'));
                             }
 

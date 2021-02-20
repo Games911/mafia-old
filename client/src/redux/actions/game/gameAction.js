@@ -36,6 +36,13 @@ export const setGame = (game) =>async dispatch=>{
     });
 }
 
+export const showPoll = () =>async dispatch=>{
+    dispatch({
+        type: types.GAME_SET_SHOW_POLL,
+        showPoll: true,
+    });
+}
+
 export const setTableMessage = (message) =>async dispatch=> {
     dispatch({
         type: typesMessage.MESSAGE_SET_TABLE_MESSAGE,

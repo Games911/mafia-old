@@ -13,7 +13,12 @@ const playerRepository = {
         const player = await playerRepository.getPlayerById(playerId);
         player.poll = player.poll + 1;
         await player.updateOne(player);
-    }
+    },
+    setPollZero: async (playerId) => {
+        const player = await playerRepository.getPlayerById(playerId);
+        player.poll = 0;
+        await player.updateOne(player);
+    },
 };
 
 module.exports = playerRepository;
