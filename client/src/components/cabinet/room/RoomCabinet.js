@@ -10,7 +10,7 @@ import {
     setTableMessage,
     setGame,
     setCurrentRound,
-    clearChat, showPoll
+    clearChat, showPoll, setAddPollArr
 } from "../../../redux/actions/game/gameAction";
 import WorkTableCabinet from "./work-table/WorkTableCabinet";
 
@@ -70,6 +70,24 @@ const RoomCabinet = () => {
                                 }
                                 dispatch(setTableMessage('Poll time !!!'));
                             }
+                            if (currentRound.status === 'poll-add') {
+                                dispatch(setAddPollArr(data.addPollArr));
+                                dispatch(setTableMessage('Additional poll !!!'));
+                            }
+                            if (currentRound.status === 'poll-end') {
+                                let diedPlayers = ' | ';
+                                let message = '';
+                                if (data.addPollResult) {
+                                    data.killedPlayersArr.forEach((player) => {
+                                        diedPlayers = diedPlayers + player.number + ' | ';
+                                    });
+                                    message = 'You have killed players -> ' + diedPlayers;
+                                } else {
+                                    message = 'Everybody live!!!';
+                                }
+                                dispatch(setTableMessage(message));
+                            }
+
 
                             dispatch(setGame(data.game));
 

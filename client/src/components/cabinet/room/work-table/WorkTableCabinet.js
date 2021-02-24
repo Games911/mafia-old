@@ -10,7 +10,7 @@ const WorkTableCabinet = () => {
     const dispatch = useDispatch();
     const ws = new WebSocket('ws://localhost:8888');
 
-    const {player, game, currentRound, chat, showPoll} = useSelector(state => state.gameReducer);
+    const {player, game, currentRound, chat, showPoll, showAddPoll, addPollArr} = useSelector(state => state.gameReducer);
     const {textMessage} = useSelector(state => state.messageReducer);
 
 
@@ -21,7 +21,8 @@ const WorkTableCabinet = () => {
     const animate = (number) => {
         return (
             currentRound && currentRound.speaker === number && currentRound.status === 'alive' ||
-            currentRound && currentRound.speaker === number && currentRound.status === 'poll'
+            currentRound && currentRound.speaker === number && currentRound.status === 'poll' ||
+            currentRound && currentRound.speaker === number && currentRound.status === 'poll-add'
         ) ? (
             <Progress>
                 <Progress.Bar striped animated min="0" max="100" now="100" />
@@ -64,21 +65,25 @@ const WorkTableCabinet = () => {
         ws.send(JSON.stringify({route: 'user-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId}));
     }
 
+    const sendAddPoll = (addPollArr, value) => {
+        const currentRoomId = localStorage.getItem('currentRoomId');
+        dispatch({type: typesGame.GAME_SET_SHOW_ADD_POLL, showAddPoll: false});
+        ws.send(JSON.stringify({route: 'user-add-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, value: value}));
+    }
+
     const confirmChoise = () => {
-        const elements = [1,2,3,4,5,6];
-        const show = false;
-        if (show) {
+        if (currentRound && currentRound.status === 'poll-add' && currentRound.speaker === player.number && showAddPoll) {
             return (
                 <div className="confirm-block">
                     <h4>What should we do with?</h4>
                     <div className="confirm-block-internal">
-                        {elements.map((value, index) => {
-                            return <div key={index + 1} className="confirm-block-item">{index + 1}</div>
+                        {addPollArr.map((value, index) => {
+                            return <div key={index} className="confirm-block-item">{value.number}</div>
                         })}
                     </div>
                     <div className="confirm-block-action">
-                        <Button primary>Alive</Button>
-                        <Button danger>Remove</Button>
+                        <Button primary onClick={() => sendAddPoll(addPollArr, 0)}>Alive</Button>
+                        <Button danger onClick={() => sendAddPoll(addPollArr, 1)}>Kill all</Button>
                     </div>
                 </div>
             )

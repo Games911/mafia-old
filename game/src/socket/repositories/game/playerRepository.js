@@ -19,6 +19,11 @@ const playerRepository = {
         player.poll = 0;
         await player.updateOne(player);
     },
+    killPlayer: async (playerId) => {
+        const player = await playerRepository.getPlayerById(playerId);
+        player.status = 'kill';
+        await player.updateOne(player);
+    }
 };
 
 module.exports = playerRepository;

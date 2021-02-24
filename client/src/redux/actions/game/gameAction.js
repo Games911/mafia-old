@@ -43,6 +43,13 @@ export const showPoll = () =>async dispatch=>{
     });
 }
 
+export const setAddPollArr = (addPollArr) =>async dispatch=>{
+    dispatch({
+        type: types.GAME_SET_ADD_POLL_ARR,
+        addPollArr: addPollArr,
+    });
+}
+
 export const setTableMessage = (message) =>async dispatch=> {
     dispatch({
         type: typesMessage.MESSAGE_SET_TABLE_MESSAGE,
