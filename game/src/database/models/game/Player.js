@@ -17,6 +17,10 @@ const schema = Schema({
         max: 50,
         required: true,
     },
+    poll: {
+        type: Number,
+        default: 0,
+    },
     status: {
         type: String,
         required: true,

@@ -1,5 +1,5 @@
 const {saveMessage, getRoundById} = require('../../repositories/game/roundRepository');
-const {getPlayerById} = require('../../repositories/game/playerRepository');
+const {getPlayerById, setPlayerPoll} = require('../../repositories/game/playerRepository');
 
 
 const roundController = {
@@ -12,6 +12,10 @@ const roundController = {
             return null;
         }
     },
+    userPoll: async (roundId, playerId) => {
+        await setPlayerPoll(playerId);
+        return await getRoundById(roundId);
+    }
 }
 
 module.exports = roundController;

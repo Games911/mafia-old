@@ -29,28 +29,44 @@
     background: white;
     margin-top: 20px;
 }
+
+.died-player {
+    border: 2px solid #c73f53 !important;
+}
+
     .first-player {
-        border: 2px solid #ccc;
+        border: 2px solid #6d4f9b;
         border-radius: 10px;
         width: 80px;
         height: 80px;
         margin-top: 180px;
         position: relative;
     }
-        .first-player div {
+        .first-player .internal-block {
             font-size: 50px;
+            text-align: center;
+        }
+        .poll-count {
+            position: absolute;
+            background: #6d4f9b;
+            height: 25px;
+            width: 25px;
+            border-radius: 50%;
+            top: 0;
+            right: 0;
+            color: #fff;
             text-align: center;
         }
 
     .fourth-player {
-        border: 2px solid #ccc;
+        border: 2px solid #6d4f9b;
         border-radius: 10px;
         width: 80px;
         height: 80px;
         margin-top: 180px;
         position: relative;
     }
-        .fourth-player div {
+        .fourth-player .internal-block {
             font-size: 50px;
             text-align: center;
         }
@@ -65,24 +81,24 @@
             justify-content: space-around;
         }
             .center-area-top-left {
-                border: 2px solid #ccc;
+                border: 2px solid #6d4f9b;
                 border-radius: 10px;
                 width: 80px;
                 height: 80px;
                 position: relative;
             }
-                .center-area-top-left div {
+                .center-area-top-left .internal-block {
                     font-size: 50px;
                     text-align: center;
                 }
             .center-area-top-right {
-                border: 2px solid #ccc;
+                border: 2px solid #6d4f9b;
                 border-radius: 10px;
                 width: 80px;
                 height: 80px;
                 position: relative;
             }
-                .center-area-top-right div {
+                .center-area-top-right .internal-block {
                     font-size: 50px;
                     text-align: center;
                 }
@@ -100,6 +116,63 @@
                     font-weight: bold;
                     font-size: 20px;
                 }
+            .poll-block {
+                height: 170px;
+                padding: 10px;
+                border: 1px solid #6d4f9b;
+                border-radius: 30px;
+            }
+                .poll-block-internal {
+                    display: flex;
+                    justify-content: space-around;
+                }
+                    .poll-block-internal .poll-block-item {
+                        height: 60px;
+                        width: 60px;
+                        background: #6d4f9b;
+                        cursor: pointer;
+                        font-size: 30px;
+                        color: #fff;
+                        text-align: center;
+                        padding-top: 5px;
+                    }
+                    .poll-block-internal .p-inactive {
+                        cursor: auto;
+                        background: #c1b2d7;
+                    }
+                .poll-block h4 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+
+            .confirm-block {
+                height: 240px;
+                padding: 10px;
+                border: 1px solid #6d4f9b;
+                border-radius: 30px;
+            }
+                .confirm-block h4 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                .confirm-block .confirm-block-action {
+                    display: flex;
+                    justify-content: space-around;
+                    margin-top: 40px;
+                }
+                .confirm-block .confirm-block-internal {
+                    display: flex;
+                    justify-content: space-around;
+                }
+                    .confirm-block .confirm-block-internal .confirm-block-item {
+                        height: 60px;
+                        width: 60px;
+                        background: #6d4f9b;
+                        font-size: 30px;
+                        color: #fff;
+                        text-align: center;
+                        padding-top: 5px;
+                    }
 
     .center-area-bottom {
         height: 100px;
@@ -108,24 +181,24 @@
         justify-content: space-around;
     }
         .center-area-bottom-left {
-            border: 2px solid #ccc;
+            border: 2px solid #6d4f9b;
             border-radius: 10px;
             width: 80px;
             height: 80px;
             position: relative;
         }
-            .center-area-bottom-left div {
+            .center-area-bottom-left .internal-block {
                 font-size: 50px;
                 text-align: center;
             }
         .center-area-bottom-right {
-            border: 2px solid #ccc;
+            border: 2px solid #6d4f9b;
             border-radius: 10px;
             width: 80px;
             height: 80px;
             position: relative;
         }
-            .center-area-bottom-right div {
+            .center-area-bottom-right .internal-block {
                 font-size: 50px;
                 text-align: center;
             }
@@ -152,6 +225,19 @@
             font-size: 14px !important;
             font-weight: bold;
             color: #6d4f9b;
+        }
+        .died-player {
+            position: absolute;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            text-align: center;
+            font-size: 14px !important;
+            font-weight: bold;
+            color: #c7366f;
+            height: 22px;
         }
         .progress {
             margin-top: -15px;
