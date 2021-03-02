@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Game = require('../../../database/models/game/Game');
 const Round = require('../../../database/models/game/Round');
 const Player = require('../../../database/models/game/Player');
+const ConfirmPoll = require('../../../database/models/game/ConfirmPoll');
+const {setPollZero} = require('../../repositories/game/playerRepository');
 
 let Numbers = [1, 2];
 let Roles = ['Mafia', 'Peacefull'];
@@ -16,7 +18,7 @@ const gameRepository = {
         let players = [];
 
         for (const element of room.users) {
-            const number = shuffle(Numbers).pop();
+            const number = Numbers.shift();
             const role = shuffle(Roles).pop();
 
 
@@ -53,8 +55,15 @@ const gameRepository = {
         return game;
     },
 
+    setNullPoll: async (gameId) => {
+        let game = await gameRepository.getGameById(gameId);
+        for (const player of game.players) {
+            await setPollZero(player._id);
+        }
+    },
+
     getGameById: async (gameId) => {
-        const game = (await Game.find({ _id: gameId }).populate('rounds').populate('players').limit(1))[0];
+        const game = (await Game.find({ _id: gameId }).populate('rounds').populate('players').populate('confirmPoll').limit(1))[0];
         if (typeof game !== 'undefined') {
             return game;
         }
@@ -68,6 +77,19 @@ const gameRepository = {
 
     shuffle: async(arr) => {
         return arr.sort(() => Math.round(Math.random() * 100) - 50);
+    },
+
+    createAddPoll: async(gameId, value) => {
+        const game = await gameRepository.getGameById(gameId);
+
+        const confirmPoll = new ConfirmPoll({
+            _id: new mongoose.Types.ObjectId(),
+            solution: value
+        });
+        await confirmPoll.save();
+
+        game.confirmPoll.push(confirmPoll);
+        await game.updateOne(game);
     },
 }
 

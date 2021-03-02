@@ -19,6 +19,7 @@ const schema = Schema({
     },
     players:[{ type: Schema.Types.ObjectId, ref: 'Player' }],
     rounds:[{ type: Schema.Types.ObjectId, ref: 'Round' }],
+    confirmPoll:[{ type: Schema.Types.ObjectId, ref: 'ConfirmPoll' }],
     created: {
         type: Date,
         required: true,

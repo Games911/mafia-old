@@ -1,15 +1,21 @@
 import * as types from "../../types/game/messageType";
 
 const initialState = {
-    messageText: '',
+    textMessage: '',
+    tableMessage: 'Congratulation !!!',
 };
 
 export const messageReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.MESSAGE_CHANGE_TEXT:
+        case types.MESSAGE_CHANGE_TEXT_MESSAGE:
             return {
                 ...state,
-                messageText: action.text,
+                textMessage: action.text,
+            };
+        case types.MESSAGE_SET_TABLE_MESSAGE:
+            return {
+                ...state,
+                tableMessage: action.text,
             };
         default:
             return state;

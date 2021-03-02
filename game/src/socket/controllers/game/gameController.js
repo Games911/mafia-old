@@ -1,6 +1,6 @@
-const {createGame, getGameById, updateGameRound} = require('../../repositories/game/gameRepository');
-const {getRoundById, setNextSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
-const { userCountRoom } = require('../../../config/settings');
+const {createGame, getGameById, updateGameRound, setNullPoll, createAddPoll} = require('../../repositories/game/gameRepository');
+const {getRoundById, setNextSpeaker, setSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
+const {killPlayer, setPollZero} = require('../../repositories/game/playerRepository');
 
 
 const gameController = {
@@ -21,8 +21,14 @@ const gameController = {
         await setNextSpeaker(round);
         return await getGameById(gameId);
     },
+    gameSetSpeaker: async (gameId, roundId, number) => {
+        const round = await getRoundById(roundId);
+        await setSpeaker(round, number);
+        return await getGameById(gameId);
+    },
 
     gameNextRound: async (gameId, roundId) => {
+        await setNullPoll(gameId);
         const round = await getRoundById(roundId);
         const newRound = await createRound(round.number + 1);
         return await updateGameRound(gameId, newRound);
@@ -34,35 +40,68 @@ const gameController = {
         return await getGameById(gameId);
     },
 
-    gameNext: async (gameId, roundId) => {
-        const round = await getRoundById(roundId);
-        let processMessage = null;
+    getPollResult: async (players) => {
+        let result = [];
+        players.forEach((player) => {
+            if (result.length === 1) {
+                if (result[0].poll < player.poll) {
+                    result = [];
+                    result.push(player);
+                } else if (result[0].poll === player.poll) {
+                    result.push(player);
+                }
+            } else if (result.length > 1) {
+                if (result[0].poll < player.poll) {
+                    result = [];
+                    result.push(player);
+                } else if (result[0].poll === player.poll) {
+                    result.push(player);
+                }
+            } else if (result.length === 0) {
+                result.push(player);
+            }
+        });
+        return result;
+    },
 
-        switch (round.status) {
-            case 'alive':
-                if (Number(round.speaker) === Number(userCountRoom)) {
-                    await setRoundStatus(round, 'chat');
-                } else {
-                    await setNextSpeaker(round);
-                }
-                break;
-            case 'chat':
-                if (Number(round.number) === 1) {
-                    const newRound = await createRound(round.number + 1);
-                    await updateGameRound(gameId, newRound);
-                } else {
-                    await setRoundStatus(round, 'mafia');
-                }
-                break;
-            case 'mafia':
-                const newRound = await createRound(round.number + 1);
-                await updateGameRound(gameId, newRound);
-                break;
+    killPlayers: async (killedPlayersArr) => {
+        for (const player of killedPlayersArr) {
+            await killPlayer(player._id);
         }
+    },
 
-        const gameResult = await getGameById(gameId);
-        console.log(gameResult);
-        return {game: gameResult, processMessage: processMessage};
+    setPollZero: async (gameId) => {
+        const game = await getGameById(gameId);
+        for (const player of game.players) {
+            await setPollZero(player._id);
+        }
+    },
+
+    createAddPoll: async (gameId, value) => {
+        await createAddPoll(gameId, value);
+    },
+
+    resolveAddPoll: async (gameId, killedPlayersArr) => {
+        const game = await getGameById(gameId);
+
+        let alive = 0;
+        let kill = 0;
+        for (const confPoll of game.confirmPoll) {
+            if (confPoll.solution === 0) {
+                alive++;
+            }
+            if (confPoll.solution === 1) {
+                kill++;
+            }
+        }
+        if (alive === kill || alive > kill) {
+            return false;
+        } else {
+            for (const player of killedPlayersArr) {
+                await killPlayer(player._id);
+            }
+            return true;
+        }
     },
 
 }

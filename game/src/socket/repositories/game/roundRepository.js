@@ -15,6 +15,10 @@ const roundRepository = {
         round.speaker = round.speaker + 1;
         await round.updateOne(round);
     },
+    setSpeaker: async (round, number) => {
+        round.speaker = number;
+        await round.updateOne(round);
+    },
 
     setRoundStatus: async (round, status) => {
         round.status = status;
