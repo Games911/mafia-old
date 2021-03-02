@@ -18,7 +18,7 @@ const gameRepository = {
         let players = [];
 
         for (const element of room.users) {
-            const number = shuffle(Numbers).pop();
+            const number = Numbers.shift();
             const role = shuffle(Roles).pop();
 
 

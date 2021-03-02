@@ -1,7 +1,6 @@
 const {createGame, getGameById, updateGameRound, setNullPoll, createAddPoll} = require('../../repositories/game/gameRepository');
 const {getRoundById, setNextSpeaker, setSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
 const {killPlayer, setPollZero} = require('../../repositories/game/playerRepository');
-const { userCountRoom } = require('../../../config/settings');
 
 
 const gameController = {

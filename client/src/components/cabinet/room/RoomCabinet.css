@@ -29,8 +29,13 @@
     background: white;
     margin-top: 20px;
 }
+
+.died-player {
+    border: 2px solid #c73f53 !important;
+}
+
     .first-player {
-        border: 2px solid #ccc;
+        border: 2px solid #6d4f9b;
         border-radius: 10px;
         width: 80px;
         height: 80px;
@@ -54,7 +59,7 @@
         }
 
     .fourth-player {
-        border: 2px solid #ccc;
+        border: 2px solid #6d4f9b;
         border-radius: 10px;
         width: 80px;
         height: 80px;
@@ -76,7 +81,7 @@
             justify-content: space-around;
         }
             .center-area-top-left {
-                border: 2px solid #ccc;
+                border: 2px solid #6d4f9b;
                 border-radius: 10px;
                 width: 80px;
                 height: 80px;
@@ -87,7 +92,7 @@
                     text-align: center;
                 }
             .center-area-top-right {
-                border: 2px solid #ccc;
+                border: 2px solid #6d4f9b;
                 border-radius: 10px;
                 width: 80px;
                 height: 80px;
@@ -176,7 +181,7 @@
         justify-content: space-around;
     }
         .center-area-bottom-left {
-            border: 2px solid #ccc;
+            border: 2px solid #6d4f9b;
             border-radius: 10px;
             width: 80px;
             height: 80px;
@@ -187,7 +192,7 @@
                 text-align: center;
             }
         .center-area-bottom-right {
-            border: 2px solid #ccc;
+            border: 2px solid #6d4f9b;
             border-radius: 10px;
             width: 80px;
             height: 80px;
@@ -220,6 +225,19 @@
             font-size: 14px !important;
             font-weight: bold;
             color: #6d4f9b;
+        }
+        .died-player {
+            position: absolute;
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            top: 0;
+            text-align: center;
+            font-size: 14px !important;
+            font-weight: bold;
+            color: #c7366f;
+            height: 22px;
         }
         .progress {
             margin-top: -15px;

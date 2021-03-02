@@ -15,7 +15,7 @@ const WorkTableCabinet = () => {
 
 
     const isYourNumber = (number) => {
-        return (player && player.number === number) ? (<div className="you-text">You</div>) : null;
+        return (player && player.number === number && player.status !== 'kill') ? (<div className="you-text">You</div>) : null;
     }
 
     const animate = (number) => {
@@ -49,7 +49,7 @@ const WorkTableCabinet = () => {
                     <h4>Please choose person who should leave game</h4>
                     <div className="poll-block-internal">
                         {game.players.map((value, index) => {
-                            if (value.number !== player.number) {
+                            if (value.number !== player.number && value.status !== 'kill') {
                                 return <div key={index} className="poll-block-item" onClick={() => sendPoll(value._id)}>{value.number}</div>
                             }
                         })}
@@ -78,7 +78,9 @@ const WorkTableCabinet = () => {
                     <h4>What should we do with?</h4>
                     <div className="confirm-block-internal">
                         {addPollArr.map((value, index) => {
-                            return <div key={index} className="confirm-block-item">{value.number}</div>
+                            if (value.status !== 'kill') {
+                                return <div key={index} className="confirm-block-item">{value.number}</div>
+                            }
                         })}
                     </div>
                     <div className="confirm-block-action">
@@ -104,6 +106,21 @@ const WorkTableCabinet = () => {
         }
     }
 
+    const isDied = (number) => {
+        if (currentRound && game) {
+            return(
+                <div>
+                    {game.players.map((value, index) => {
+                        if (value.number === number && value.status === 'kill') {
+                            return <div key={index} className="died-player">Died</div>
+                        }
+                    })}
+                </div>
+            );
+
+        }
+    }
+
     return (
         <div>
             <div className="work-block">
@@ -114,6 +131,7 @@ const WorkTableCabinet = () => {
                     </div>
                     {getPollCount(1)}
                     {animate(1)}
+                    {isDied(1)}
                 </div>
                 <div className="center-area">
                     <div className="center-area-top">
@@ -124,6 +142,7 @@ const WorkTableCabinet = () => {
                                 2
                             </div>
                             {getPollCount(2)}
+                            {isDied(2)}
                         </div>
                         <div className="center-area-top-right">
                             {isYourNumber(3)}
@@ -131,6 +150,7 @@ const WorkTableCabinet = () => {
                                 3
                             </div>
                             {getPollCount(3)}
+                            {isDied(3)}
                         </div>
                     </div>
                     <div className="center-area-center">
@@ -153,6 +173,7 @@ const WorkTableCabinet = () => {
                                 6
                             </div>
                             {getPollCount(6)}
+                            {isDied(6)}
                         </div>
                         <div className="center-area-bottom-right">
                             {isYourNumber(5)}
@@ -160,6 +181,7 @@ const WorkTableCabinet = () => {
                                 5
                             </div>
                             {getPollCount(5)}
+                            {isDied(5)}
                         </div>
                     </div>
                 </div>
@@ -169,6 +191,7 @@ const WorkTableCabinet = () => {
                         4
                     </div>
                     {getPollCount(4)}
+                    {isDied(4)}
                 </div>
             </div>
             <div className="input-block">

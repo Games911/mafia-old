@@ -2,7 +2,11 @@ const WebSocket = require('ws');
 const roomController = require('./controllers/room/roomController');
 const gameController = require('./controllers/game/gameController');
 const roundController = require('./controllers/game/roundController');
-const { userCountRoom } = require('../config/settings');
+
+/*for (const [index, value] of [1, 2, 3, 4, 5].entries()) {
+    console.log(index, value);
+}*/
+
 
 const socketRouter = async (server) => {
     const webSocketServer = new WebSocket.Server({ server });
@@ -32,17 +36,18 @@ const socketRouter = async (server) => {
                             const currentRound = getCurrentRound(game);
 
                             /* Each user message */
-                            for (let c = 1; c <= userCountRoom; c++) {
-                                    if (c !== 1) {
-                                        game = await gameController.gameNextSpeaker(game._id, currentRound._id);
-                                    }
-                                    returnData = JSON.stringify({
-                                        route: 'game-event',
-                                        roomId: data.roomId,
-                                        game: game,
-                                    });
-                                    socketSender(returnData);
-                                    await sleep(5000);
+                            for (const [index, value] of game.players.entries()) {
+                                if (value.status === 'kill') continue;
+                                if (index !== 0) {
+                                    game = await gameController.gameNextSpeaker(game._id, currentRound._id);
+                                }
+                                returnData = JSON.stringify({
+                                    route: 'game-event',
+                                    roomId: data.roomId,
+                                    game: game,
+                                });
+                                socketSender(returnData);
+                                await sleep(4000);
                             }
                             /* Each user message */
 
@@ -54,12 +59,13 @@ const socketRouter = async (server) => {
                                 game: game,
                             });
                             socketSender(returnData);
-                            await sleep(5000);
+                            await sleep(4000);
                             /* All Chat */
 
                             /* Poll */
-                            for (let poll = 1; poll <= userCountRoom; poll++) {
-                                if (poll === 1) {
+                            for (const [index, value] of game.players.entries()) {
+                                if (value.status === 'kill') continue;
+                                if (index === 0) {
                                     await gameController.gameSetStatus(game._id, currentRound._id, 'poll');
                                     game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
                                 } else {
@@ -83,8 +89,10 @@ const socketRouter = async (server) => {
                             let addPollResult = true;
                             if (killedPlayersArr.length > 1) {
                                 game = await gameController.gameSetStatus(game._id, currentRound._id, 'poll-add');
-                                for (let pollAdd = 1; pollAdd <= userCountRoom; pollAdd++) {
-                                    if (pollAdd === 1) {
+
+                                for (const [index, value] of game.players.entries()) {
+                                    if (value.status === 'kill') continue;
+                                    if (index === 0) {
                                         game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
                                     } else {
                                         game = await gameController.gameNextSpeaker(game._id, currentRound._id);
@@ -111,7 +119,7 @@ const socketRouter = async (server) => {
                                 killedPlayersArr: killedPlayersArr
                             });
                             socketSender(returnData);
-                            await sleep(3000);
+                            await sleep(7000);
                             /* Additional Poll */
                             /* Poll */
 
