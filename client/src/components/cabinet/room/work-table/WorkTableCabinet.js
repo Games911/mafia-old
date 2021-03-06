@@ -15,7 +15,15 @@ const WorkTableCabinet = () => {
 
 
     const isYourNumber = (number) => {
-        return (player && player.number === number && player.status !== 'kill') ? (<div className="you-text">You</div>) : null;
+        if (player && player.number === number && player.status !== 'kill') {
+            const roleShort = (player.role === 'Mafia') ? 'M' : 'P';
+            return (<div className="you-text">You - {roleShort}</div>);
+        } else if (player && game && player.role === 'Mafia' && player.number !== number) {
+            const currentPlayer = game.players.filter((player) => player.number === number);
+            if (currentPlayer.length > 0 && currentPlayer[0].role === 'Mafia') {
+                return (<div className="you-text">M</div>);
+            }
+        }
     }
 
     const animate = (number) => {
@@ -39,7 +47,7 @@ const WorkTableCabinet = () => {
     };
 
     const sendMessage = () => {
-        ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, textMessage: textMessage}));
+        ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, textMessage: player.number + ' - ' + textMessage}));
     }
 
     const generatePollBlock = () => {
@@ -146,6 +154,7 @@ const WorkTableCabinet = () => {
                         </div>
                         <div className="center-area-top-right">
                             {isYourNumber(3)}
+                            {animate(3)}
                             <div className="internal-block">
                                 3
                             </div>

@@ -5,8 +5,8 @@ const Player = require('../../../database/models/game/Player');
 const ConfirmPoll = require('../../../database/models/game/ConfirmPoll');
 const {setPollZero} = require('../../repositories/game/playerRepository');
 
-let Numbers = [1, 2];
-let Roles = ['Mafia', 'Peacefull'];
+let Numbers = [1, 2, 3];
+let Roles = ['Mafia', 'Peacefull', 'Mafia'];
 
 const gameRepository = {
     createGame: async (room) => {

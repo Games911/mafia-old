@@ -48,7 +48,14 @@ const seedUser = async () => {
         password: passwordHash,
     });
 
-    const documents = [user1, user2, user3, user4];
+    const user5 = new User({
+        _id: new mongoose.Types.ObjectId(),
+        email: "ee@gmail.com",
+        nikname: "ee",
+        password: passwordHash,
+    });
+
+    const documents = [user1, user2, user3, user4, user5];
 
     return await User.create(documents);
 };

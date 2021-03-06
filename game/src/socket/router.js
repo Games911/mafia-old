@@ -37,17 +37,18 @@ const socketRouter = async (server) => {
 
                             /* Each user message */
                             for (const [index, value] of game.players.entries()) {
-                                if (value.status === 'kill') continue;
                                 if (index !== 0) {
                                     game = await gameController.gameNextSpeaker(game._id, currentRound._id);
                                 }
+                                if (value.status === 'kill') continue;
+
                                 returnData = JSON.stringify({
                                     route: 'game-event',
                                     roomId: data.roomId,
                                     game: game,
                                 });
                                 socketSender(returnData);
-                                await sleep(4000);
+                                await sleep(7000);
                             }
                             /* Each user message */
 
@@ -59,18 +60,19 @@ const socketRouter = async (server) => {
                                 game: game,
                             });
                             socketSender(returnData);
-                            await sleep(4000);
+                            await sleep(7000);
                             /* All Chat */
 
                             /* Poll */
                             for (const [index, value] of game.players.entries()) {
-                                if (value.status === 'kill') continue;
                                 if (index === 0) {
                                     await gameController.gameSetStatus(game._id, currentRound._id, 'poll');
                                     game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
                                 } else {
                                     game = await gameController.gameNextSpeaker(game._id, currentRound._id);
                                 }
+                                if (value.status === 'kill') continue;
+
                                 returnData = JSON.stringify({
                                     route: 'game-event',
                                     roomId: data.roomId,
@@ -91,12 +93,13 @@ const socketRouter = async (server) => {
                                 game = await gameController.gameSetStatus(game._id, currentRound._id, 'poll-add');
 
                                 for (const [index, value] of game.players.entries()) {
-                                    if (value.status === 'kill') continue;
                                     if (index === 0) {
                                         game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
                                     } else {
                                         game = await gameController.gameNextSpeaker(game._id, currentRound._id);
                                     }
+                                    if (value.status === 'kill') continue;
+
                                     returnData = JSON.stringify({
                                         route: 'game-event',
                                         roomId: data.roomId,
