@@ -8,6 +8,7 @@ const initialState = {
     showPoll: true,
     showAddPoll: true,
     addPollArr: [],
+    showMafiaPoll: true,
 };
 
 export const gameReducer = (state = initialState, action) => {
@@ -51,6 +52,11 @@ export const gameReducer = (state = initialState, action) => {
             return {
                 ...state,
                 showAddPoll: action.showAddPoll
+            };
+        case types.GAME_SET_SHOW_MAFIA_POLL:
+            return {
+                ...state,
+                showMafiaPoll: action.showMafiaPoll
             };
         default:
             return state;

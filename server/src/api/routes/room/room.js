@@ -72,18 +72,4 @@ router.get("/is-user-busy/:userId", async (req, res) => {
     }
 });
 
-/*router.get("/test", async (req, res) => {
-    try {
-        const result = await gameController.gameNext();
-        res.status(200).json({
-            message: "Rooms",
-            rooms: result
-        });
-    } catch(error) {
-        res.status(400).json({
-            message: error.message
-        });
-    }
-});*/
-
 module.exports = router;

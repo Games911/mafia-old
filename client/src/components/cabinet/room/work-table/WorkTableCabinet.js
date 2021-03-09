@@ -3,14 +3,14 @@ import '../RoomCabinet.css';
 import {Form, Button, Progress} from 'bootstrap-4-react';
 import {useDispatch, useSelector} from "react-redux";
 import * as typesMessage from "../../../../redux/types/game/messageType";
-import * as typesGame from "../../../../redux/types/game/gameType";
+import CenterPanelCabinet from "./center-panel/CenterPanelCabinet";
 
 
 const WorkTableCabinet = () => {
     const dispatch = useDispatch();
     const ws = new WebSocket('ws://localhost:8888');
 
-    const {player, game, currentRound, chat, showPoll, showAddPoll, addPollArr} = useSelector(state => state.gameReducer);
+    const {player, game, currentRound} = useSelector(state => state.gameReducer);
     const {textMessage} = useSelector(state => state.messageReducer);
 
 
@@ -30,7 +30,8 @@ const WorkTableCabinet = () => {
         return (
             currentRound && currentRound.speaker === number && currentRound.status === 'alive' ||
             currentRound && currentRound.speaker === number && currentRound.status === 'poll' ||
-            currentRound && currentRound.speaker === number && currentRound.status === 'poll-add'
+            currentRound && currentRound.speaker === number && currentRound.status === 'poll-add' ||
+            currentRound && currentRound.speaker === number && currentRound.status === 'mafia-poll'
         ) ? (
             <Progress>
                 <Progress.Bar striped animated min="0" max="100" now="100" />
@@ -39,7 +40,9 @@ const WorkTableCabinet = () => {
     }
 
     const blockSendBtn = () => {
-        return (!(currentRound && (currentRound.speaker === player.number || currentRound.status === 'chat')));
+        return (!(currentRound && (currentRound.speaker === player.number || currentRound.status === 'chat' ||
+            (currentRound.status === 'mafia' && player.role === 'Mafia')))
+        );
     }
 
     const onChangeMessage = (event) => {
@@ -48,56 +51,6 @@ const WorkTableCabinet = () => {
 
     const sendMessage = () => {
         ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, textMessage: player.number + ' - ' + textMessage}));
-    }
-
-    const generatePollBlock = () => {
-        if (currentRound && currentRound.status === 'poll' && currentRound.speaker === player.number && showPoll) {
-            return (
-                <div className="poll-block">
-                    <h4>Please choose person who should leave game</h4>
-                    <div className="poll-block-internal">
-                        {game.players.map((value, index) => {
-                            if (value.number !== player.number && value.status !== 'kill') {
-                                return <div key={index} className="poll-block-item" onClick={() => sendPoll(value._id)}>{value.number}</div>
-                            }
-                        })}
-                    </div>
-                </div>
-            )
-        }
-    }
-
-    const sendPoll = (playerId) => {
-        const currentRoomId = localStorage.getItem('currentRoomId');
-        dispatch({type: typesGame.GAME_SET_SHOW_POLL, showPoll: false});
-        ws.send(JSON.stringify({route: 'user-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId}));
-    }
-
-    const sendAddPoll = (addPollArr, value) => {
-        const currentRoomId = localStorage.getItem('currentRoomId');
-        dispatch({type: typesGame.GAME_SET_SHOW_ADD_POLL, showAddPoll: false});
-        ws.send(JSON.stringify({route: 'user-add-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, value: value}));
-    }
-
-    const confirmChoise = () => {
-        if (currentRound && currentRound.status === 'poll-add' && currentRound.speaker === player.number && showAddPoll) {
-            return (
-                <div className="confirm-block">
-                    <h4>What should we do with?</h4>
-                    <div className="confirm-block-internal">
-                        {addPollArr.map((value, index) => {
-                            if (value.status !== 'kill') {
-                                return <div key={index} className="confirm-block-item">{value.number}</div>
-                            }
-                        })}
-                    </div>
-                    <div className="confirm-block-action">
-                        <Button primary onClick={() => sendAddPoll(addPollArr, 0)}>Alive</Button>
-                        <Button danger onClick={() => sendAddPoll(addPollArr, 1)}>Kill all</Button>
-                    </div>
-                </div>
-            )
-        }
     }
 
     const getPollCount = (number) => {
@@ -162,19 +115,7 @@ const WorkTableCabinet = () => {
                             {isDied(3)}
                         </div>
                     </div>
-                    <div className="center-area-center">
-                        <div className="main-chat">
-                            {chat && chat.length > 0 ? (
-                                <div>
-                                    {chat.map(item => (
-                                        <p key={item._id} className={item.type === 'system' ? 'chat-system' : ''}>{item.text}</p>
-                                    ))}
-                                </div>
-                            ) : null}
-                            {generatePollBlock()}
-                            {confirmChoise()}
-                        </div>
-                    </div>
+                    <CenterPanelCabinet />
                     <div className="center-area-bottom">
                         <div className="center-area-bottom-left">
                             {isYourNumber(6)}

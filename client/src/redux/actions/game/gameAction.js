@@ -50,6 +50,13 @@ export const setAddPollArr = (addPollArr) =>async dispatch=>{
     });
 }
 
+export const showMafiaPoll = () =>async dispatch=>{
+    dispatch({
+        type: types.GAME_SET_SHOW_MAFIA_POLL,
+        showMafiaPoll: true,
+    });
+}
+
 export const setTableMessage = (message) =>async dispatch=> {
     dispatch({
         type: typesMessage.MESSAGE_SET_TABLE_MESSAGE,

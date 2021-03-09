@@ -48,7 +48,7 @@ const socketRouter = async (server) => {
                                     game: game,
                                 });
                                 socketSender(returnData);
-                                await sleep(7000);
+                                await sleep(3000);
                             }
                             /* Each user message */
 
@@ -60,7 +60,7 @@ const socketRouter = async (server) => {
                                 game: game,
                             });
                             socketSender(returnData);
-                            await sleep(7000);
+                            await sleep(3000);
                             /* All Chat */
 
                             /* Poll */
@@ -80,7 +80,7 @@ const socketRouter = async (server) => {
                                     pollEvent: true
                                 });
                                 socketSender(returnData);
-                                await sleep(7000);
+                                await sleep(3000);
                             }
 
                             game = await gameController.getGameById(game._id);
@@ -107,7 +107,7 @@ const socketRouter = async (server) => {
                                         addPollArr: killedPlayersArr
                                     });
                                     socketSender(returnData);
-                                    await sleep(7000);
+                                    await sleep(3000);
                                 }
                                 addPollResult = await gameController.resolveAddPoll(game._id, killedPlayersArr);
                             } else {
@@ -122,12 +122,12 @@ const socketRouter = async (server) => {
                                 killedPlayersArr: killedPlayersArr
                             });
                             socketSender(returnData);
-                            await sleep(7000);
+                            await sleep(3000);
                             /* Additional Poll */
                             /* Poll */
 
                             /* Mafia Chat */
-                            if (i !== 1) {
+                            //if (i !== 1) {
                                 game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia');
                                 returnData = JSON.stringify({
                                     route: 'game-event',
@@ -135,9 +135,29 @@ const socketRouter = async (server) => {
                                     game: game,
                                 });
                                 socketSender(returnData);
-                                await sleep(15000);
-                            }
+                                await sleep(7000);
+                            //}
                             /* Mafia Chat */
+
+                            /* Mafia poll */
+                            game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia-poll');
+                            for (const [index, value] of game.players.entries()) {
+                                if (index === 0) {
+                                    game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
+                                } else {
+                                    game = await gameController.gameNextSpeaker(game._id, currentRound._id);
+                                }
+                                if (value.role !== 'Mafia') continue;
+
+                                returnData = JSON.stringify({
+                                    route: 'game-event',
+                                    roomId: data.roomId,
+                                    game: game,
+                                });
+                                socketSender(returnData);
+                                await sleep(7000);
+                            }
+                            /* Mafia poll */
 
                             /* Set new round */
                             await gameController.gameNextRound(game._id, currentRound._id);

@@ -10,7 +10,7 @@ import {
     setTableMessage,
     setGame,
     setCurrentRound,
-    clearChat, showPoll, setAddPollArr
+    clearChat, showPoll, setAddPollArr, showMafiaPoll
 } from "../../../redux/actions/game/gameAction";
 import WorkTableCabinet from "./work-table/WorkTableCabinet";
 
@@ -86,6 +86,13 @@ const RoomCabinet = () => {
                                     message = 'Everybody live!!!';
                                 }
                                 dispatch(setTableMessage(message));
+                            }
+                            if (currentRound.status === 'mafia') {
+                                dispatch(setTableMessage('Mafia Chat !!!'));
+                            }
+                            if (currentRound.status === 'mafia-poll') {
+                                dispatch(showMafiaPoll());
+                                dispatch(setTableMessage('Mafia Poll !!!'));
                             }
 
 
