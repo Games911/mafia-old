@@ -47,17 +47,17 @@ const gameController = {
                 if (result[0].poll < player.poll) {
                     result = [];
                     result.push(player);
-                } else if (result[0].poll === player.poll) {
+                } else if (player.poll !== 0 && result[0].poll === player.poll) {
                     result.push(player);
                 }
             } else if (result.length > 1) {
                 if (result[0].poll < player.poll) {
                     result = [];
                     result.push(player);
-                } else if (result[0].poll === player.poll) {
+                } else if (player.poll !== 0 && result[0].poll === player.poll) {
                     result.push(player);
                 }
-            } else if (result.length === 0) {
+            } else if (player.poll !== 0 && result.length === 0) {
                 result.push(player);
             }
         });

@@ -88,7 +88,7 @@ const socketRouter = async (server) => {
                             await gameController.setPollZero(game._id);
 
                             /* Additional Poll */
-                            let addPollResult = true;
+                            let addPollResult = (killedPlayersArr.length > 0);
                             if (killedPlayersArr.length > 1) {
                                 game = await gameController.gameSetStatus(game._id, currentRound._id, 'poll-add');
 
@@ -157,6 +157,24 @@ const socketRouter = async (server) => {
                                 socketSender(returnData);
                                 await sleep(7000);
                             }
+
+                            game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia-result');
+                            const killedMafiaPlayersArr = await gameController.getPollResult(game.players);
+                            let mafiaPollResult = false;
+                            if (killedMafiaPlayersArr.length > 0) {
+                                await gameController.killPlayers(killedMafiaPlayersArr);
+                                mafiaPollResult = true;
+                            }
+                            await gameController.setPollZero(game._id);
+                            returnData = JSON.stringify({
+                                route: 'game-event',
+                                roomId: data.roomId,
+                                game: game,
+                                mafiaPollResult: mafiaPollResult,
+                                killedPlayersArr: killedMafiaPlayersArr
+                            });
+                            socketSender(returnData);
+                            await sleep(7000);
                             /* Mafia poll */
 
                             /* Set new round */
@@ -198,6 +216,16 @@ const socketRouter = async (server) => {
                         route: 'game-event',
                         roomId: data.roomId,
                         game: gameAddPoll
+                    });
+                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    break;
+                case 'mafia-add-poll':
+                    await roundController.userPoll(data.roundId, data.playerId);
+                    const gameMafia = await gameController.getGameById(data.game._id);
+                    returnData = JSON.stringify({
+                        route: 'game-event',
+                        roomId: data.roomId,
+                        game: gameMafia
                     });
                     webSocketServer.clients.forEach(client => client.send(returnData));
                     break;

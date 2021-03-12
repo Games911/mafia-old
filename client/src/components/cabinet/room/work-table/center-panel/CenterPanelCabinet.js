@@ -24,7 +24,9 @@ const CenterPanelCabinet = () => {
     }
 
     const sendMafiaPoll = (playerId) => {
-        console.log(playerId);
+        const currentRoomId = localStorage.getItem('currentRoomId');
+        dispatch({type: typesGame.GAME_SET_SHOW_MAFIA_POLL, showMafiaPoll: false});
+        ws.send(JSON.stringify({route: 'mafia-add-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId}));
     }
 
     const generatePollBlock = () => {
