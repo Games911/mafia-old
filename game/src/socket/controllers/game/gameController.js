@@ -40,9 +40,10 @@ const gameController = {
         return await getGameById(gameId);
     },
 
-    getPollResult: async (players) => {
+    getPollResult: async (gameId) => {
+        const game = await getGameById(gameId);
         let result = [];
-        players.forEach((player) => {
+        game.players.forEach((player) => {
             if (result.length === 1) {
                 if (result[0].poll < player.poll) {
                     result = [];

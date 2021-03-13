@@ -15,6 +15,9 @@ const roundController = {
     userPoll: async (roundId, playerId) => {
         await setPlayerPoll(playerId);
         return await getRoundById(roundId);
+    },
+    getCurrentRound: async (game) => {
+        return game.rounds.slice(-1)[0];
     }
 }
 

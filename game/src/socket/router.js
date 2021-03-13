@@ -2,11 +2,18 @@ const WebSocket = require('ws');
 const roomController = require('./controllers/room/roomController');
 const gameController = require('./controllers/game/gameController');
 const roundController = require('./controllers/game/roundController');
+const socketHelper = require('./helpers/socketHelper');
+const startGameAction = require('./socket-actions/startGameAction');
+const playerChatAction = require('./socket-actions/chat/playerChatAction');
+const allChatAction = require('./socket-actions/chat/allChatAction');
+const pollAction = require('./socket-actions/poll/pollAction');
+const additionalPollAction = require('./socket-actions/poll/additionalPollAction');
+const pollEndAction = require('./socket-actions/poll/pollEndAction');
+const mafiaChatAction = require('./socket-actions/mafia/mafiaChatAction');
+const mafiaPollAction = require('./socket-actions/mafia/mafiaPollAction');
+const mafiaResultAction = require('./socket-actions/mafia/mafiaResultAction');
 
-/*for (const [index, value] of [1, 2, 3, 4, 5].entries()) {
-    console.log(index, value);
-}*/
-
+let game = null;
 
 const socketRouter = async (server) => {
     const webSocketServer = new WebSocket.Server({ server });
@@ -16,174 +23,34 @@ const socketRouter = async (server) => {
             let returnData = null;
             switch(data.route) {
                 case 'start-game':
-                    const gameStart = await gameController.startGame(data.room);
-
-                    const sleep = m => new Promise(r => setTimeout(r, m));
-                    const socketSender = (returnData) => {
-                        webSocketServer.clients.forEach(function each(client) {
-                            if (client.readyState === WebSocket.OPEN) {
-                                client.send(returnData);
-                            }
-                        });
-                    };
-                    const getCurrentRound = (game) => {
-                        return game.rounds.slice(-1)[0];
-                    }
+                    game = await startGameAction.startGame(data.room);
 
                     await (async () => {
                         for (let i = 1; i <= 10; i++) {
-                            let game = await gameController.getGameById(gameStart._id);
-                            const currentRound = getCurrentRound(game);
+                            const currentRound = await roundController.getCurrentRound(game);
+                            await playerChatAction.invoke(game, currentRound, data.roomId, webSocketServer);
+                            await allChatAction.invoke(game, currentRound, data.roomId, webSocketServer);
 
-                            /* Each user message */
-                            for (const [index, value] of game.players.entries()) {
-                                if (index !== 0) {
-                                    game = await gameController.gameNextSpeaker(game._id, currentRound._id);
-                                }
-                                if (value.status === 'kill') continue;
-
-                                returnData = JSON.stringify({
-                                    route: 'game-event',
-                                    roomId: data.roomId,
-                                    game: game,
-                                });
-                                socketSender(returnData);
-                                await sleep(3000);
-                            }
-                            /* Each user message */
-
-                            /* All Chat */
-                            game = await gameController.gameSetStatus(game._id, currentRound._id, 'chat');
-                            returnData = JSON.stringify({
-                                route: 'game-event',
-                                roomId: data.roomId,
-                                game: game,
-                            });
-                            socketSender(returnData);
-                            await sleep(3000);
-                            /* All Chat */
-
-                            /* Poll */
-                            for (const [index, value] of game.players.entries()) {
-                                if (index === 0) {
-                                    await gameController.gameSetStatus(game._id, currentRound._id, 'poll');
-                                    game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
-                                } else {
-                                    game = await gameController.gameNextSpeaker(game._id, currentRound._id);
-                                }
-                                if (value.status === 'kill') continue;
-
-                                returnData = JSON.stringify({
-                                    route: 'game-event',
-                                    roomId: data.roomId,
-                                    game: game,
-                                    pollEvent: true
-                                });
-                                socketSender(returnData);
-                                await sleep(3000);
-                            }
-
-                            game = await gameController.getGameById(game._id);
-                            const killedPlayersArr = await gameController.getPollResult(game.players);
+                            await pollAction.invoke(game, currentRound, data.roomId, webSocketServer);
+                            const killedPlayersArr = await gameController.getPollResult(game._id);
                             await gameController.setPollZero(game._id);
 
-                            /* Additional Poll */
                             let addPollResult = (killedPlayersArr.length > 0);
                             if (killedPlayersArr.length > 1) {
-                                game = await gameController.gameSetStatus(game._id, currentRound._id, 'poll-add');
-
-                                for (const [index, value] of game.players.entries()) {
-                                    if (index === 0) {
-                                        game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
-                                    } else {
-                                        game = await gameController.gameNextSpeaker(game._id, currentRound._id);
-                                    }
-                                    if (value.status === 'kill') continue;
-
-                                    returnData = JSON.stringify({
-                                        route: 'game-event',
-                                        roomId: data.roomId,
-                                        game: game,
-                                        addPollArr: killedPlayersArr
-                                    });
-                                    socketSender(returnData);
-                                    await sleep(3000);
-                                }
+                                await additionalPollAction.invoke(game, currentRound, data.roomId, killedPlayersArr, webSocketServer);
                                 addPollResult = await gameController.resolveAddPoll(game._id, killedPlayersArr);
                             } else {
                                 await gameController.killPlayers(killedPlayersArr);
                             }
-                            game = await gameController.gameSetStatus(game._id, currentRound._id, 'poll-end');
-                            returnData = JSON.stringify({
-                                route: 'game-event',
-                                roomId: data.roomId,
-                                game: game,
-                                addPollResult: addPollResult,
-                                killedPlayersArr: killedPlayersArr
-                            });
-                            socketSender(returnData);
-                            await sleep(3000);
-                            /* Additional Poll */
-                            /* Poll */
+                            await pollEndAction.invoke(game, currentRound, data.roomId, killedPlayersArr, addPollResult, webSocketServer);
 
-                            /* Mafia Chat */
-                            //if (i !== 1) {
-                                game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia');
-                                returnData = JSON.stringify({
-                                    route: 'game-event',
-                                    roomId: data.roomId,
-                                    game: game,
-                                });
-                                socketSender(returnData);
-                                await sleep(7000);
-                            //}
-                            /* Mafia Chat */
+                            await mafiaChatAction.invoke(game, currentRound, data.roomId, webSocketServer);
+                            await mafiaPollAction.invoke(game, currentRound, data.roomId, webSocketServer);
+                            await mafiaResultAction.invoke(game, currentRound, data.roomId, webSocketServer);
 
-                            /* Mafia poll */
-                            game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia-poll');
-                            for (const [index, value] of game.players.entries()) {
-                                if (index === 0) {
-                                    game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
-                                } else {
-                                    game = await gameController.gameNextSpeaker(game._id, currentRound._id);
-                                }
-                                if (value.role !== 'Mafia') continue;
-
-                                returnData = JSON.stringify({
-                                    route: 'game-event',
-                                    roomId: data.roomId,
-                                    game: game,
-                                });
-                                socketSender(returnData);
-                                await sleep(7000);
-                            }
-
-                            game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia-result');
-                            const killedMafiaPlayersArr = await gameController.getPollResult(game.players);
-                            let mafiaPollResult = false;
-                            if (killedMafiaPlayersArr.length > 0) {
-                                await gameController.killPlayers(killedMafiaPlayersArr);
-                                mafiaPollResult = true;
-                            }
-                            await gameController.setPollZero(game._id);
-                            returnData = JSON.stringify({
-                                route: 'game-event',
-                                roomId: data.roomId,
-                                game: game,
-                                mafiaPollResult: mafiaPollResult,
-                                killedPlayersArr: killedMafiaPlayersArr
-                            });
-                            socketSender(returnData);
-                            await sleep(7000);
-                            /* Mafia poll */
-
-                            /* Set new round */
                             await gameController.gameNextRound(game._id, currentRound._id);
-                            /* Set new round */
                         }
                     })()
-
-
                     break;
                 case 'refresh-rooms':
                     const rooms = await roomController.getRooms();
@@ -201,7 +68,7 @@ const socketRouter = async (server) => {
                     break;
                 case 'user-poll':
                     await roundController.userPoll(data.roundId, data.playerId);
-                    const game = await gameController.getGameById(data.game._id);
+                    game = await gameController.getGameById(data.game._id);
                     returnData = JSON.stringify({
                         route: 'game-event',
                         roomId: data.roomId,
