@@ -1,8 +1,6 @@
 const WebSocket = require('ws');
-const roomController = require('./controllers/room/roomController');
 const gameController = require('./controllers/game/gameController');
 const roundController = require('./controllers/game/roundController');
-const socketHelper = require('./helpers/socketHelper');
 const startGameAction = require('./socket-actions/startGameAction');
 const playerChatAction = require('./socket-actions/chat/playerChatAction');
 const allChatAction = require('./socket-actions/chat/allChatAction');
@@ -12,6 +10,11 @@ const pollEndAction = require('./socket-actions/poll/pollEndAction');
 const mafiaChatAction = require('./socket-actions/mafia/mafiaChatAction');
 const mafiaPollAction = require('./socket-actions/mafia/mafiaPollAction');
 const mafiaResultAction = require('./socket-actions/mafia/mafiaResultAction');
+const refreshRoomsAction = require('./socket-actions/room/refreshRoomsAction');
+const sendMessageAction = require('./socket-actions/message/sendMessageAction');
+const userPollAction = require('./socket-actions/poll/userPollAction');
+const userAdditionalPollAction = require('./socket-actions/poll/userAdditionalPollAction');
+const mafiaSolutionAction = require('./socket-actions/mafia/mafiaSolutionAction');
 
 let game = null;
 
@@ -20,7 +23,6 @@ const socketRouter = async (server) => {
     webSocketServer.on('connection', (ws) => {
         ws.on('message', async (m) => {
             const data = JSON.parse(m);
-            let returnData = null;
             switch(data.route) {
                 case 'start-game':
                     game = await startGameAction.startGame(data.room);
@@ -53,48 +55,19 @@ const socketRouter = async (server) => {
                     })()
                     break;
                 case 'refresh-rooms':
-                    const rooms = await roomController.getRooms();
-                    returnData = JSON.stringify({route: 'rooms-event', rooms: rooms});
-                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    await refreshRoomsAction.invoke(webSocketServer);
                     break;
                 case 'send-message':
-                    const roundObjectMessage = await roundController.saveMessage(data.roundId, data.playerId, data.textMessage);
-                    returnData = JSON.stringify({
-                        route: 'new-message',
-                        round: roundObjectMessage,
-                        game: data.game
-                    });
-                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    await sendMessageAction.invoke(data.game, data.roundId, data.playerId, data.textMessage, webSocketServer);
                     break;
                 case 'user-poll':
-                    await roundController.userPoll(data.roundId, data.playerId);
-                    game = await gameController.getGameById(data.game._id);
-                    returnData = JSON.stringify({
-                        route: 'game-event',
-                        roomId: data.roomId,
-                        game: game
-                    });
-                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    await userPollAction.invoke(data.game._id, data.roundId, data.playerId, data.roomId, webSocketServer);
                     break;
                 case 'user-add-poll':
-                    const gameAddPoll = await gameController.getGameById(data.game._id);
-                    await gameController.createAddPoll(gameAddPoll._id, data.value);
-                    returnData = JSON.stringify({
-                        route: 'game-event',
-                        roomId: data.roomId,
-                        game: gameAddPoll
-                    });
-                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    await userAdditionalPollAction.invoke(data.game._id, data.value, data.roomId, webSocketServer);
                     break;
                 case 'mafia-add-poll':
-                    await roundController.userPoll(data.roundId, data.playerId);
-                    const gameMafia = await gameController.getGameById(data.game._id);
-                    returnData = JSON.stringify({
-                        route: 'game-event',
-                        roomId: data.roomId,
-                        game: gameMafia
-                    });
-                    webSocketServer.clients.forEach(client => client.send(returnData));
+                    await mafiaSolutionAction.invoke(data.game._id, data.roundId, data.playerId, data.roomId, webSocketServer);
                     break;
             }
         });
