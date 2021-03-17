@@ -19,7 +19,6 @@ const RoomCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
     const ws = new WebSocket('ws://localhost:8888');
-
     const {currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
@@ -75,16 +74,7 @@ const RoomCabinet = () => {
                                 dispatch(setTableMessage('Additional poll !!!'));
                             }
                             if (currentRound.status === 'poll-end') {
-                                let diedPlayers = ' | ';
-                                let message = '';
-                                if (data.addPollResult) {
-                                    data.killedPlayersArr.forEach((player) => {
-                                        diedPlayers = diedPlayers + player.number + '-' + player.role + ' | ';
-                                    });
-                                    message = 'You have killed players -> ' + diedPlayers;
-                                } else {
-                                    message = 'Everybody live!!!';
-                                }
+                                const message = formedKillMessage(data.addPollResult, data.killedPlayersArr);
                                 dispatch(setTableMessage(message));
                             }
                             if (currentRound.status === 'mafia') {
@@ -95,19 +85,9 @@ const RoomCabinet = () => {
                                 dispatch(setTableMessage('Mafia Poll !!!'));
                             }
                             if (currentRound.status === 'mafia-result') {
-                                let mafiaDiedPlayers = ' | ';
-                                let mafiaMessage = '';
-                                if (data.mafiaPollResult) {
-                                    data.killedPlayersArr.forEach((player) => {
-                                        mafiaDiedPlayers = mafiaDiedPlayers + player.number + '-' + player.role + ' | ';
-                                    });
-                                    mafiaMessage = 'You have killed players -> ' + mafiaDiedPlayers;
-                                } else {
-                                    mafiaMessage = 'Everybody live!!!';
-                                }
+                                const mafiaMessage = formedKillMessage(data.mafiaPollResult, data.killedPlayersArr);
                                 dispatch(setTableMessage(mafiaMessage));
                             }
-
 
                             dispatch(setGame(data.game));
 
@@ -124,6 +104,18 @@ const RoomCabinet = () => {
             }
         }
     }, []);
+
+    const formedKillMessage = (pollResult, killedPlayers) => {
+        let mafiaDiedPlayers = ' | ';
+        if (pollResult) {
+            killedPlayers.forEach((player) => {
+                mafiaDiedPlayers = mafiaDiedPlayers + player.number + '-' + player.role + ' | ';
+            });
+            return 'You have killed players -> ' + mafiaDiedPlayers;
+        } else {
+            return 'Everybody live!!!';
+        }
+    };
 
     const exit = () => {
         const roomId = getRoomParam();
