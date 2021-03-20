@@ -13,97 +13,89 @@ import {
     clearChat, showPoll, setAddPollArr, showMafiaPoll
 } from "../../../redux/actions/game/gameAction";
 import WorkTableCabinet from "./work-table/WorkTableCabinet";
+import {io} from "socket.io-client";
 
 
 const RoomCabinet = () => {
     const dispatch = useDispatch();
     let history = useHistory();
-    const ws = new WebSocket('ws://localhost:8888');
     const {currentRoom} = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
     const {player} = useSelector(state => state.gameReducer);
     const {tableMessage} = useSelector(state => state.messageReducer);
 
+    const socket = io("http://localhost:8888");
+    socket.on("connect", () => {
+        console.log(socket.id);
+    });
+    socket.on("new-message", (data) => {
+        dispatch(setChat(data.round));
+    });
+    socket.on("game-event", (data) => {
+        console.log(data);
+        if (data.game !== null) {
+            const currentRoomId = localStorage.getItem('currentRoomId');
+            const currentRound = data.game.rounds.slice(-1)[0];
+
+            if (currentRoomId === data.roomId) {
+                dispatch(setGame(data.game));
+                const currentPlayer = getCurrentPlayer(data.game.players, userId);
+                if (currentRound.number === 1) {
+                    dispatch(setPlayer(currentPlayer));
+                }
+                dispatch(setCurrentRound(currentRound));
+                if (currentRound.speaker === 1) {
+                    dispatch(clearChat());
+                }
+
+                if (data.game.rounds.length === 1 && data.game.rounds[0].speaker === 1) {
+                    dispatch(setTableMessage('Congratulation. Game started !!!'));
+                }
+                if (currentRound.number !== 1 && currentRound.speaker === 1) {
+                    dispatch(setTableMessage('Round ' + currentRound.number));
+                }
+                if (currentRound.status === 'chat') {
+                    dispatch(setTableMessage('All Chat !!!'));
+                }
+                if (currentRound.status === 'poll') {
+                    if (data.pollEvent) {
+                        dispatch(showPoll());
+                    }
+                    dispatch(setTableMessage('Poll time !!!'));
+                }
+                if (currentRound.status === 'poll-add') {
+                    dispatch(setAddPollArr(data.addPollArr));
+                    dispatch(setTableMessage('Additional poll !!!'));
+                }
+                if (currentRound.status === 'poll-end') {
+                    const message = formedKillMessage(data.addPollResult, data.killedPlayersArr);
+                    dispatch(setTableMessage(message));
+                }
+                if (currentRound.status === 'mafia') {
+                    dispatch(setTableMessage('Mafia Chat !!!'));
+                }
+                if (currentRound.status === 'mafia-poll') {
+                    dispatch(showMafiaPoll());
+                    dispatch(setTableMessage('Mafia Poll !!!'));
+                }
+                if (currentRound.status === 'mafia-result') {
+                    const mafiaMessage = formedKillMessage(data.mafiaPollResult, data.killedPlayersArr);
+                    dispatch(setTableMessage(mafiaMessage));
+                }
+            }
+        }
+    });
+
     useEffect(() => {
         const currentRoom = JSON.parse(localStorage.getItem('currentRoom'));
         guardGame(currentRoom, userId);
         if (currentRoom.status === 'busy' && player.length === 0) {
             setTimeout(() => {
-                ws.send(JSON.stringify({route: 'start-game', roomId: currentRoom._id, room: currentRoom}));
+                socket.emit("start-game", {roomId: currentRoom._id});
             }, 1000);
         }
     },[currentRoom, player]);
-
-    useEffect(() => {
-        ws.onmessage = res => {
-            const data = JSON.parse(res.data);
-            console.log(data);
-
-            switch (data.route) {
-                case 'new-message':
-                    dispatch(setChat(data.round));
-                    break;
-                case 'game-event':
-                    if (data.game !== null) {
-                        const currentRoomId = localStorage.getItem('currentRoomId');
-                        const currentRound = data.game.rounds.slice(-1)[0];
-
-                        if (currentRoomId === data.roomId) {
-                            if (currentRound.speaker === 1) {
-                                dispatch(clearChat());
-                            }
-
-                            if (currentRound.number !== 1 && currentRound.speaker === 1) {
-                                dispatch(setTableMessage('Round ' + currentRound.number));
-                            }
-                            if (data.game.rounds.length === 1 && data.game.rounds[0].speaker === 1) {
-                                dispatch(setTableMessage('Congratulation. Game started !!!'));
-                            }
-                            if (currentRound.status === 'chat') {
-                                dispatch(setTableMessage('All Chat !!!'));
-                            }
-                            if (currentRound.status === 'poll') {
-                                if (data.pollEvent) {
-                                    dispatch(showPoll());
-                                }
-                                dispatch(setTableMessage('Poll time !!!'));
-                            }
-                            if (currentRound.status === 'poll-add') {
-                                dispatch(setAddPollArr(data.addPollArr));
-                                dispatch(setTableMessage('Additional poll !!!'));
-                            }
-                            if (currentRound.status === 'poll-end') {
-                                const message = formedKillMessage(data.addPollResult, data.killedPlayersArr);
-                                dispatch(setTableMessage(message));
-                            }
-                            if (currentRound.status === 'mafia') {
-                                dispatch(setTableMessage('Mafia Chat !!!'));
-                            }
-                            if (currentRound.status === 'mafia-poll') {
-                                dispatch(showMafiaPoll());
-                                dispatch(setTableMessage('Mafia Poll !!!'));
-                            }
-                            if (currentRound.status === 'mafia-result') {
-                                const mafiaMessage = formedKillMessage(data.mafiaPollResult, data.killedPlayersArr);
-                                dispatch(setTableMessage(mafiaMessage));
-                            }
-
-                            dispatch(setGame(data.game));
-
-                            const currentPlayer = getCurrentPlayer(data.game.players, userId);
-
-                            if (currentRound.number === 1) {
-                                dispatch(setPlayer(currentPlayer));
-                            }
-
-                            dispatch(setCurrentRound(currentRound));
-                        }
-                    }
-                    break;
-            }
-        }
-    }, []);
 
     const formedKillMessage = (pollResult, killedPlayers) => {
         let mafiaDiedPlayers = ' | ';

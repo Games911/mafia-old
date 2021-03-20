@@ -3,8 +3,8 @@ const socketHelper = require('../../helpers/socketHelper');
 
 // mafia results
 const mafiaResultAction = {
-    invoke: async (game, currentRound, roomId, webSocketServer) => {
-        game = await gameController.gameSetStatus(game._id, currentRound._id, 'mafia-result');
+    invoke: async (game, roundId, roomId, socket) => {
+        game = await gameController.gameSetStatus(game._id, roundId, 'mafia-result');
         const killedMafiaPlayersArr = await gameController.getPollResult(game._id);
         let mafiaPollResult = false;
         if (killedMafiaPlayersArr.length > 0) {
@@ -12,14 +12,8 @@ const mafiaResultAction = {
             mafiaPollResult = true;
         }
         await gameController.setPollZero(game._id);
-        const returnData = JSON.stringify({
-            route: 'game-event',
-            roomId: roomId,
-            game: game,
-            mafiaPollResult: mafiaPollResult,
-            killedPlayersArr: killedMafiaPlayersArr
-        });
-        await socketHelper.socketSender(webSocketServer, returnData);
+
+        socket.broadcast.emit('game-event', {roomId: roomId, game: game, mafiaPollResult: mafiaPollResult, killedPlayersArr: killedMafiaPlayersArr});
         await socketHelper.sleep(7000);
     },
 }

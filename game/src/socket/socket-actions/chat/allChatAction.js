@@ -3,14 +3,9 @@ const socketHelper = require('../../helpers/socketHelper');
 
 // All chat
 const allChatAction = {
-    invoke: async (game, currentRound, roomId, webSocketServer) => {
-        game = await gameController.gameSetStatus(game._id, currentRound._id, 'chat');
-        const returnData = JSON.stringify({
-            route: 'game-event',
-            roomId: roomId,
-            game: game,
-        });
-        await socketHelper.socketSender(webSocketServer, returnData);
+    invoke: async (game, roundId, roomId, socket) => {
+        game = await gameController.gameSetStatus(game._id, roundId, 'chat');
+        socket.broadcast.emit('game-event', {roomId: roomId, game: game});
         await socketHelper.sleep(4000);
     },
 }

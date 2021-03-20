@@ -3,13 +3,13 @@ const socketHelper = require('../../helpers/socketHelper');
 
 // additional poll for each player
 const additionalPollAction = {
-    invoke: async (game, currentRound, roomId, killedPlayersArr, webSocketServer) => {
-        game = await gameController.gameSetStatus(game._id, currentRound._id, 'poll-add');
-        game = await gameController.gameSetSpeaker(game._id, currentRound._id, 1);
+    invoke: async (game, roundId, roomId, killedPlayersArr, socket) => {
+        game = await gameController.gameSetStatus(game._id, roundId, 'poll-add');
+        game = await gameController.gameSetSpeaker(game._id, roundId, 1);
 
         for (const [index, value] of game.players.entries()) {
             if (index !== 0) {
-                game = await gameController.gameNextSpeaker(game._id, currentRound._id);
+                game = await gameController.gameNextSpeaker(game._id, roundId);
             }
             if (value.status === 'kill') continue;
 
@@ -19,7 +19,8 @@ const additionalPollAction = {
                 game: game,
                 addPollArr: killedPlayersArr
             });
-            await socketHelper.socketSender(webSocketServer, returnData);
+
+            socket.broadcast.emit('game-event', {roomId: roomId, game: game, addPollArr: killedPlayersArr});
             await socketHelper.sleep(3000);
         }
     },

@@ -5,11 +5,15 @@ import {useDispatch, useSelector} from "react-redux";
 import * as typesMessage from "../../../../redux/types/game/messageType";
 import CenterPanelCabinet from "./center-panel/CenterPanelCabinet";
 import PlayerPanelCabinet from "./player-panel/PlayerPanelCabinet";
+import {io} from "socket.io-client";
 
 
 const WorkTableCabinet = () => {
     const dispatch = useDispatch();
-    const ws = new WebSocket('ws://localhost:8888');
+    const socket = io("http://localhost:8888");
+    socket.on("connect", () => {
+        console.log(socket.id);
+    });
 
     const {player, game, currentRound} = useSelector(state => state.gameReducer);
     const {textMessage} = useSelector(state => state.messageReducer);
@@ -25,7 +29,7 @@ const WorkTableCabinet = () => {
     };
 
     const sendMessage = () => {
-        ws.send(JSON.stringify({route: 'send-message', game: game, roundId: currentRound._id, playerId: player._id, textMessage: player.number + ' - ' + textMessage}));
+        socket.emit("send-message", {game: game, roundId: currentRound._id, playerId: player._id, textMessage: player.number + ' - ' + textMessage});
     }
 
     return (

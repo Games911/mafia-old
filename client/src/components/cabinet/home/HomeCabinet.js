@@ -7,6 +7,7 @@ import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
 import {Link, useHistory} from "react-router-dom";
 import {formatRooms} from "../../../redux/helpers/FormatRooms";
+import {io} from "socket.io-client";
 
 
 const HomeCabinet = () => {
@@ -24,7 +25,28 @@ const HomeCabinet = () => {
     } = useSelector(state => state.roomReducer);
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
-    const ws = new WebSocket('ws://localhost:8888');
+
+    const socket = io("http://localhost:8888");
+    socket.on("connect", () => {
+        console.log(socket.id);
+    });
+    socket.on("rooms-event", (data) => {
+        const rooms = data.rooms;
+        const currentRoomId = localStorage.getItem('currentRoomId');
+        const roomsFormated = formatRooms(rooms, currentRoomId);
+        dispatch({
+            type: types.ROOM_SET,
+            rooms: roomsFormated,
+        });
+        dispatch({
+            type: types.ROOM_SET_ACTUAL,
+            actualRooms: roomsFormated.slice(0, roomsOnPage),
+        });
+        dispatch({
+            type: types.ROOM_SET_STEP,
+            step: roomsOnPage,
+        });
+    });
 
     useEffect(() => {
         dispatch({
@@ -40,28 +62,6 @@ const HomeCabinet = () => {
         });
         dispatch(getRooms(token, roomsOnPage));
         dispatch(isBusyUser(userId, token));
-
-        ws.onmessage = res => {
-            const data = JSON.parse(res.data);
-            if (data.route === 'rooms-event') {
-                const rooms = data.rooms;
-                const currentRoomId = localStorage.getItem('currentRoomId');
-                const roomsFormated = formatRooms(rooms, currentRoomId);
-                dispatch({
-                    type: types.ROOM_SET,
-                    rooms: roomsFormated,
-                });
-                dispatch({
-                    type: types.ROOM_SET_ACTUAL,
-                    actualRooms: roomsFormated.slice(0, roomsOnPage),
-                });
-                dispatch({
-                    type: types.ROOM_SET_STEP,
-                    step: roomsOnPage,
-                });
-            }
-        }
-
     },[success, currentRoomId, isUserBusy]);
 
     const moreRooms = () => {

@@ -3,30 +3,34 @@ import '../../RoomCabinet.css';
 import {Button} from 'bootstrap-4-react';
 import {useDispatch, useSelector} from "react-redux";
 import * as typesGame from "../../../../../redux/types/game/gameType";
+import {io} from "socket.io-client";
 
 
 const CenterPanelCabinet = () => {
     const dispatch = useDispatch();
-    const ws = new WebSocket('ws://localhost:8888');
+    const socket = io("http://localhost:8888");
+    socket.on("connect", () => {
+        console.log(socket.id);
+    });
 
     const {player, game, currentRound, chat, showPoll, showAddPoll, addPollArr, showMafiaPoll} = useSelector(state => state.gameReducer);
 
     const sendPoll = (playerId) => {
         const currentRoomId = localStorage.getItem('currentRoomId');
         dispatch({type: typesGame.GAME_SET_SHOW_POLL, showPoll: false});
-        ws.send(JSON.stringify({route: 'user-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId}));
+        socket.emit("user-poll", {game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId});
     }
 
     const sendAddPoll = (addPollArr, value) => {
         const currentRoomId = localStorage.getItem('currentRoomId');
         dispatch({type: typesGame.GAME_SET_SHOW_ADD_POLL, showAddPoll: false});
-        ws.send(JSON.stringify({route: 'user-add-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, value: value}));
+        socket.emit("user-add-poll", {game: game, roundId: currentRound._id, roomId: currentRoomId, value: value});
     }
 
     const sendMafiaPoll = (playerId) => {
         const currentRoomId = localStorage.getItem('currentRoomId');
         dispatch({type: typesGame.GAME_SET_SHOW_MAFIA_POLL, showMafiaPoll: false});
-        ws.send(JSON.stringify({route: 'mafia-add-poll', game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId}));
+        socket.emit("mafia-add-poll", {game: game, roundId: currentRound._id, roomId: currentRoomId, playerId: playerId});
     }
 
     const generatePollBlock = () => {

@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as types from "../../types/room/roomType";
 import {formatRooms} from "../../helpers/FormatRooms";
-const ws = new WebSocket('ws://localhost:8888');
+import {io} from "socket.io-client";
 
 
 export const getRooms = (token, roomsOnPage) =>async dispatch=>{
@@ -54,7 +54,11 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
         }
     }).then((response) => {
         if (response.status === 200) {
-            ws.send(JSON.stringify({route: 'refresh-rooms'}));
+            const socket = io("http://localhost:8888");
+            socket.on("connect", () => {
+                socket.emit('refresh-rooms');
+            });
+
             dispatch({
                 type: types.ROOM_SET_CURRENT_ROOM,
                 room: response.data.room,
@@ -65,7 +69,6 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
             });
 
             const roomId = response.data.room._id;
-            ws.send(JSON.stringify({route: 'add-network', roomId: roomId}));
             localStorage.setItem('currentRoomId', roomId);
             localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
         }
@@ -85,7 +88,10 @@ export const outUser = (roomId, userId, token) =>async dispatch=>{
             'Authorization' : `Bearer ${token}`
         }
     }).then((response) => {
-        ws.send(JSON.stringify({route: 'refresh-rooms'}));
+        const socket = io("http://localhost:8888");
+        socket.on("connect", () => {
+            socket.emit('refresh-rooms');
+        });
     }).catch((error) => {
         console.log(error.response);
     });

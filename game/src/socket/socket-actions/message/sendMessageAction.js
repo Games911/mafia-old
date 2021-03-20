@@ -1,15 +1,9 @@
 const roundController = require('../../controllers/game/roundController');
-const socketHelper = require('../../helpers/socketHelper');
 
 const sendMessageAction = {
-    invoke: async (game, roundId, playerId, textMessage, webSocketServer) => {
+    invoke: async (game, roundId, playerId, textMessage, socket) => {
         const roundObjectMessage = await roundController.saveMessage(roundId, playerId, textMessage);
-        const returnData = JSON.stringify({
-            route: 'new-message',
-            round: roundObjectMessage,
-            game: game
-        });
-        await socketHelper.socketSender(webSocketServer, returnData);
+        socket.broadcast.emit('new-message', {round: roundObjectMessage, game: game});
     },
 }
 

@@ -4,8 +4,16 @@ const { port } = require('./config/settings');
 const databaseHelper = require('./config/connectDb');
 const {socketRouter} = require('./socket/router');
 const server = http.createServer(app);
+const socket = require("socket.io");
+const io = socket(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 
-socketRouter(server);
+socketRouter(io);
+
 
 server.listen(port, function() {
     console.log(`Listening on ${port}`);

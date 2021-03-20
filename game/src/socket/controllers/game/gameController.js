@@ -1,6 +1,7 @@
 const {createGame, getGameById, updateGameRound, setNullPoll, createAddPoll} = require('../../repositories/game/gameRepository');
 const {getRoundById, setNextSpeaker, setSpeaker, setRoundStatus, createRound} = require('../../repositories/game/roundRepository');
 const {killPlayer, setPollZero} = require('../../repositories/game/playerRepository');
+const {getRoomById} = require('../../repositories/room/roomRepository');
 
 
 const gameController = {
@@ -8,8 +9,9 @@ const gameController = {
         return await getGameById(gameId);
     },
 
-    startGame: async (room) => {
+    startGame: async (roomId) => {
         try {
+            const room = await getRoomById(roomId);
             return await createGame(room);
         } catch(error) {
             return null;
