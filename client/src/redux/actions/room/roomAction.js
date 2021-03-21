@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as types from "../../types/room/roomType";
 import {formatRooms} from "../../helpers/FormatRooms";
-import {io} from "socket.io-client";
 
 
 export const getRooms = (token, roomsOnPage) =>async dispatch=>{
@@ -36,7 +35,7 @@ export const getRooms = (token, roomsOnPage) =>async dispatch=>{
     });
 }
 
-export const addUser = (roomId, userId, token) =>async dispatch=>{
+export const addUser = (roomId, userId, token, socket) =>async dispatch=>{
     const params = new URLSearchParams();
     params.append('userId', userId);
 
@@ -54,11 +53,7 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
         }
     }).then((response) => {
         if (response.status === 200) {
-            const socket = io("http://localhost:8888");
-            socket.on("connect", () => {
-                socket.emit('refresh-rooms');
-            });
-
+            socket.emit('add-user', {roomId: response.data.room._id});
             dispatch({
                 type: types.ROOM_SET_CURRENT_ROOM,
                 room: response.data.room,
@@ -80,7 +75,7 @@ export const addUser = (roomId, userId, token) =>async dispatch=>{
     });
 };
 
-export const outUser = (roomId, userId, token) =>async dispatch=>{
+export const outUser = (roomId, userId, token, socket) =>async dispatch=>{
     axios({
         method: 'get',
         url: 'http://localhost:9999/room/' + roomId + '/out/' + userId,
@@ -88,10 +83,7 @@ export const outUser = (roomId, userId, token) =>async dispatch=>{
             'Authorization' : `Bearer ${token}`
         }
     }).then((response) => {
-        const socket = io("http://localhost:8888");
-        socket.on("connect", () => {
-            socket.emit('refresh-rooms');
-        });
+        socket.emit('out-user', {roomId: response.data.room._id});
     }).catch((error) => {
         console.log(error.response);
     });

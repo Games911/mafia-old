@@ -46,10 +46,10 @@ router.post("/:roomId/add-user", async (req, res) => {
 
 router.get("/:roomId/out/:userId", async (req, res) => {
     try {
-        const rooms = await roomController.outRoom(req.params.roomId, req.params.userId);
+        const room = await roomController.outRoom(req.params.roomId, req.params.userId);
         res.status(200).json({
             message: "Successfull went out",
-            rooms: rooms
+            room: room
         });
     } catch(error) {
         res.status(400).json({

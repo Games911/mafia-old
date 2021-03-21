@@ -5,16 +5,10 @@ import {useDispatch, useSelector} from "react-redux";
 import * as typesMessage from "../../../../redux/types/game/messageType";
 import CenterPanelCabinet from "./center-panel/CenterPanelCabinet";
 import PlayerPanelCabinet from "./player-panel/PlayerPanelCabinet";
-import {io} from "socket.io-client";
 
 
-const WorkTableCabinet = () => {
+const WorkTableCabinet = (props) => {
     const dispatch = useDispatch();
-    const socket = io("http://localhost:8888");
-    socket.on("connect", () => {
-        console.log(socket.id);
-    });
-
     const {player, game, currentRound} = useSelector(state => state.gameReducer);
     const {textMessage} = useSelector(state => state.messageReducer);
 
@@ -29,7 +23,7 @@ const WorkTableCabinet = () => {
     };
 
     const sendMessage = () => {
-        socket.emit("send-message", {game: game, roundId: currentRound._id, playerId: player._id, textMessage: player.number + ' - ' + textMessage});
+        props.socket.emit("send-message", {game: game, roundId: currentRound._id, playerId: player._id, textMessage: player.number + ' - ' + textMessage});
     }
 
     return (
@@ -47,7 +41,7 @@ const WorkTableCabinet = () => {
                             <PlayerPanelCabinet number={3}/>
                         </div>
                     </div>
-                    <CenterPanelCabinet />
+                    <CenterPanelCabinet socket={props.socket} />
                     <div className="center-area-bottom">
                         <div className="center-area-bottom-left">
                             <PlayerPanelCabinet number={6}/>

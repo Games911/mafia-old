@@ -53,6 +53,30 @@ const socketRouter = async (io) => {
                 }
             })()
         });
+        socket.on("create-room", async (data) => {
+            socket.join(data.roomId);
+
+            const rooms = io.of("/").adapter.rooms;
+            console.log(rooms);
+
+            await refreshRoomsAction.invoke(socket);
+        });
+        socket.on("add-user", async (data) => {
+            socket.join(data.roomId);
+
+            const rooms = io.of("/").adapter.rooms;
+            console.log(rooms);
+
+            await refreshRoomsAction.invoke(socket);
+        });
+        socket.on("out-user", async (data) => {
+            socket.leave(data.roomId);
+
+            const rooms = io.of("/").adapter.rooms;
+            console.log(rooms);
+
+            await refreshRoomsAction.invoke(socket);
+        });
         socket.on("refresh-rooms", async () => {
             await refreshRoomsAction.invoke(socket);
         });

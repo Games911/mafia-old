@@ -12,8 +12,13 @@ import {getToken} from "./redux/actions/auth/tokenAction";
 import RoomCabinet from "./components/cabinet/room/RoomCabinet";
 import CreateRoomCabinet from "./components/cabinet/create-room/CreateRoomCabinet";
 
-function App() {
+import {io} from "socket.io-client";
+const socket = io("http://localhost:8888");
+socket.on("connect", () => {
+    console.log(socket.id);
+});
 
+function App() {
     const dispatch = useDispatch();
     const { token } = useSelector(state => state.token);
     useEffect(() => {
@@ -29,9 +34,9 @@ function App() {
                 <Row>
                     <Col>
                         <Switch>
-                            <GuardedRoute path='/cabinet/room/:id' component={RoomCabinet} auth={token} />
-                            <GuardedRoute path='/cabinet/create-room' component={CreateRoomCabinet} auth={token} />
-                            <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} />
+                            <GuardedRoute path='/cabinet/room/:id' component={RoomCabinet} auth={token} socket={socket} />
+                            <GuardedRoute path='/cabinet/create-room' component={CreateRoomCabinet} auth={token} socket={socket} />
+                            <GuardedRoute path='/cabinet' component={HomeCabinet} auth={token} socket={socket}  />
                             <Route path="/signin">
                                 <Signin />
                             </Route>

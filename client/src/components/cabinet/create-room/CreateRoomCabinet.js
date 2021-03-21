@@ -8,7 +8,7 @@ import {getUserData} from "../../../redux/actions/auth/userInfoAction";
 import {Link} from "react-router-dom";
 
 
-const CreateRoomCabinet = () => {
+const CreateRoomCabinet = (props) => {
     const dispatch = useDispatch();
     const {
         name,
@@ -32,7 +32,7 @@ const CreateRoomCabinet = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        dispatch(createRoom(name, userId, token));
+        dispatch(createRoom(name, userId, token, props.socket));
         dispatch({
             type: types.CREATE_ROOM_RESET_FORM
         });

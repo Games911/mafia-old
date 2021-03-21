@@ -7,10 +7,9 @@ import { Button } from 'bootstrap-4-react';
 import * as types from "../../../redux/types/room/roomType";
 import {Link, useHistory} from "react-router-dom";
 import {formatRooms} from "../../../redux/helpers/FormatRooms";
-import {io} from "socket.io-client";
 
 
-const HomeCabinet = () => {
+const HomeCabinet = (props) => {
     const dispatch = useDispatch();
     let history = useHistory();
     const roomsOnPage = 10;
@@ -26,11 +25,8 @@ const HomeCabinet = () => {
     const {userId} = useSelector(state => state.userInfoReducer);
     const {token} = useSelector(state => state.token);
 
-    const socket = io("http://localhost:8888");
-    socket.on("connect", () => {
-        console.log(socket.id);
-    });
-    socket.on("rooms-event", (data) => {
+    props.socket.on("rooms-event", (data) => {
+        console.log('rooms-event');
         const rooms = data.rooms;
         const currentRoomId = localStorage.getItem('currentRoomId');
         const roomsFormated = formatRooms(rooms, currentRoomId);
@@ -76,7 +72,7 @@ const HomeCabinet = () => {
     };
 
     const addUserToRoom = (roomId) => {
-        dispatch(addUser(roomId, userId, token));
+        dispatch(addUser(roomId, userId, token, props.socket));
     };
 
     const getRoomClassess = (item) => {

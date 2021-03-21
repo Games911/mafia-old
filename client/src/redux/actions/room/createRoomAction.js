@@ -1,7 +1,6 @@
 import {errorsResult, isRequire, maxLength, minLength, startValidation} from "../../helpers/Validation";
 import * as types from "../../types/room/createRoomType";
 import axios from "axios";
-import {io} from "socket.io-client";
 
 
 export const nameValidate = (value) =>async dispatch=>{
@@ -22,7 +21,7 @@ export const nameValidate = (value) =>async dispatch=>{
     });
 };
 
-export const createRoom = (name, userId, token) =>async dispatch=>{
+export const createRoom = (name, userId, token, socket) =>async dispatch=>{
     const params = new URLSearchParams();
     params.append('name', name);
     params.append('userId', userId);
@@ -36,12 +35,8 @@ export const createRoom = (name, userId, token) =>async dispatch=>{
         }
     }).then((response) => {
         if (response.status === 201) {
-            const socket = io("http://localhost:8888");
-            socket.on("connect", () => {
-                socket.emit('refresh-rooms');
-            });
-
             const roomId = response.data.room._id;
+            socket.emit('create-room', {roomId: roomId});
             localStorage.setItem('currentRoomId', roomId);
             localStorage.setItem('currentRoom', JSON.stringify(response.data.room));
             setTimeout(() => {

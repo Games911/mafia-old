@@ -13,10 +13,9 @@ import {
     clearChat, showPoll, setAddPollArr, showMafiaPoll
 } from "../../../redux/actions/game/gameAction";
 import WorkTableCabinet from "./work-table/WorkTableCabinet";
-import {io} from "socket.io-client";
 
 
-const RoomCabinet = () => {
+const RoomCabinet = (props) => {
     const dispatch = useDispatch();
     let history = useHistory();
     const {currentRoom} = useSelector(state => state.roomReducer);
@@ -25,14 +24,10 @@ const RoomCabinet = () => {
     const {player} = useSelector(state => state.gameReducer);
     const {tableMessage} = useSelector(state => state.messageReducer);
 
-    const socket = io("http://localhost:8888");
-    socket.on("connect", () => {
-        console.log(socket.id);
-    });
-    socket.on("new-message", (data) => {
+    props.socket.on("new-message", (data) => {
         dispatch(setChat(data.round));
     });
-    socket.on("game-event", (data) => {
+    props.socket.on("game-event", (data) => {
         console.log(data);
         if (data.game !== null) {
             const currentRoomId = localStorage.getItem('currentRoomId');
@@ -92,7 +87,7 @@ const RoomCabinet = () => {
         guardGame(currentRoom, userId);
         if (currentRoom.status === 'busy' && player.length === 0) {
             setTimeout(() => {
-                socket.emit("start-game", {roomId: currentRoom._id});
+                props.socket.emit("start-game", {roomId: currentRoom._id});
             }, 1000);
         }
     },[currentRoom, player]);
@@ -111,7 +106,7 @@ const RoomCabinet = () => {
 
     const exit = () => {
         const roomId = getRoomParam();
-        dispatch(outUser(roomId, userId, token));
+        dispatch(outUser(roomId, userId, token, props.socket));
         history.push('/cabinet');
     };
 
@@ -167,7 +162,7 @@ const RoomCabinet = () => {
                     </Row>
                 </Container>
             </div>
-            <WorkTableCabinet />
+            <WorkTableCabinet socket={props.socket}/>
         </div>
     )
 }

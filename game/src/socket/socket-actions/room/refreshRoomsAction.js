@@ -1,5 +1,4 @@
 const roomController = require('../../controllers/room/roomController');
-const socketHelper = require('../../helpers/socketHelper');
 
 const refreshRoomsAction = {
     invoke: async (socket) => {
